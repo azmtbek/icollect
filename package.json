@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "db:push": "drizzle-kit push:pgsql",
-    "db:generate": "drizzle-kit generate:pgsql",
-    "db:studio": "drizzle-kit studio",
+    "db:push": "export $(cat .env.development.local | grep \"^[^#;]\" |xargs) && drizzle-kit push:pg",
+    "db:generate": "export $(cat .env.development.local | grep \"^[^#;]\" |xargs) && drizzle-kit generate:pg",
+    "db:studio": "export $(cat .env.development.local | grep \"^[^#;]\" |xargs) &&  drizzle-kit studio",
+    "db:check": "export $(cat .env.development.local | grep \"^[^#;]\" |xargs) && drizzle-kit check:pg",
+    "env:local": "export $(cat .env.development.local | grep \"^[^#;]\" |xargs)",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"
@@ -22,6 +24,7 @@
     "@trpc/next": "^10.45.1",
     "@trpc/react-query": "^10.45.1",
     "@trpc/server": "^10.45.1",
+    "@vercel/postgres": "^0.7.2",
     "drizzle-orm": "^0.29.5",
     "next": "^14.1.0",
     "next-auth": "^4.24.6",

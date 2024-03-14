@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
   index,
   primaryKey,
@@ -7,6 +6,7 @@ import {
   pgTableCreator,
   timestamp,
   serial,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -25,9 +25,8 @@ export const posts = pgTable(
     name: text("name"),
     createdById: text("createdById").notNull(),
     createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt"),
+      .defaultNow(),
+    updatedAt: timestamp("updatedAt").defaultNow(),
   },
   (example) => ({
     createdByIdIdx: index("createdById_idx").on(example.createdById),
@@ -41,6 +40,7 @@ export const users = pgTable("user", {
   email: text("email").notNull(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  isAdmin: boolean("isAdmin").default(false),
 });
 
 export const accounts = pgTable(
