@@ -5,9 +5,9 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
+// import DiscordProvider from "next-auth/providers/discord";
 
-import { env } from "@/env";
+// import { env } from "@/env";
 import { db } from "@/server/db";
 import { pgTable } from "@/server/db/schema";
 
@@ -26,10 +26,10 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 
-  interface User {
-    // ...other properties
-    // role: UserRole;
-  }
+  // interface User {
+  // ...other properties
+  // role: UserRole;
+  // }
 }
 
 /**
