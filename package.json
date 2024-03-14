@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "db:push": "drizzle-kit push:mysql",
+    "db:push": "drizzle-kit push:pgsql",
+    "db:generate": "drizzle-kit generate:pgsql",
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
     "lint": "next lint",
@@ -40,7 +41,7 @@
     "drizzle-kit": "^0.20.14",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.1.0",
-    "mysql2": "^3.9.1",
+    "pg": "^8.11.3",
     "postcss": "^8.4.34",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",

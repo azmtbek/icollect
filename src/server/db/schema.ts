@@ -1,11 +1,13 @@
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
   index,
   primaryKey,
   text,
   integer,
-  sqliteTableCreator,
-} from "drizzle-orm/sqlite-core";
+  pgTableCreator,
+  timestamp,
+  serial,
+} from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
 /**
@@ -14,18 +16,18 @@ import { type AdapterAccount } from "next-auth/adapters";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const sqliteTable = sqliteTableCreator((name) => `icollect_${name}`);
+export const pgTable = pgTableCreator((name) => `icollect_${name}`);
 
-export const posts = sqliteTable(
+export const posts = pgTable(
   "post",
   {
-    id: integer("id").notNull().primaryKey({ autoIncrement: true }),
+    id: serial("id").notNull().primaryKey(),
     name: text("name"),
     createdById: text("createdById").notNull(),
-    createdAt: integer("created_at", { mode: "timestamp_ms" })
+    createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: integer("updatedAt", { mode: "timestamp_ms" }),
+    updatedAt: timestamp("updatedAt"),
   },
   (example) => ({
     createdByIdIdx: index("createdById_idx").on(example.createdById),
@@ -33,21 +35,15 @@ export const posts = sqliteTable(
   })
 );
 
-
-export const users = sqliteTable("user", {
+export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
   name: text("name"),
   email: text("email").notNull(),
-  emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-  sessions: many(sessions),
-}));
-
-export const accounts = sqliteTable(
+export const accounts = pgTable(
   "account",
   {
     userId: text("userId")
@@ -65,26 +61,24 @@ export const accounts = sqliteTable(
     session_state: text("session_state"),
   },
   (account) => ({
-    compoundKey: primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    })
+    compoundKey: primaryKey({ columns: [account.provider, account.providerAccountId] }),
   })
 );
 
-export const sessions = sqliteTable("session", {
+export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").notNull().primaryKey(),
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
-export const verificationTokens = sqliteTable(
+export const verificationTokens = pgTable(
   "verificationToken",
   {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
-    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),

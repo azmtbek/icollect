@@ -9,7 +9,7 @@ import DiscordProvider from "next-auth/providers/discord";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
-import { sqliteTable } from "@/server/db/schema";
+import { pgTable } from "@/server/db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -26,10 +26,10 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    // ...other properties
+    // role: UserRole;
+  }
 }
 
 /**
@@ -47,8 +47,9 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   },
-  adapter: DrizzleAdapter(db, sqliteTable) as Adapter,
+  adapter: DrizzleAdapter(db, pgTable) as Adapter,
   providers: [
+    // TODO: update providers
     // DiscordProvider({
     //   clientId: env.DISCORD_CLIENT_ID,
     //   clientSecret: env.DISCORD_CLIENT_SECRET,

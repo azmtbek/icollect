@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/libsql';
+import { drizzle } from 'drizzle-orm/vercel-postgres';
 import { createClient } from '@libsql/client';
 
 import { env } from "@/env";
