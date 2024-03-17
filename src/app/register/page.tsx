@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { api } from '@/trpc/react';
+import { useRouter } from 'next/navigation';
 
 const registerSchema = z.object({
   username: z.string().min(2, { message: "Username must be at least 2 characters." }).max(255),
@@ -25,6 +27,8 @@ const registerSchema = z.object({
 type RegisterType = z.infer<typeof registerSchema>;
 
 const Register = () => {
+  const router = useRouter();
+  const [pageError, setPageError] = useState('');
 
   const form = useForm<RegisterType>({
     resolver: zodResolver(registerSchema),
@@ -34,18 +38,37 @@ const Register = () => {
       password: "",
     },
   });
-  function onSubmit(values: RegisterType) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
 
+
+  const createUser = api.user.create.useMutation({
+    onSuccess: () => {
+      router.push('/login');
+      form.reset();
+    },
+    onError: (error) => {
+      setPageError(error.message);
+    }
+  });
+
+  function onSubmit(values: RegisterType) {
+    createUser.mutate({
+      name: values.username,
+      email: values.email,
+      password: values.password,
+    });
+    console.log(values);
   }
   return (
     <div className='flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center'>
       <Card>
         <CardHeader>
           <CardTitle>Register</CardTitle>
-          <CardDescription>If you don't have an account, please register.</CardDescription>
+          <CardDescription>
+            <span>
+              If you don't have an account, please register.
+            </span>
+            <span className='text-destructive-foreground'>{pageError}</span>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -83,7 +106,6 @@ const Register = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-
                       <Input placeholder="password" {...field} type='password' />
                     </FormControl>
                     <FormMessage />

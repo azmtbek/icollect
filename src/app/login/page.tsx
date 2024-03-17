@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { getServerAuthSession } from '@/server/auth';
 
 const registerSchema = z.object({
   // username: z.string().min(2, { message: "Username must be at least 2 characters." }).max(255),
@@ -34,9 +35,11 @@ const Login = () => {
       password: "",
     },
   });
+
   function onSubmit(values: RegisterType) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+
     console.log(values);
   }
   return (

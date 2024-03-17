@@ -7,6 +7,7 @@ import {
   timestamp,
   serial,
   boolean,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -37,10 +38,13 @@ export const posts = pgTable(
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
   name: text("name"),
-  email: text("email").notNull(),
+  email: text("email").notNull().unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  password: text("password").notNull(),
+  status: varchar("status", { length: 10 }).default("active"),
   isAdmin: boolean("isAdmin").default(false),
+  createdAt: timestamp("createdAt").defaultNow(),
 });
 
 export const accounts = pgTable(

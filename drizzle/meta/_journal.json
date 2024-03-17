@@ -15,6 +15,20 @@
       "when": 1710446200491,
       "tag": "0001_gifted_toad",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1710694738098,
+      "tag": "0002_silent_charles_xavier",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1710697909780,
+      "tag": "0003_majestic_sentinels",
+      "breakpoints": true
     }
   ]
 }
