@@ -10,7 +10,8 @@ import { type Adapter } from "next-auth/adapters";
 // import { env } from "@/env";
 import { db } from "@/server/db";
 import { pgTable } from "@/server/db/schema";
-
+import EmailProvider from "next-auth/providers/email";
+import { env } from "@/env";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -22,14 +23,14 @@ declare module "next-auth" {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      isAdmin: boolean;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  // ...other properties
-  // role: UserRole;
-  // }
+  interface User {
+    // ...other properties
+    isAdmin: boolean;
+  }
 }
 
 /**
@@ -63,6 +64,10 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    EmailProvider({
+      server: env.EMAIL_SERVER,
+      from: env.EMAIL_FROM
+    }),
   ],
 };
 
