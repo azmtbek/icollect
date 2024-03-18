@@ -18,6 +18,52 @@ import { type AdapterAccount } from "next-auth/adapters";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const pgTable = pgTableCreator((name) => `icollect_${name}`);
+export const collections = pgTable(
+  "collection",
+  {
+    id: serial("id").notNull().primaryKey(),
+    name: text("name"),
+    description: text("description"),
+    image: text("image"),
+    topicId: integer("topicId").notNull()
+      .references(() => topics.id, { onDelete: "set null" }),
+  }
+);
+export const items = pgTable(
+  "item",
+  {
+    id: serial("id").notNull().primaryKey(),
+    name: text("name"),
+    collectionId: integer("collectionId").notNull()
+      .references(() => collections.id, { onDelete: "cascade" })
+  }
+);
+
+export const itemTags = pgTable(
+  "itemTag",
+  {
+    itemId: integer("itemId").notNull(),
+    tagId: integer("tagId").notNull(),
+  },
+  (it) => ({
+    compoundKey: primaryKey({ columns: [it.itemId, it.tagId] })
+  })
+);
+export const tags = pgTable(
+  "tag",
+  {
+    id: serial("id").notNull().primaryKey(),
+    name: text("name").unique().notNull()
+  },
+);
+
+export const topics = pgTable(
+  "topic",
+  {
+    id: serial("id").notNull().primaryKey(),
+    name: text("name").unique().notNull()
+  }
+);
 
 export const posts = pgTable(
   "post",
