@@ -7,8 +7,8 @@ import { api } from "@/trpc/server";
 
 export default async function Home() {
   noStore();
-  const hello = await api.post.hello.query({ text: "from tRPC" });
-
+  // const hello = await api.post.hello.query({ text: "from tRPC" });
+  // const session = await getSession();
   const session = await getServerAuthSession();
   return (
     <main className="flex min-h-[100vh-4rem] flex-col items-center justify-center">

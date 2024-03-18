@@ -3,6 +3,7 @@ import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
+  type User,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 // import DiscordProvider from "next-auth/providers/discord";
@@ -12,6 +13,10 @@ import { db } from "@/server/db";
 import { pgTable } from "@/server/db/schema";
 import EmailProvider from "next-auth/providers/email";
 import { env } from "@/env";
+import Credentials from "next-auth/providers/credentials";
+import { api } from "@/trpc/server";
+import { compare } from "bcrypt-ts";
+import NextAuth from "next-auth/next";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -39,6 +44,9 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -47,6 +55,7 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+
   },
   adapter: DrizzleAdapter(db, pgTable) as Adapter,
   providers: [
@@ -64,9 +73,25 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
-    EmailProvider({
-      server: env.EMAIL_SERVER,
-      from: env.EMAIL_FROM
+    // EmailProvider({
+    //   server: env.EMAIL_SERVER,
+    //   from: env.EMAIL_FROM
+    // }),
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "text", placeholder: "jon@mail.com" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize({ email, password }: any, req: any) {
+        const user = await api.user.getByEmail.query({ email });
+        if (!user) return null;
+        if (user.status === 'blocked') return null;
+        let passwordsMatch = await compare(password, user.password);
+        console.log('match', passwordsMatch);
+        if (passwordsMatch) return user as any;
+        return null;
+      },
     }),
   ],
 };
@@ -77,3 +102,4 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
+export const { auth, signIn, signOut } = NextAuth(authOptions);
