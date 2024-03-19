@@ -6,6 +6,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Header } from "./header";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
           <TRPCReactProvider>
             <Header />
             {children}
+            <Toaster />
           </TRPCReactProvider>
         </ThemeProvider>
       </body>
