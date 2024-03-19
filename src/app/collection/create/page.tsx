@@ -36,6 +36,7 @@ const CreateCollection = () => {
       toast({
         description: "Collection created.",
       });
+      form.reset();
     },
     onError(error) {
       toast({
