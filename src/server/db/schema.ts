@@ -18,6 +18,7 @@ import { type AdapterAccount } from "next-auth/adapters";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const pgTable = pgTableCreator((name) => `icollect_${name}`);
+
 export const collections = pgTable(
   "collection",
   {
@@ -29,6 +30,7 @@ export const collections = pgTable(
       .references(() => topics.id, { onDelete: "set null" }),
   }
 );
+
 export const items = pgTable(
   "item",
   {
@@ -42,13 +44,14 @@ export const items = pgTable(
 export const itemTags = pgTable(
   "itemTag",
   {
-    itemId: integer("itemId").notNull(),
-    tagId: integer("tagId").notNull(),
+    itemId: integer("itemId").notNull().references(() => items.id, { onDelete: "cascade" }),
+    tagId: integer("tagId").notNull().references(() => tags.id, { onDelete: "cascade" }),
   },
   (it) => ({
     compoundKey: primaryKey({ columns: [it.itemId, it.tagId] })
   })
 );
+
 export const tags = pgTable(
   "tag",
   {
@@ -56,6 +59,14 @@ export const tags = pgTable(
     name: text("name").unique().notNull()
   },
 );
+
+// export const likes = pgTable(
+//   "like",
+//   {
+//     itemId: integer("itemId").notNull().references(() => items.id, { onDelete: "cascade" }),
+//     userId:text("userId").notNull().references(() => users.id, { onDelete: "cascade" }), 
+//   }
+// )
 
 export const topics = pgTable(
   "topic",
