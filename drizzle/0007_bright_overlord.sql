@@ -1,0 +1,1 @@
+ALTER TABLE "icollect_comment" ALTER COLUMN "createdById" SET DATA TYPE text;

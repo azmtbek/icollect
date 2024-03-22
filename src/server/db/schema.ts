@@ -36,6 +36,8 @@ export const items = pgTable(
   {
     id: serial("id").notNull().primaryKey(),
     name: text("name"),
+    likesCount: integer("likesCount").default(0),
+    commentsCount: integer("commentsCount").default(0),
     collectionId: integer("collectionId").notNull()
       .references(() => collections.id, { onDelete: "cascade" })
   }
@@ -60,13 +62,35 @@ export const tags = pgTable(
   },
 );
 
-// export const likes = pgTable(
-//   "like",
-//   {
-//     itemId: integer("itemId").notNull().references(() => items.id, { onDelete: "cascade" }),
-//     userId:text("userId").notNull().references(() => users.id, { onDelete: "cascade" }), 
-//   }
-// )
+export const comments = pgTable(
+  "comment",
+  {
+    id: serial("id").notNull().primaryKey(),
+    text: text("text").notNull(),
+    itemId: integer("itemId").notNull()
+      .references(() => items.id, { onDelete: "cascade" }),
+    createdById: text("createdById").notNull()
+      .references(() => users.id, { onDelete: "set null" }),
+    createdAt: timestamp("createdAt").defaultNow(),
+    updatedAt: timestamp("updatedAt").defaultNow(),
+    isEdited: boolean("isEdited").default(false),
+  },
+  (comment) => ({
+    createdByIdIdx: index("icollect_comment_createdById_idx").on(comment.createdById),
+    itemIdIndex: index("icollect_comment_itemId_idx").on(comment.itemId),
+  })
+);
+
+export const likes = pgTable(
+  "like",
+  {
+    itemId: integer("itemId").notNull().references(() => items.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  },
+  (l) => ({
+    compoundKey: primaryKey({ columns: [l.itemId, l.userId] })
+  })
+);
 
 export const topics = pgTable(
   "topic",

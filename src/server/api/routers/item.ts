@@ -6,11 +6,18 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { itemTags, items, tags } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 export const itemRouter = createTRPCRouter({
   getAll: publicProcedure
     .query(({ ctx }) => {
       return ctx.db.query.items.findMany();
+    }),
+  getById: publicProcedure.input(z.object({
+    itemId: z.string()
+  }))
+    .query(({ ctx, input }) => {
+      return ctx.db.query.items.findFirst({ where: eq(items.id, +input.itemId) });
     }),
   create: publicProcedure.input(z.object({
     name: z.string(),

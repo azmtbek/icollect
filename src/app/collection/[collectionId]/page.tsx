@@ -16,7 +16,7 @@ const Collection = () => {
         <Link href={`/collection/${collectionId}/item/create`} > <Button>Add Item</Button></Link>
       </div>
       <div>{items?.map(item => <div key={item.id}>
-        {item.name}
+        <Link href={`/collection/${collectionId}/item/${item.id}`} >{item.name}</Link>
       </div>)}</div>
     </MinScreen >
   );
