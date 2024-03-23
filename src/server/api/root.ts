@@ -7,6 +7,7 @@ import { itemRouter } from "./routers/item";
 import { tagRouter } from "./routers/tag";
 import { commentRouter } from "./routers/comment";
 import { likeRouter } from "./routers/like";
+// import { sessionRouter } from "./routers/session";
 
 /**
  * This is the primary router for your server.
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   tag: tagRouter,
   comment: commentRouter,
   like: likeRouter,
+  // sesssion: sessionRouter
 });
 
 // export type definition of API

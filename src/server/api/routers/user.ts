@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  adminProcedure,
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
@@ -10,9 +11,14 @@ import { eq } from "drizzle-orm";
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { nanoid } from 'nanoid';
+import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
-
+  getAll: adminProcedure
+    .query(async ({ ctx }) => {
+      const user = await ctx.db.query.users.findMany();
+      return user;
+    }),
   getByEmail: publicProcedure
     .input(z.object({ email: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -20,6 +26,11 @@ export const userRouter = createTRPCRouter({
         where: (eq(users.email, input.email))
       });
       return user;
+    }),
+  getCurrent: protectedProcedure
+    .query(async ({ ctx }) => {
+      if (!ctx.session.user || !ctx.session.user.email) throw new TRPCError({ code: "UNAUTHORIZED" });
+      return ctx.db.query.users.findFirst({ where: eq(users.email, ctx.session.user.email) });
     }),
   create: publicProcedure
     .input(z.object({
@@ -38,14 +49,4 @@ export const userRouter = createTRPCRouter({
         email: input.email,
       });
     }),
-
-  getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.posts.findFirst({
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-    });
-  }),
-
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
 });

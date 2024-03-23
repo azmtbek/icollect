@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getServerAuthSession, } from '@/server/auth';
+// import { getServerAuthSession, } from '@/server/auth';
 import { signIn } from "next-auth/react";
+import { api } from '@/trpc/react';
 
 const registerSchema = z.object({
   // username: z.string().min(2, { message: "Username must be at least 2 characters." }).max(255),
@@ -26,7 +27,7 @@ const registerSchema = z.object({
 });
 type RegisterType = z.infer<typeof registerSchema>;
 
-const Login = () => {
+const Login = ({ login }: { login: ({ email, password }: { email: string, password: string; }) => {}; }) => {
 
   const form = useForm<RegisterType>({
     resolver: zodResolver(registerSchema),
@@ -37,16 +38,17 @@ const Login = () => {
     },
   });
 
-  async function onSubmit(values: RegisterType) {
+  function onSubmit(values: RegisterType) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     // 'use server';
-    signIn('credentials', {
-      // redirectTo: '/admin',
-      callbackUrl: '/',
-      email: values.email,
-      password: values.password,
-    });
+    // signIn('credentials', {
+    //   // redirectTo: '/admin',
+    //   callbackUrl: '/',
+    //   email: values.email,
+    //   password: values.password,
+    // });
+    login({ email: values.email, password: values.password });
   }
   return (
     <div className='flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center'>

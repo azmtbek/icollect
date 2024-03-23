@@ -34,9 +34,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCReactProvider>
+            {/* <SessionProvider > */}
             <Header />
             {children}
             <Toaster />
+            {/* </SessionProvider> */}
           </TRPCReactProvider>
         </ThemeProvider>
       </body>

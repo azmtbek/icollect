@@ -12,7 +12,7 @@ export const tagRouter = createTRPCRouter({
     .query(({ ctx }) => {
       return ctx.db.query.tags.findMany();
     }),
-  create: publicProcedure.input(z.object({
+  create: protectedProcedure.input(z.object({
     name: z.string().max(100).toLowerCase(),
   })).mutation(async ({ ctx, input }) => {
     await ctx.db.insert(tags).values({

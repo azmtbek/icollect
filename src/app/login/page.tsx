@@ -1,11 +1,20 @@
+
 import React from 'react';
 import Login from './form';
-import { signIn } from "next-auth/react";
+import { signIn } from "@/server/auth";
 
-const Page = () => {
-
+const Page = async () => {
+  const login = async ({ email, password }: { email: string, password: string; }) => {
+    'use server';
+    await signIn('credentials', {
+      redirectTo: '/',
+      // callbackUrl: '/',
+      email: email,
+      password: password,
+    });
+  };
   return (
-    <Login />
+    <Login login={login} />
   );
 };
 
