@@ -7,10 +7,19 @@ import { auth, signIn, signOut } from '@/server/auth';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { api } from '@/trpc/server';
+import LocaleSwitcher from './locale-switcher';
+import { Locale } from 'i18n-config';
+import { getDictionary } from 'get-dictionary';
 // import { useSession } from 'next-auth/react';
 
-export const Header = async () => {
-  const session = await auth();
+export const Header = async ({
+  lang,
+}: {
+  lang: Locale;
+}
+) => {
+  // const session = await auth();
+  const dictionary = await getDictionary(lang);
   const currUser = await api.user.getCurrent.query();
   return (
     <header className='sticky h-16 pt-3 w-full border-b-2'>
@@ -19,8 +28,8 @@ export const Header = async () => {
           <Link href='/' className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>
             iCollect
           </Link>
-          <ThemeButton />
-          <div>Lang</div>
+          <ThemeButton dictionary={dictionary.theme} />
+          <LocaleSwitcher />
         </div>
         <div></div>
         <div className='flex gap-4 items-center'>
@@ -30,11 +39,11 @@ export const Header = async () => {
             </Link>
           }
           <Link href='/collection'>
-            <Button variant={'outline'} className='text-xl'>Collections</Button>
+            <Button variant={'outline'} className='text-xl'>{dictionary.titles.collections}</Button>
           </Link>
-          {session?.user?.name}
-          {session?.user?.id}
-          {session?.user ? <SignOut /> :
+          {currUser?.name}
+          {currUser?.id}
+          {currUser ? <SignOut /> :
             <SignIn />}
         </div>
       </div>

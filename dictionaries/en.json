@@ -1,0 +1,11 @@
+{
+  "titles": {
+    "collections": "Collections",
+    "admin": "Admin"
+  },
+  "theme": {
+    "light": "light",
+    "dark": "dark",
+    "system": "system"
+  }
+}

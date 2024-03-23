@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -11,8 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Dictionoary } from "get-dictionary";
 
-export default function ThemeButton() {
+export default function ThemeButton({
+  dictionary,
+}: {
+  dictionary: Awaited<ReturnType<Dictionoary>>["theme"];
+}) {
   const { setTheme } = useTheme();
 
   return (
@@ -26,13 +30,13 @@ export default function ThemeButton() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
+          {dictionary.light}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
+          {dictionary.dark}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
+          {dictionary.system}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

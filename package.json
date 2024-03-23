@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.7.0",
+    "@formatjs/intl-localematcher": "^0.5.4",
     "@hookform/resolvers": "^3.3.4",
     "@libsql/client": "^0.5.3",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
@@ -45,6 +46,7 @@
     "lucia": "^3.1.1",
     "lucide-react": "^0.358.0",
     "nanoid": "^5.0.6",
+    "negotiator": "^0.6.3",
     "next": "^14.1.0",
     "next-auth": "^5.0.0-beta.15",
     "next-themes": "^0.3.0",
@@ -60,6 +62,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8.56.2",
+    "@types/negotiator": "^0.6.3",
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",

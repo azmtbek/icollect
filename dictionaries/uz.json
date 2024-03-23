@@ -1,0 +1,11 @@
+{
+  "titles": {
+    "collections": "Kolleksialar",
+    "admin": "Admin"
+  },
+  "theme": {
+    "light": "yorug'",
+    "dark": "qorong'u",
+    "system": "sistema"
+  }
+}

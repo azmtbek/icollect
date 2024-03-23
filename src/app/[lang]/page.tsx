@@ -4,8 +4,13 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import MinScreen from "@/components/layout/min-screen";
+import { Locale } from "i18n-config";
 
-export default async function Home() {
+export default async function Home({
+  params: { lang },
+}: {
+  params: { lang: Locale; };
+}) {
   noStore();
   const session = await auth();
   return (
