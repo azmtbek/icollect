@@ -5,14 +5,20 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { collections, topics } from "@/server/db/schema";
+import { collections, topics, users } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 export const collectionRouter = createTRPCRouter({
   getAll: publicProcedure
     .query(({ ctx }) => {
       return ctx.db.query.collections.findMany();
     }),
-  create: publicProcedure.input(z.object({
+  getUserCollections: protectedProcedure
+    .query(async ({ ctx }) => {
+      // const userId = await ctx.db.select({ id: users.id }).from(users).where(eq(users.email, ctx.session?.user.email));
+      return ctx.db.query.collections.findMany({ where: eq(collections.createdById, ctx.session.user.id) });
+    }),
+  create: protectedProcedure.input(z.object({
     name: z.string(),
     description: z.string(),
     topicId: z.number(),
@@ -21,6 +27,7 @@ export const collectionRouter = createTRPCRouter({
       name: input.name,
       description: input.description,
       topicId: input.topicId,
+      createdById: ctx.session?.user.id
     });
   })
 });

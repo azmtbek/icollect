@@ -47,7 +47,6 @@ export type UserData = {
   status: string | null;
   isAdmin: boolean | null;
   createdAt: Date | null;
-  // lastLogin: Date | null; //TODO: change to lastLogin
 };
 
 export const columns: ColumnDef<UserData>[] = [

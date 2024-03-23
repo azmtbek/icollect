@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React from 'react';
 
 const Collections = () => {
-  const { data: collections } = api.collection.getAll.useQuery();
+  const { data: collections } = api.collection.getUserCollections.useQuery();
   return (
     <MinScreen>
       <div>

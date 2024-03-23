@@ -23,13 +23,18 @@ const Admin = async () => {
         <Button>
           Manage Topics
         </Button>
-        <UsersTable
-          users={users}
-          blockUsers={blockUsers}
-          deleteUsers={deleteUsers}
-          unblockUsers={unblockUsers}
-        />
       </Link>
+      <Link href="/admin/tag" >
+        <Button>
+          Manage Tags
+        </Button>
+      </Link>
+      <UsersTable
+        users={users}
+        blockUsers={blockUsers}
+        deleteUsers={deleteUsers}
+        unblockUsers={unblockUsers}
+      />
     </MinScreen>
   );
 };

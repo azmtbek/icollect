@@ -14,6 +14,8 @@ import { ZodError } from "zod";
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 import { api } from "@/trpc/server";
+import { users } from "../db/schema";
+import { eq } from "drizzle-orm";
 
 /**
  * 1. CONTEXT
@@ -29,12 +31,27 @@ import { api } from "@/trpc/server";
  */
 export const createTRPCContext = async (opts: { headers: Headers; }) => {
   const session = await auth();
-
+  // if (!session || !session.user) {
   return {
     db,
     session,
-    ...opts,
+    ...opts
   };
+  // }
+
+  // const user = await api.user.getByEmail.query({ email: session.user.email });
+  // return {
+  //   db,
+  //   session: {
+  //     ...session,
+  //     user: {
+  //       ...session?.user,
+  //       isAdmin: user.isAdmin,
+  //       id: user.id
+  //     }
+  //   },
+  //   ...opts,
+  // };
 };
 
 /**
@@ -89,30 +106,39 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
+export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user || !ctx.session.user.email) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+  const user = await ctx.db.query.users.findFirst({
+    where: (eq(users.email, ctx.session.user.email))
+  });
+  if (!user || !user.id) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session, user: { ...ctx.session.user, id: user.id } },
     },
   });
 });
 export const adminProcedure = t.procedure.use(async ({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user || !ctx.session.user.email) {
-
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-  const user = await api.user.getByEmail.query({ email: ctx.session.user.email });
+  const user = await ctx.db.query.users.findFirst({
+    where: (eq(users.email, ctx.session.user.email))
+  });
+  // const user = await api.user.getByEmail.query({ email: ctx.session.user.email });
   if (!user || !user.isAdmin) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session, user: { ...ctx.session.user, isAdmin: user.isAdmin, id: user.id } },
     },
   });
 });

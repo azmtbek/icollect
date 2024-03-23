@@ -27,16 +27,17 @@ import { db } from "@/server/db";
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      id: string | undefined;
+      id: string;
       // ...other properties
       isAdmin: boolean;
     } & DefaultSession["user"];
   }
 
-  type User = {
-    // ...other properties
-    isAdmin: boolean;
-  } & DefaultSession["user"];
+  // type User = {
+  //   // ...other properties
+  //   id: string;
+  //   isAdmin: boolean;
+  // } & DefaultSession["user"];
 }
 
 // /**

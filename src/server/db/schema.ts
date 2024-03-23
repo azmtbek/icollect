@@ -28,6 +28,8 @@ export const collections = pgTable(
     image: text("image"),
     topicId: integer("topicId").notNull()
       .references(() => topics.id, { onDelete: "set null" }),
+    createdById: text("createdById")
+      .references(() => users.id, { onDelete: "set null" }),
   }
 );
 
@@ -39,7 +41,9 @@ export const items = pgTable(
     likesCount: integer("likesCount").default(0),
     commentsCount: integer("commentsCount").default(0),
     collectionId: integer("collectionId").notNull()
-      .references(() => collections.id, { onDelete: "cascade" })
+      .references(() => collections.id, { onDelete: "cascade" }),
+    createdById: text("createdById")
+      .references(() => users.id, { onDelete: "set null" }),
   }
 );
 
