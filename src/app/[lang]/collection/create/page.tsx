@@ -1,5 +1,6 @@
 'use client';
 import MinScreen from '@/components/layout/min-screen';
+import { useLocale } from '@/components/provider/locale-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -17,7 +18,8 @@ import { z } from 'zod';
 const collectionSchema = z.object({
   name: z.string().min(2),
   topicId: z.string().min(1, { message: "Please select a topic." }),
-  description: z.string(),
+  description: z.string().optional(),
+
 });
 type CollectionType = z.infer<typeof collectionSchema>;
 
@@ -47,7 +49,7 @@ const CreateCollection = () => {
     }
   });
 
-
+  const locale = useLocale();
   const { data: topics } = api.admin.getTopics.useQuery();
 
   const onSubmit = (values: CollectionType) => {
@@ -62,13 +64,13 @@ const CreateCollection = () => {
   };
   return (
     <MinScreen>
-      <Card>
+      <Card className='w-full'>
         <CardHeader>
-          <CardTitle>Create A Collection</CardTitle>
+          <CardTitle>{locale.theme?.dark}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
               <FormField
                 control={form.control}
                 name="name"

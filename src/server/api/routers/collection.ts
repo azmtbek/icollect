@@ -20,7 +20,7 @@ export const collectionRouter = createTRPCRouter({
     }),
   create: protectedProcedure.input(z.object({
     name: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     topicId: z.number(),
   })).mutation(async ({ ctx, input }) => {
     await ctx.db.insert(collections).values({
