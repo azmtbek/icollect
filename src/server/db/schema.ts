@@ -23,13 +23,49 @@ export const collections = pgTable(
   "collection",
   {
     id: serial("id").notNull().primaryKey(),
-    name: text("name"),
+    name: text("name").notNull(),
     description: text("description"),
     image: text("image"),
     topicId: integer("topicId").notNull()
       .references(() => topics.id, { onDelete: "set null" }),
     createdById: text("createdById")
       .references(() => users.id, { onDelete: "set null" }),
+
+    // custom fields 
+    custom_string1_state: boolean("custom_string1_state").default(false),
+    custom_string1_name: varchar("custom_string1_name", { length: 256 }),
+    custom_string2_state: boolean("custom_string2_state").default(false),
+    custom_string2_name: varchar("custom_string2_name", { length: 256 }),
+    custom_string3_state: boolean("custom_string3_state").default(false),
+    custom_string3_name: varchar("custom_string3_name", { length: 256 }),
+
+    custom_integer1_state: boolean("custom_integer1_state").default(false),
+    custom_integer1_name: varchar("custom_integer1_name", { length: 256 }),
+    custom_integer2_state: boolean("custom_integer2_state").default(false),
+    custom_integer2_name: varchar("custom_integer2_name", { length: 256 }),
+    custom_integer3_state: boolean("custom_integer3_state").default(false),
+    custom_integer3_name: varchar("custom_integer3_name", { length: 256 }),
+
+    custom_boolean1_state: boolean("custom_boolean1_state").default(false),
+    custom_boolean1_name: varchar("custom_boolean1_name", { length: 256 }),
+    custom_boolean2_state: boolean("custom_boolean2_state").default(false),
+    custom_boolean2_name: varchar("custom_boolean2_name", { length: 256 }),
+    custom_boolean3_state: boolean("custom_boolean3_state").default(false),
+    custom_boolean3_name: varchar("custom_boolean3_name", { length: 256 }),
+
+    custom_text1_state: boolean("custom_text1_state").default(false),
+    custom_text1_name: varchar("custom_text1_name", { length: 256 }),
+    custom_text2_state: boolean("custom_text2_state").default(false),
+    custom_text2_name: varchar("custom_text2_name", { length: 256 }),
+    custom_text3_state: boolean("custom_text3_state").default(false),
+    custom_text3_name: varchar("custom_text3_name", { length: 256 }),
+
+    custom_date1_state: boolean("custom_date1_state").default(false),
+    custom_date1_name: varchar("custom_date1_name", { length: 256 }),
+    custom_date2_state: boolean("custom_date2_state").default(false),
+    custom_date2_name: varchar("custom_date2_name", { length: 256 }),
+    custom_date3_state: boolean("custom_date3_state").default(false),
+    custom_date3_name: varchar("custom_date3_name", { length: 256 }),
   }
 );
 
@@ -102,22 +138,6 @@ export const topics = pgTable(
     id: serial("id").notNull().primaryKey(),
     name: text("name").unique().notNull()
   }
-);
-
-export const posts = pgTable(
-  "post",
-  {
-    id: serial("id").notNull().primaryKey(),
-    name: text("name"),
-    createdById: text("createdById").notNull(),
-    createdAt: timestamp("created_at")
-      .defaultNow(),
-    updatedAt: timestamp("updatedAt").defaultNow(),
-  },
-  (example) => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  })
 );
 
 export const users = pgTable("user", {
