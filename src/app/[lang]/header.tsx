@@ -8,12 +8,9 @@ import LocaleSwitcher from './locale-switcher';
 import { Locale } from '@/i18n-config';
 import { getDictionary } from '@/get-dictionary';
 
-export const Header = async ({
-  lang,
-}: {
-  lang: Locale;
-}
-) => {
+type Props = { lang: Locale; };
+
+export const Header = async ({ lang }: Props) => {
 
   const dictionary = await getDictionary(lang);
   const currUser = await api.user.getCurrent.query();

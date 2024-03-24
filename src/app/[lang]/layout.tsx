@@ -1,11 +1,9 @@
 import "@/styles/globals.css";
 
 import { Inter } from "next/font/google";
-
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Header } from "./header";
-import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/toaster";
 import { type Locale, i18n } from "@/i18n-config";
 
@@ -24,8 +22,6 @@ export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }
 
-
-
 export default function RootLayout({
   children,
   params
@@ -43,11 +39,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TRPCReactProvider>
-            {/* <SessionProvider > */}
             <Header lang={params.lang} />
             {children}
             <Toaster />
-            {/* </SessionProvider> */}
           </TRPCReactProvider>
         </ThemeProvider>
       </body>

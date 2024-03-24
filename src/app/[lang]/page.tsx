@@ -1,5 +1,4 @@
 import { unstable_noStore as noStore } from "next/cache";
-import Link from "next/link";
 
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -12,10 +11,11 @@ export default async function Home({
   params: { lang: Locale; };
 }) {
   noStore();
-  const session = await auth();
+
   return (
     <MinScreen>
       <Collections />
+      <LatestItems />
       <TagsCloud />
     </MinScreen>
   );
@@ -25,6 +25,10 @@ export default async function Home({
 const Collections = () => {
   return <div>Collections</div>;
 };
+const LatestItems = () => {
+  return <div>Latest</div>;
+};
+
 
 const TagsCloud = () => {
   return <div>TagsCloud</div>;
