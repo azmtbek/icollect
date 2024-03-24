@@ -4,7 +4,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import MinScreen from "@/components/layout/min-screen";
-import { Locale } from "i18n-config";
+import { Locale } from "@/i18n-config";
 
 export default async function Home({
   params: { lang },

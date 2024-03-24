@@ -1,23 +1,15 @@
 "use client";
 
 import { useParams, usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { i18n, type Locale } from "@/../i18n-config";
+import { i18n, type Locale } from "@/i18n-config";
 import { Select, SelectContent, SelectTrigger, SelectItem, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
 
 export default function LocaleSwitcher() {
   const pathName = usePathname();
   const router = useRouter();
-  const redirectedPathName = (locale: Locale) => {
-    if (!pathName) return "/";
-    const segments = pathName.split("/");
-    segments[1] = locale;
-    return segments.join("/");
-  };
-  // const [lang, setLang] = useState(pathName.split('/')[1]);
-  const { lang } = useParams<{ lang: string; }>();
-  const redirectToPath = (locale: string) => {
+
+  const { lang } = useParams<{ lang: Locale; }>();
+  const redirectToPath = (locale: Locale) => {
     if (!pathName) return "/";
     const segments = pathName.split("/");
     segments[1] = locale;

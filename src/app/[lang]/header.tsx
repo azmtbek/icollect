@@ -1,16 +1,12 @@
-// 'use client';
 import React from 'react';
-
 import ThemeButton from './theme-button';
 import Link from 'next/link';
-import { auth, signIn, signOut } from '@/server/auth';
+import { signIn, signOut } from '@/server/auth';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 import { api } from '@/trpc/server';
 import LocaleSwitcher from './locale-switcher';
-import { Locale } from 'i18n-config';
-import { getDictionary } from 'get-dictionary';
-// import { useSession } from 'next-auth/react';
+import { Locale } from '@/i18n-config';
+import { getDictionary } from '@/get-dictionary';
 
 export const Header = async ({
   lang,
@@ -18,7 +14,7 @@ export const Header = async ({
   lang: Locale;
 }
 ) => {
-  // const session = await auth();
+
   const dictionary = await getDictionary(lang);
   const currUser = await api.user.getCurrent.query();
   return (
@@ -34,16 +30,16 @@ export const Header = async ({
         <div></div>
         <div className='flex gap-4 items-center'>
           {currUser?.isAdmin &&
-            <Link href='/admin'>
+            <Link href={`${lang}/admin`}>
               <Button variant={'outline'} className='text-xl'>Admin</Button>
             </Link>
           }
-          <Link href='/collection'>
+          <Link href={`${lang}/collection`}>
             <Button variant={'outline'} className='text-xl'>{dictionary.titles.collections}</Button>
           </Link>
           {currUser?.name}
-          {currUser?.id}
-          {currUser ? <SignOut /> :
+          {currUser ?
+            <SignOut /> :
             <SignIn />}
         </div>
       </div>
