@@ -10,8 +10,9 @@ import { tags, topics } from "@/server/db/schema";
 
 export const adminRouter = createTRPCRouter({
   getTopics: adminProcedure
-    .query(({ ctx }) => {
-      return ctx.db.query.topics.findMany();
+    .query(async ({ ctx }) => {
+      const x = await ctx.db.query.topics.findMany();
+      return x;
     }),
   createTopic: adminProcedure.input(z.object({
     name: z.string()

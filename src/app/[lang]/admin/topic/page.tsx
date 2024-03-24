@@ -28,7 +28,7 @@ const topicSchema = z.string().min(2).max(20);
 const CreateTopic = ({ refatch }: { refatch: any; }) => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const topic = api.admin.createTopic.useMutation(
+  const createTopic = api.admin.createTopic.useMutation(
     {
       onSuccess(data, variables, context) {
         refatch();
@@ -40,14 +40,14 @@ const CreateTopic = ({ refatch }: { refatch: any; }) => {
       },
     }
   );
-  const createTopic = () => {
+  const onCreateTopic = () => {
     const parseName = topicSchema.safeParse(name);
     if (parseName.success)
-      topic.mutate({ name: parseName.data });
+      createTopic.mutate({ name: parseName.data });
   };
   return <div className='flex w-64 gap-3 py-3'>
     <p>{error}</p>
     <Input type='text' placeholder='Topic Name' value={name} onChange={(e) => setName(e.target.value)} className='w-32' />
-    <Button onClick={createTopic} disabled={topic.isLoading}>Add Topic</Button>
+    <Button onClick={onCreateTopic} disabled={createTopic.isLoading}>Add Topic</Button>
   </div>;
 };

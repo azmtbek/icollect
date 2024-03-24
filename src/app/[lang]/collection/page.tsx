@@ -13,11 +13,11 @@ const Collections = () => {
   return (
     <MinScreen>
       <div>
-        <Link href='/collection/create'><Button>Add Collection</Button></Link>
+        <Link href={`/${lang}/collection/create`}><Button>Add Collection</Button></Link>
       </div>
       <div>Collections</div>
       {collections?.map(col =>
-        <div><Link href={'/collection/' + col.id}>
+        <div><Link href={`/${lang}/collection/${col.id}`}>
           {col.name}
         </Link>
         </div>)}
