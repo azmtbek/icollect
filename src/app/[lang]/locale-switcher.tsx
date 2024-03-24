@@ -3,8 +3,7 @@
 import { useParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { i18n, type Locale } from "@/../i18n-config";
-import { Select, SelectContent, SelectTrigger } from "@/components/ui/select";
-import { SelectItem, SelectValue } from "@radix-ui/react-select";
+import { Select, SelectContent, SelectTrigger, SelectItem, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 
 export default function LocaleSwitcher() {
@@ -26,12 +25,16 @@ export default function LocaleSwitcher() {
   };
   return (
     <Select onValueChange={redirectToPath} defaultValue={lang}>
-      <SelectTrigger className="w-24">
+      <SelectTrigger className="w-16 px-2 capitalize">
         <SelectValue aria-label={lang}>{lang}</SelectValue>
       </SelectTrigger>
-      <SelectContent className="w-24 min-w-24">
+      <SelectContent className="w-16 min-w-16">
         {i18n.locales.map((locale) =>
-          <SelectItem key={locale} value={locale} defaultChecked={locale === lang} className=" w-24 px-3" >{locale}</SelectItem>
+          <SelectItem
+            key={locale}
+            value={locale}
+            defaultChecked={locale === lang}
+          >{locale}</SelectItem>
         )}
       </SelectContent>
     </Select>
