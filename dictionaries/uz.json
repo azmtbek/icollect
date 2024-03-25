@@ -7,5 +7,17 @@
     "light": "yorug'",
     "dark": "qorong'u",
     "system": "sistema"
+  },
+  "collection": {
+    "create": {
+      "title": "Create A Collection",
+      "name": "Nomi",
+      "namePlaceholder": "My Book",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe Your Collection",
+      "topic": "Topic",
+      "create": "Create",
+      "goBack": "Go Back"
+    }
   }
 }

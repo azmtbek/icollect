@@ -49,11 +49,10 @@ const CreateCollection = () => {
     }
   });
 
-  const locale = useLocale();
+  const locale = useLocale((state) => state.collection.create);
   const { data: topics } = api.admin.getTopics.useQuery();
 
   const onSubmit = (values: CollectionType) => {
-    // const topicId = topics?.reduce((acc, val) => val.name == values.topic ? val.id : acc, -1);
 
     console.log(values);
     createCollection.mutate({
@@ -66,7 +65,7 @@ const CreateCollection = () => {
     <MinScreen>
       <Card className='w-full'>
         <CardHeader>
-          <CardTitle>{locale.theme?.dark}</CardTitle>
+          <CardTitle>{locale.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -77,10 +76,10 @@ const CreateCollection = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Name
+                      {locale.name}
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder='My books' {...field} />
+                      <Input placeholder={locale.namePlaceholder} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -92,10 +91,10 @@ const CreateCollection = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Description
+                      {locale.description}
                     </FormLabel>
                     <FormControl>
-                      <Textarea placeholder='Describe your collection' {...field} />
+                      <Textarea placeholder={locale.descriptionPlaceholder} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -107,12 +106,12 @@ const CreateCollection = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Topic
+                      {locale.topic}
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Topics" />
+                          <SelectValue placeholder={locale.topic} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -126,8 +125,8 @@ const CreateCollection = () => {
                 )}
               />
               <div className='flex justify-between'>
-                <Button type="submit">Create</Button>
-                <Link href={'/collection'}> <Button variant='outline'>Go back</Button></Link>
+                <Button type="submit">{locale.create}</Button>
+                <Link href={'/collection'}> <Button variant='outline'>{locale.goBack}</Button></Link>
               </div>
             </form>
           </Form>

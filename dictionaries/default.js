@@ -1,4 +1,4 @@
-{
+export const defaultDictinary = {
   "titles": {
     "collections": "Collections",
     "admin": "Admin"
