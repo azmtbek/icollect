@@ -31,9 +31,11 @@ export const Header = async ({ lang }: Props) => {
               <Button variant={'outline'} className='text-xl'>Admin</Button>
             </Link>
           }
-          <Link href={`${lang}/collection`}>
-            <Button variant={'outline'} className='text-xl'>{dictionary.titles.collections}</Button>
-          </Link>
+          {currUser &&
+            <Link href={`${lang}/collection`}>
+              <Button variant={'outline'} className='text-xl'>{dictionary.titles.collections}</Button>
+            </Link>
+          }
           {currUser?.name}
           {currUser ?
             <SignOut /> :

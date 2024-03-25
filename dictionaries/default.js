@@ -17,7 +17,12 @@ export const defaultDictinary = {
       "descriptionPlaceholder": "Describe Your Collection",
       "topic": "Topic",
       "create": "Create",
-      "goBack": "Go Back"
+      "goBack": "Go Back",
+
+      "customString": "String Field",
+      "customText": "Text Field",
+      "customDate": "Date Field",
+      "customInteger": "Integer Field"
     }
   }
 }

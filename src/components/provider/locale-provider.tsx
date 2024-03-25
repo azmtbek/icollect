@@ -1,12 +1,13 @@
 'use client';
 import { Dictionoary } from '@/get-dictionary';
 import { defaultDictinary } from 'dictionaries/default';
+import dict from "dictionaries/en.json";
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
 
 type DictType = Awaited<ReturnType<Dictionoary>>;
 
-const LocaleContext = createContext<DictType>(defaultDictinary);
+const LocaleContext = createContext<DictType>(dict);
 
 export function LocaleProvider({ children, dictionary }: { children: React.ReactNode; dictionary: DictType; }) {
   return (
