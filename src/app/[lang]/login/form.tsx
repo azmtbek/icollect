@@ -19,6 +19,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 // import { getServerAuthSession, } from '@/server/auth';
 import { signIn } from "next-auth/react";
 import { api } from '@/trpc/react';
+import { useParams } from 'next/navigation';
+import { Locale } from '@/i18n-config';
 
 const registerSchema = z.object({
   // username: z.string().min(2, { message: "Username must be at least 2 characters." }).max(255),
@@ -28,6 +30,7 @@ const registerSchema = z.object({
 type RegisterType = z.infer<typeof registerSchema>;
 
 const Login = ({ login }: { login: ({ email, password }: { email: string, password: string; }) => {}; }) => {
+  const { lang } = useParams<{ lang: Locale; }>();
 
   const form = useForm<RegisterType>({
     resolver: zodResolver(registerSchema),
@@ -93,7 +96,7 @@ const Login = ({ login }: { login: ({ email, password }: { email: string, passwo
         <CardFooter>
           <p className="text-center text-sm text-gray-600">
             Don't have an account?
-            <Link href={'/register'} className='font-semibold text-gray-400'> Register</Link>
+            <Link href={`/${lang}/register`} className='font-semibold text-gray-400'> Register</Link>
             .
           </p>
         </CardFooter>

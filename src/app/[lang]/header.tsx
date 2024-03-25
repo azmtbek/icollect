@@ -18,7 +18,7 @@ export const Header = async ({ lang }: Props) => {
     <header className='sticky h-16 pt-3 w-full border-b-2'>
       <div className='flex justify-between items-center container'>
         <div className='flex gap-2 items-center'>
-          <Link href='/' className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>
+          <Link href={`/${lang}`} className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>
             iCollect
           </Link>
           <ThemeButton dictionary={dictionary.theme} />

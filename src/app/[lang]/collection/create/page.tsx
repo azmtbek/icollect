@@ -3,36 +3,45 @@ import MinScreen from '@/components/layout/min-screen';
 import { useLocale } from '@/components/provider/locale-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { Locale } from '@/i18n-config';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+const defaultCustomFieldSchema = z.object({
+  state: z.boolean().optional(), name: z.string().optional()
+}).optional();
 
 const collectionSchema = z.object({
   name: z.string().min(2),
   topicId: z.string().min(1, { message: "Please select a topic." }),
   description: z.string().optional(),
-  customString1: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customString2: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customString3: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customInteger1: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customInteger2: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customInteger3: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customText1: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customText2: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customText3: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customDate1: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customDate2: z.object({ state: z.boolean(), name: z.string() }).optional(),
-  customDate3: z.object({ state: z.boolean(), name: z.string() }).optional(),
+  customString1: defaultCustomFieldSchema,
+  customString2: defaultCustomFieldSchema,
+  customString3: defaultCustomFieldSchema,
+  customInteger1: defaultCustomFieldSchema,
+  customInteger2: defaultCustomFieldSchema,
+  customInteger3: defaultCustomFieldSchema,
+  customText1: defaultCustomFieldSchema,
+  customText2: defaultCustomFieldSchema,
+  customText3: defaultCustomFieldSchema,
+  customDate1: defaultCustomFieldSchema,
+  customDate2: defaultCustomFieldSchema,
+  customDate3: defaultCustomFieldSchema,
 });
+
+const defaultCustomFieldState = { state: false, name: '' };
 type CollectionType = z.infer<typeof collectionSchema>;
 
 
@@ -104,8 +113,11 @@ const defaultCustomFields = {
 };
 type CustomFieldsType = typeof defaultCustomFields;
 
+type CustomFieldsKeys = keyof typeof defaultCustomFields;
 
 const CreateCollection = () => {
+  const router = useRouter();
+  const { lang } = useParams<{ lang: Locale; }>();
   const form = useForm<CollectionType>({
     resolver: zodResolver(collectionSchema),
     defaultValues: {
@@ -116,11 +128,13 @@ const CreateCollection = () => {
   });
   const { toast } = useToast();
   const createCollection = api.collection.create.useMutation({
-    onSuccess() {
+    onSuccess(data) {
+      const id = data[0]?.id ?? '';
       toast({
         description: "Collection created.",
       });
-      form.reset();
+
+      router.push(`/${lang}/collection/${id}`);
     },
     onError(error) {
       toast({
@@ -140,23 +154,38 @@ const CreateCollection = () => {
     createCollection.mutate({
       name: values.name,
       description: values.description,
-      topicId: +values.topicId
+      topicId: +values.topicId,
+      customString1: values.customString1,
+      customString2: values.customString2,
+      customString3: values.customString3,
+      customInteger1: values.customInteger1,
+      customInteger2: values.customInteger2,
+      customInteger3: values.customInteger3,
+      customText1: values.customText1,
+      customText2: values.customText2,
+      customText3: values.customText3,
+      customDate1: values.customDate1,
+      customDate2: values.customDate2,
+      customDate3: values.customDate3,
     });
   };
 
 
   const [customForms, setCustomForms] = useState(defaultCustomFields);
   const selectCustomFields = () => {
+    if (currField === '') return;
     setCustomForms((state) => {
-      return ({ ...state, [currField]: !state[currField as keyof typeof defaultCustomFields] });
+      return ({ ...state, [currField]: !state[currField] });
     });
+    setCurrField('');
+    form.setValue(`${currField}.state`, true);
   };
-  const [currField, setCurrField] = useState('');
-  const removeCustomField = (field: keyof typeof defaultCustomFields) => {
+  const [currField, setCurrField] = useState<keyof CustomFieldsType | ''>('');
+  const removeCustomField = (field: keyof CustomFieldsType) => {
     setCustomForms((state) => {
       return ({ ...state, [field]: false });
     });
-    form.resetField(field, { keepDirty: false, keepTouched: false });
+    form.resetField(field);
     form.resetField(`${field}.name`, { defaultValue: '' });
     // form.resetField(`${field}.state`);
   };
@@ -242,11 +271,30 @@ const CreateCollection = () => {
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={form.control}
+                      name={(`${customFieldNum}.state`)}
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormLabel>
+                            {locale[customField]}
+                          </FormLabel>
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <Button type='button' onClick={() => removeCustomField(customFieldNum)}><Trash2 /></Button>
                   </div>);
               })}
               <div className='flex gap-2'>
-                <Select onValueChange={(value) => setCurrField(value)}>
+                <Select onValueChange={(value: keyof CustomFieldsType) => setCurrField(value)} value={currField}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={locale.customFieldPlaceholder} />
@@ -265,8 +313,8 @@ const CreateCollection = () => {
                 <Button type='button' onClick={() => { console.log('clikked'); }}>Add Field</Button>
               </div> */}
               <div className='flex justify-between'>
-                <Button type="submit">{locale.create}</Button>
-                <Link href={'/collection'}> <Button variant='outline'>{locale.goBack}</Button></Link>
+                <Button type="submit">{locale.create} {createCollection.isLoading && "Creating"}</Button>
+                <Button variant='outline' onClick={() => router.back()}>{locale.goBack}</Button>
               </div>
             </form>
           </Form>
