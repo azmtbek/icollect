@@ -1,7 +1,7 @@
 'use client';
 import MinScreen from '@/components/layout/min-screen';
 import { Button } from '@/components/ui/button';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 import { api } from '@/trpc/react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';

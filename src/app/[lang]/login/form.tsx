@@ -16,11 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-// import { getServerAuthSession, } from '@/server/auth';
-import { signIn } from "next-auth/react";
-import { api } from '@/trpc/react';
+
 import { useParams } from 'next/navigation';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 
 const registerSchema = z.object({
   // username: z.string().min(2, { message: "Username must be at least 2 characters." }).max(255),
@@ -29,7 +27,7 @@ const registerSchema = z.object({
 });
 type RegisterType = z.infer<typeof registerSchema>;
 
-const Login = ({ login }: { login: ({ email, password }: { email: string, password: string; }) => {}; }) => {
+const Login = ({ login }: { login: ({ email, password }: { email: string, password: string; }) => void; }) => {
   const { lang } = useParams<{ lang: Locale; }>();
 
   const form = useForm<RegisterType>({

@@ -5,7 +5,7 @@ import { signIn, signOut } from '@/server/auth';
 import { Button } from '@/components/ui/button';
 import { api } from '@/trpc/server';
 import LocaleSwitcher from './locale-switcher';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 import { getDictionary } from '@/get-dictionary';
 
 type Props = { lang: Locale; };

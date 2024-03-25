@@ -1,5 +1,5 @@
 
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 import { api } from '@/trpc/server';
 import { redirect } from 'next/navigation';
 import React from 'react';

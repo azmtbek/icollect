@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { api } from '@/trpc/react';
+import { type UseQueryResult } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { z } from 'zod';
 
@@ -25,17 +26,17 @@ const Topic = () => {
 export default Topic;
 
 const topicSchema = z.string().min(2).max(20);
-const CreateTopic = ({ refatch }: { refatch: any; }) => {
+const CreateTopic = ({ refatch }: { refatch: () => Promise<UseQueryResult>; }) => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const createTopic = api.admin.createTopic.useMutation(
     {
-      onSuccess(data, variables, context) {
+      onSuccess() {
         refatch();
         setError('');
         setName('');
       },
-      onError(error, variables, context) {
+      onError(error) {
         setError(error.message);
       },
     }

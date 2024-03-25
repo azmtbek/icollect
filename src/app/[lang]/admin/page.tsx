@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import MinScreen from '@/components/layout/min-screen';
 import { api } from '@/trpc/server';
 import { UsersTable } from './users-table';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 
 type Props = {
   params: { lang: Locale; };

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
@@ -40,7 +40,7 @@ const collectionSchema = z.object({
   customDate3: defaultCustomFieldSchema,
 });
 
-const defaultCustomFieldState = { state: false, name: '' };
+// const defaultCustomFieldState = { state: false, name: '' };
 type CollectionType = z.infer<typeof collectionSchema>;
 
 
@@ -61,58 +61,44 @@ const customFieldMapper = {
   "customText": customText,
 };
 
-const defaultSelectState = customFields.map(name => ({ [name]: [] as string[] }));
+// const defaultSelectState = customFields.map(name => ({ [name]: [] as string[] }));
 
-const customFieldNames = [
-  "customString1",
-  "customString2",
-  "customString3",
+// const customFieldNames = [
+//   "customString1",
+//   "customString2",
+//   "customString3",
 
-  "customInteger1",
-  "customInteger2",
-  "customInteger3",
+//   "customInteger1",
+//   "customInteger2",
+//   "customInteger3",
 
-  "customText1",
-  "customText2",
-  "customText3",
+//   "customText1",
+//   "customText2",
+//   "customText3",
 
-  "customDate1",
-  "customDate2",
-  "customDate3",
-] as const;
+//   "customDate1",
+//   "customDate2",
+//   "customDate3",
+// ] as const;
 
 const defaultCustomFields = {
   customString1: false,
-  // customString1Name: '',
   customString2: false,
-  // customString2Name: '',
   customString3: false,
-  // customString3Name: '',
 
   customInteger1: false,
-  // customInteger1Name: '',
   customInteger2: false,
-  // customInteger2Name: '',
   customInteger3: false,
-  // customInteger3Name: '',
 
   customText1: false,
-  // customText1Name: '',
   customText2: false,
-  // customText2Name: '',
   customText3: false,
-  // customText3Name: '',
 
   customDate1: false,
-  // customDate1Name: '',
   customDate2: false,
-  // customDate2Name: '',
   customDate3: false,
-  // customDate3Name: '',
 };
 type CustomFieldsType = typeof defaultCustomFields;
-
-type CustomFieldsKeys = keyof typeof defaultCustomFields;
 
 const CreateCollection = () => {
   const router = useRouter();
@@ -171,6 +157,8 @@ const CreateCollection = () => {
 
 
   const [customForms, setCustomForms] = useState(defaultCustomFields);
+  const [currField, setCurrField] = useState<keyof CustomFieldsType | ''>('');
+
   const selectCustomFields = () => {
     if (currField === '') return;
     setCustomForms((state) => {
@@ -179,7 +167,6 @@ const CreateCollection = () => {
     setCurrField('');
     form.setValue(`${currField}.state`, true);
   };
-  const [currField, setCurrField] = useState<keyof CustomFieldsType | ''>('');
   const removeCustomField = (field: keyof CustomFieldsType) => {
     setCustomForms((state) => {
       return ({ ...state, [field]: false });
@@ -253,7 +240,9 @@ const CreateCollection = () => {
               />
               {customFields.map(customField => {
                 return customFieldMapper[customField].map(customFieldNum =>
-                  <div className={`flex w-full justify-center items-end gap-2 ${customForms[customFieldNum] ? '' : 'hidden'}`}>
+                  <div
+                    key={customFieldNum}
+                    className={`flex w-full justify-center items-end gap-2 ${customForms[customFieldNum] ? '' : 'hidden'}`}>
                     <FormField
                       control={form.control}
                       name={(`${customFieldNum}.name`)}
@@ -262,7 +251,6 @@ const CreateCollection = () => {
                           <FormLabel>
                             {locale[customField]}
                           </FormLabel>
-
                           <FormControl>
                             <Input placeholder={locale.namePlaceholder} {...field} />
                           </FormControl>
@@ -270,7 +258,6 @@ const CreateCollection = () => {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name={(`${customFieldNum}.state`)}
@@ -307,10 +294,6 @@ const CreateCollection = () => {
                 </Select>
                 <Button type='button' onClick={selectCustomFields} disabled={currField === ''}>Add Field</Button>
               </div>
-              {/* <div className='flex gap-2'>
-                <CustomFieldSeletor fields={customForms} onChange={ } />
-                <Button type='button' onClick={() => { console.log('clikked'); }}>Add Field</Button>
-              </div> */}
               <div className='flex justify-between'>
                 <Button type="submit">{locale.create} {createCollection.isLoading && "Creating"}</Button>
                 <Button variant='outline' onClick={() => router.back()}>{locale.goBack}</Button>
@@ -324,52 +307,3 @@ const CreateCollection = () => {
 };
 
 export default CreateCollection;
-
-// populate all forms first
-// then show only needed ones
-
-const CustomFieldSeletor = ({ fields }: { fields: CustomFieldsType; }) => {
-
-  return <Select onValueChange={() => { }} defaultValue={''}>
-    <SelectTrigger className=" capitalize">
-      <SelectValue aria-label={'lable'}>Select Custom Field</SelectValue>
-    </SelectTrigger>
-    <SelectContent className="">
-      {Object.keys(fields).filter(key => fields[key as keyof typeof fields] == false).map((key) =>
-        <SelectItem
-          key={key}
-          value={key}
-        // defaultChecked={locale === lang}
-        >{key}</SelectItem>
-      )}
-    </SelectContent>
-  </Select>;
-};
-
-// const CustomFieldSelectore = <T extends unknown, L extends unknown>({ form, locale }: { form: T, locale: L; }) => {
-
-//   return <FormField
-//     control={form.control}
-//     name="topicId"
-//     render={({ field }) => (
-//       <FormItem>
-//         <FormLabel>
-//           {locale.topic}
-//         </FormLabel>
-//         <Select onValueChange={field.onChange} defaultValue={field.value}>
-//           <FormControl>
-//             <SelectTrigger>
-//               <SelectValue placeholder={locale.topic} />
-//             </SelectTrigger>
-//           </FormControl>
-//           <SelectContent>
-//             {topics?.map(topic =>
-//               <SelectItem value={"" + topic.id} key={topic.id}>{topic.name}</SelectItem>
-//             )}
-//           </SelectContent>
-//         </Select>
-//         <FormMessage />
-//       </FormItem>
-//     )}
-//   />;
-// };

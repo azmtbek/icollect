@@ -1,6 +1,6 @@
 'use client';
-import { Dictionoary } from '@/get-dictionary';
-import { defaultDictinary } from 'dictionaries/default';
+import { type Dictionoary } from '@/get-dictionary';
+// import { defaultDictinary } from 'dictionaries/default';
 import dict from "dictionaries/en.json";
 
 import { createContext, useContext } from 'react';

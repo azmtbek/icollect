@@ -7,6 +7,7 @@ import {
 } from "@/server/api/trpc";
 import { collections } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { TRPCError } from "@trpc/server";
 
 const defaultCustomFieldSchema = z.object({
   state: z.boolean().optional(), name: z.string().optional()
@@ -19,8 +20,54 @@ export const collectionRouter = createTRPCRouter({
     }),
   getById: publicProcedure
     .input(z.object({ id: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.query.collections.findFirst({ where: eq(collections.id, input.id) });
+    .query(async ({ ctx, input }) => {
+      const collection = await ctx.db.query.collections.findFirst({ where: eq(collections.id, input.id) });
+      if (!collection || collection.isDeleted)
+        throw new TRPCError({ code: "NOT_FOUND" });
+
+      return ({
+        id: collection.id,
+        image: collection.image,
+        name: collection.name,
+        description: collection.description,
+        topicId: collection.topicId,
+        createdById: collection.createdById,
+
+        customString1State: collection.custom_string1_state,
+        customString1Name: collection.custom_string1_name,
+        customString2State: collection.custom_string2_state,
+        customString2Name: collection.custom_string2_name,
+        customString3State: collection.custom_string3_state,
+        customString3Name: collection.custom_string3_name,
+
+        customInteger1State: collection.custom_integer1_state,
+        customInteger1Name: collection.custom_integer1_name,
+        customInteger2State: collection.custom_integer2_state,
+        customInteger2Name: collection.custom_integer2_name,
+        customInteger3State: collection.custom_integer3_state,
+        customInteger3Name: collection.custom_integer3_name,
+
+        customText1State: collection.custom_text1_state,
+        customText1Name: collection.custom_text1_name,
+        customText2State: collection.custom_text2_state,
+        customText2Name: collection.custom_text2_name,
+        customText3State: collection.custom_text3_state,
+        customText3Name: collection.custom_text3_name,
+
+        customBoolean1State: collection.custom_boolean1_state,
+        customBoolean1Name: collection.custom_boolean1_name,
+        customBoolean2State: collection.custom_boolean2_state,
+        customBoolean2Name: collection.custom_boolean2_name,
+        customBoolean3State: collection.custom_boolean3_state,
+        customBoolean3Name: collection.custom_boolean3_name,
+
+        customDate1State: collection.custom_date1_state,
+        customDate1Name: collection.custom_date1_name,
+        customDate2State: collection.custom_date2_state,
+        customDate2Name: collection.custom_date2_name,
+        customDate3State: collection.custom_date3_state,
+        customDate3Name: collection.custom_date3_name,
+      });
     }),
   getUserCollections: protectedProcedure
     .query(async ({ ctx }) => {

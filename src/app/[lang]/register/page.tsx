@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { api } from '@/trpc/react';
 import { useParams, useRouter } from 'next/navigation';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 
 const registerSchema = z.object({
   username: z.string().min(2, { message: "Username must be at least 2 characters." }).max(255),
@@ -67,7 +67,7 @@ const Register = () => {
           <CardTitle>Register</CardTitle>
           <CardDescription>
             <span>
-              If you don't have an account, please register.
+              If you don&apos;t have an account, please register.
             </span>
             <span className='text-destructive-foreground'>{pageError}</span>
           </CardDescription>

@@ -1,18 +1,16 @@
 'use client';
 import MinScreen from '@/components/layout/min-screen';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Heart } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useSession } from 'next-auth/react';
 import { type Session } from 'next-auth';
 
 const commentSchema = z.object({
@@ -22,9 +20,6 @@ const commentSchema = z.object({
     .max(1000, { message: 'Currently, we only support 1000 charcters long comments.' })
 });
 type CommentType = z.infer<typeof commentSchema>;
-
-// TODO: update static userId
-// const userId = 'cWE7Eo83NKqcr';
 
 const Item = ({ session }: { session: Session | null; }) => {
   const { collectionId, itemId } = useParams();
