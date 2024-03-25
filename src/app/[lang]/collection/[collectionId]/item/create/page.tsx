@@ -8,7 +8,7 @@ import { MultiSelectTags } from '@/components/custom/multi-select-tags';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
@@ -25,8 +25,13 @@ const itemSchema = z.object({
 type ItemType = z.infer<typeof itemSchema>;
 
 const CreateItem = () => {
-  const { collectionId } = useParams();
+  const { collectionId } = useParams<{ collectionId: string; }>();
   const router = useRouter();
+  const {
+    data: collection,
+    isLoading: collectionIsLoading
+  } = api.collection.getById.useQuery({ id: +collectionId });
+
   const form = useForm<ItemType>({
     resolver: zodResolver(itemSchema),
     defaultValues: {
@@ -57,7 +62,14 @@ const CreateItem = () => {
       newTags: values.newTags,
     });
   };
-
+  const activeCustomFields = useMemo(() => {
+    return collection && Object.keys(collection)
+      .filter((c) =>
+        c.startsWith('custom') &&
+        c.endsWith('state') &&
+        collection[c as keyof typeof collection]
+      );
+  }, [collection]);
   const [tagInput, setTagInput] = useState('');
 
   return (
@@ -156,6 +168,10 @@ const CreateItem = () => {
                   </FormItem>
                 )}
               />
+              {/* {collection && Object.keys(collection)
+                .filter((c) => c.startsWith('custom_string') && c.endsWith('state') && collection[c])
+                .map(c => <div>{c}</div>)} */}
+              {activeCustomFields?.map(c => <div>{c}</div>)}
               <div className='flex justify-between'>
                 <Button type="submit">Create</Button>
                 <Button variant='outline' onClick={() => router.back()}>Go back</Button>
