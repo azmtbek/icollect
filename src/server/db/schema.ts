@@ -77,6 +77,27 @@ export const items = pgTable("item", {
   createdById: text("createdById")
     .references(() => users.id, { onDelete: "set null" }),
   isDeleted: boolean("isDeleted").default(false),
+
+  // custom fields 
+  custom_string1: varchar("custom_string1", { length: 256 }),
+  custom_string2: varchar("custom_string2", { length: 256 }),
+  custom_string3: varchar("custom_string3", { length: 256 }),
+
+  custom_integer1: integer("custom_integer1"),
+  custom_integer2: integer("custom_integer2"),
+  custom_integer3: integer("custom_integer3"),
+
+  custom_boolean1: boolean("custom_boolean1"),
+  custom_boolean2: boolean("custom_boolean2"),
+  custom_boolean3: boolean("custom_boolean3"),
+
+  custom_text1: text("custom_text1"),
+  custom_text2: text("custom_text2"),
+  custom_text3: text("custom_text3"),
+
+  custom_date1: timestamp("custom_date1"),
+  custom_date2: timestamp("custom_date2"),
+  custom_date3: timestamp("custom_date3"),
 });
 
 export const itemTags = pgTable(

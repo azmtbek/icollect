@@ -16,10 +16,58 @@ import { X } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 
+const customFieldNames = [
+  "customString1",
+  "customString2",
+  "customString3",
+
+  "customInteger1",
+  "customInteger2",
+  "customInteger3",
+
+  "customText1",
+  "customText2",
+  "customText3",
+
+  "customDate1",
+  "customDate2",
+  "customDate3",
+] as const;
+const customFieldMapper = {
+  "customString1": 'string',
+  "customString2": 'string',
+  "customString3": 'string',
+
+  "customInteger1": 'integer',
+  "customInteger2": 'integer',
+  "customInteger3": 'integer',
+
+  "customText1": 'text',
+  "customText2": 'text',
+  "customText3": 'text',
+
+  "customDate1": 'date',
+  "customDate2": 'date',
+  "customDate3": 'date',
+} as const;
+
 const itemSchema = z.object({
   name: z.string().min(2),
   tags: z.array(z.string().trim()),
   newTags: z.array(z.string().trim().max(100, { message: "Currently, we only support max 100 character length tags" })),
+
+  customString1: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
+  customString2: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
+  customString3: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
+  customInteger1: z.number().optional(),
+  customInteger2: z.number().optional(),
+  customInteger3: z.number().optional(),
+  customText1: z.string().optional(),
+  customText2: z.string().optional(),
+  customText3: z.string().optional(),
+  customDate1: z.date().optional(),
+  customDate2: z.date().optional(),
+  customDate3: z.date().optional(),
 });
 
 type ItemType = z.infer<typeof itemSchema>;
@@ -63,12 +111,13 @@ const CreateItem = () => {
     });
   };
   const activeCustomFields = useMemo(() => {
-    return collection && Object.keys(collection)
+    const x = collection && Object.keys(collection)
       .filter((c) =>
         c.startsWith('custom') &&
         c.endsWith('state') &&
         collection[c as keyof typeof collection]
-      );
+      ).map((c) => c.replace('_state', ''));
+    return customFieldNames.filter(c => x?.includes(c));
   }, [collection]);
   const [tagInput, setTagInput] = useState('');
 
@@ -171,7 +220,27 @@ const CreateItem = () => {
               {/* {collection && Object.keys(collection)
                 .filter((c) => c.startsWith('custom_string') && c.endsWith('state') && collection[c])
                 .map(c => <div>{c}</div>)} */}
-              {activeCustomFields?.map(c => <div>{c}</div>)}
+              {/* {activeCustomFields?.map(cField => {
+                const cType = cField as keyof typeof collection;
+                let Cinput: React.ReactNode; */}
+              {
+                // return customFieldMapper[cField].map(c => <FormField
+                //   control={form.control}
+                //   name={c}
+                //   render={({ field }) => (
+                //     <FormItem>
+                //       <FormLabel>
+                //         Name
+                //       </FormLabel>
+                //       <FormControl>
+                //         <Input placeholder='Integer Field' {...field} />
+                //       </FormControl>
+                //       <FormMessage />
+                //     </FormItem>
+                //   )}
+                // />);
+                // })}
+              }
               <div className='flex justify-between'>
                 <Button type="submit">Create</Button>
                 <Button variant='outline' onClick={() => router.back()}>Go back</Button>
