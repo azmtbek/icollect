@@ -10,38 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { type Locale } from '@/i18n-config';
+import { type Collection, collectionSchema } from '@/lib/types';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-
-const defaultCustomFieldSchema = z.object({
-  state: z.boolean().optional(), name: z.string().optional()
-}).optional();
-
-const collectionSchema = z.object({
-  name: z.string().min(2),
-  topicId: z.string().min(1, { message: "Please select a topic." }),
-  description: z.string().optional(),
-  customString1: defaultCustomFieldSchema,
-  customString2: defaultCustomFieldSchema,
-  customString3: defaultCustomFieldSchema,
-  customInteger1: defaultCustomFieldSchema,
-  customInteger2: defaultCustomFieldSchema,
-  customInteger3: defaultCustomFieldSchema,
-  customText1: defaultCustomFieldSchema,
-  customText2: defaultCustomFieldSchema,
-  customText3: defaultCustomFieldSchema,
-  customDate1: defaultCustomFieldSchema,
-  customDate2: defaultCustomFieldSchema,
-  customDate3: defaultCustomFieldSchema,
-});
-
-type CollectionType = z.infer<typeof collectionSchema>;
-
 
 const customFields = [
   "customString",
@@ -89,16 +64,19 @@ const defaultCustomFields = {
   customDate2: false,
   customDate3: false,
 };
+
+// TODO: test results
 type CustomFieldsType = typeof defaultCustomFields;
+// type CustomFieldsType = Omit<Collection, "id" | "name" | "topicId" | "description">;
 
 const CreateCollection = () => {
   const router = useRouter();
   const { lang } = useParams<{ lang: Locale; }>();
-  const form = useForm<CollectionType>({
+  const form = useForm<Collection>({
     resolver: zodResolver(collectionSchema),
     defaultValues: {
       name: "",
-      topicId: "",
+      topicId: undefined,
       description: "",
       customString1: undefined,
       customString2: undefined,
@@ -136,26 +114,27 @@ const CreateCollection = () => {
   const locale = useLocale((state) => state.collection.create);
   const { data: topics } = api.admin.getTopics.useQuery();
 
-  const onSubmit = (values: CollectionType) => {
+  const onSubmit = (values: Collection) => {
 
-    console.log(values);
-    createCollection.mutate({
-      name: values.name,
-      description: values.description,
-      topicId: +values.topicId,
-      customString1: values.customString1,
-      customString2: values.customString2,
-      customString3: values.customString3,
-      customInteger1: values.customInteger1,
-      customInteger2: values.customInteger2,
-      customInteger3: values.customInteger3,
-      customText1: values.customText1,
-      customText2: values.customText2,
-      customText3: values.customText3,
-      customDate1: values.customDate1,
-      customDate2: values.customDate2,
-      customDate3: values.customDate3,
-    });
+    createCollection.mutate(values
+      // {
+      // name: values.name,
+      // description: values.description,
+      // topicId: values.topicId,
+      // customString1: values.customString1,
+      // customString2: values.customString2,
+      // customString3: values.customString3,
+      // customInteger1: values.customInteger1,
+      // customInteger2: values.customInteger2,
+      // customInteger3: values.customInteger3,
+      // customText1: values.customText1,
+      // customText2: values.customText2,
+      // customText3: values.customText3,
+      // customDate1: values.customDate1,
+      // customDate2: values.customDate2,
+      // customDate3: values.customDate3,
+      // }
+    );
   };
 
 
@@ -210,7 +189,7 @@ const CreateCollection = () => {
                       {locale.description}
                     </FormLabel>
                     <FormControl>
-                      <Textarea placeholder={locale.descriptionPlaceholder} {...field} />
+                      <Textarea placeholder={locale.descriptionPlaceholder} {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -224,7 +203,7 @@ const CreateCollection = () => {
                     <FormLabel>
                       {locale.topic}
                     </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder={locale.topic} />

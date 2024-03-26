@@ -7,6 +7,9 @@ import { api } from '@/trpc/react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React, { useMemo } from 'react';
+import { DataTable } from './data-table';
+import { columns } from './col-columns';
+import { Collection } from '@/lib/types';
 
 const Collections = () => {
   const { lang } = useParams<{ lang: Locale; }>();
@@ -27,6 +30,7 @@ const Collections = () => {
           {col.name}
         </Link>
         </div>)}
+      <DataTable data={filteredCollections} columns={columns} />
     </MinScreen>
   );
 };

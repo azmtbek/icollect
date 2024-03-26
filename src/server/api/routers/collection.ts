@@ -8,6 +8,7 @@ import {
 import { collections } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
+import { collectionSchema } from "@/lib/types";
 
 const defaultCustomFieldSchema = z.object({
   state: z.boolean().optional(), name: z.string().optional()
@@ -33,66 +34,77 @@ export const collectionRouter = createTRPCRouter({
         topicId: collection.topicId,
         createdById: collection.createdById,
 
-        customString1State: collection.custom_string1_state,
-        customString1Name: collection.custom_string1_name,
-        customString2State: collection.custom_string2_state,
-        customString2Name: collection.custom_string2_name,
-        customString3State: collection.custom_string3_state,
-        customString3Name: collection.custom_string3_name,
+        ...(collection.custom_string1_state && {
+          customString1State: collection.custom_string1_state,
+          customString1Name: collection.custom_string1_name,
+        }),
+        ...(collection.custom_string2_state && {
+          customString2State: collection.custom_string2_state,
+          customString2Name: collection.custom_string2_name,
+        }),
+        ...(collection.custom_string3_state && {
+          customString3State: collection.custom_string3_state,
+          customString3Name: collection.custom_string3_name,
+        }),
 
-        customInteger1State: collection.custom_integer1_state,
-        customInteger1Name: collection.custom_integer1_name,
-        customInteger2State: collection.custom_integer2_state,
-        customInteger2Name: collection.custom_integer2_name,
-        customInteger3State: collection.custom_integer3_state,
-        customInteger3Name: collection.custom_integer3_name,
+        ...(collection.custom_integer1_state && {
+          customInteger1State: collection.custom_integer1_state,
+          customInteger1Name: collection.custom_integer1_name,
+        }),
+        ...(collection.custom_integer2_state && {
+          customInteger2State: collection.custom_integer2_state,
+          customInteger2Name: collection.custom_integer2_name,
+        }),
+        ...(collection.custom_integer3_state && {
+          customInteger3State: collection.custom_integer3_state,
+          customInteger3Name: collection.custom_integer3_name,
+        }),
 
-        customText1State: collection.custom_text1_state,
-        customText1Name: collection.custom_text1_name,
-        customText2State: collection.custom_text2_state,
-        customText2Name: collection.custom_text2_name,
-        customText3State: collection.custom_text3_state,
-        customText3Name: collection.custom_text3_name,
+        ...(collection.custom_text1_state && {
+          customText1State: collection.custom_text1_state,
+          customText1Name: collection.custom_text1_name,
+        }),
+        ...(collection.custom_text2_state && {
+          customText2State: collection.custom_text2_state,
+          customText2Name: collection.custom_text2_name,
+        }),
+        ...(collection.custom_text3_state && {
+          customText3State: collection.custom_text3_state,
+          customText3Name: collection.custom_text3_name,
+        }),
 
-        customBoolean1State: collection.custom_boolean1_state,
-        customBoolean1Name: collection.custom_boolean1_name,
-        customBoolean2State: collection.custom_boolean2_state,
-        customBoolean2Name: collection.custom_boolean2_name,
-        customBoolean3State: collection.custom_boolean3_state,
-        customBoolean3Name: collection.custom_boolean3_name,
+        ...(collection.custom_boolean1_state && {
+          customBoolean1State: collection.custom_boolean1_state,
+          customBoolean1Name: collection.custom_boolean1_name,
+        }),
+        ...(collection.custom_boolean2_state && {
+          customBoolean2State: collection.custom_boolean2_state,
+          customBoolean2Name: collection.custom_boolean2_name,
+        }),
+        ...(collection.custom_boolean3_state && {
+          customBoolean3State: collection.custom_boolean3_state,
+          customBoolean3Name: collection.custom_boolean3_name,
+        }),
 
-        customDate1State: collection.custom_date1_state,
-        customDate1Name: collection.custom_date1_name,
-        customDate2State: collection.custom_date2_state,
-        customDate2Name: collection.custom_date2_name,
-        customDate3State: collection.custom_date3_state,
-        customDate3Name: collection.custom_date3_name,
+        ...(collection.custom_date1_state && {
+          customDate1State: collection.custom_date1_state,
+          customDate1Name: collection.custom_date1_name,
+        }),
+        ...(collection.custom_date2_state && {
+          customDate2State: collection.custom_date2_state,
+          customDate2Name: collection.custom_date2_name,
+        }),
+        ...(collection.custom_date3_state && {
+          customDate3State: collection.custom_date3_state,
+          customDate3Name: collection.custom_date3_name,
+        }),
       });
     }),
   getUserCollections: protectedProcedure
     .query(async ({ ctx }) => {
       return ctx.db.query.collections.findMany({ where: eq(collections.createdById, ctx.session.user.id) });
     }),
-  create: protectedProcedure.input(z.object({
-    name: z.string(),
-    description: z.string().optional(),
-    topicId: z.number(),
-    customString1: defaultCustomFieldSchema,
-    customString2: defaultCustomFieldSchema,
-    customString3: defaultCustomFieldSchema,
-    customInteger1: defaultCustomFieldSchema,
-    customInteger2: defaultCustomFieldSchema,
-    customInteger3: defaultCustomFieldSchema,
-    customText1: defaultCustomFieldSchema,
-    customText2: defaultCustomFieldSchema,
-    customText3: defaultCustomFieldSchema,
-    customDate1: defaultCustomFieldSchema,
-    customDate2: defaultCustomFieldSchema,
-    customDate3: defaultCustomFieldSchema,
-    customBoolean1: defaultCustomFieldSchema,
-    customBoolean2: defaultCustomFieldSchema,
-    customBoolean3: defaultCustomFieldSchema,
-  })).mutation(async ({ ctx, input }) => {
+  create: protectedProcedure.input(collectionSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
     return ctx.db.insert(collections).values({
       name: input.name,
       description: input.description,
