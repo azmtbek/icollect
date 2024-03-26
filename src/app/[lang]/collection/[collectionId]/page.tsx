@@ -16,7 +16,7 @@ const Collection = () => {
   return (
     <MinScreen>
       {collectionIsLoading ? <>Collection Loading</> :
-        collection && <div className=''>{collection.name}</div>
+        collection && <div className='text-2xl'>{locale.title} : {collection.name}</div>
       }
       <div>
         <Link href={`/${lang}/collection/${collectionId}/item/create`} > <Button>{locale.addItem}</Button></Link>

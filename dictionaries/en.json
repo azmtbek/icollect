@@ -27,7 +27,18 @@
       "customFieldAdd": "Add Field"
     },
     "view": {
-      "addItem": "Add Item"
+      "title": "Collection",
+      "addItem": "Add Item",
+      "addCollection": "Add Collection"
+    }
+  },
+  "item": {
+    "create": {
+      "title": "Create An Item",
+      "name": "Name",
+      "tags": "Select Tags",
+      "newTags": "Add New Tags",
+      "newTagsPlaceholder": "Press Enter to create a tag."
     }
   }
 }

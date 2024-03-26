@@ -21,7 +21,7 @@ const commentSchema = z.object({
 });
 type CommentType = z.infer<typeof commentSchema>;
 
-const Item = ({ session }: { session: Session | null; }) => {
+const Item = () => {
   const { itemId } = useParams<{ itemId: string; }>();
   const commentForm = useForm<CommentType>({
     resolver: zodResolver(commentSchema),
@@ -30,13 +30,11 @@ const Item = ({ session }: { session: Session | null; }) => {
     },
   });
 
-  const userEmail = session?.user?.email ? session?.user?.email : '';
-  const { data: user } = userEmail !== '' ? api.user.getByEmail.useQuery({ email: userEmail }) : { data: { id: '' } };
+  const { data: user } = api.user.getCurrent.useQuery();
   const { data: item, refetch: itemRefetch } = api.item.getById.useQuery({ itemId });
   const { data: comments, refetch: commentsRefatch } = api.comment.getAllByItemId.useQuery({ itemId });
 
 
-  // const session = useSession();
   const createComment = api.comment.create.useMutation({
     async onSuccess() {
       await commentsRefatch();
@@ -61,11 +59,7 @@ const Item = ({ session }: { session: Session | null; }) => {
       description: "testing " + JSON.stringify(values.text)
     });
   };
-  // const [liked, setLiked] = useState(false);
-  const { data: liked } = (user?.id) ? api.like.get.useQuery({
-    itemId,
-    userId: user.id,
-  }) : { data: false };
+  const { data: liked } = api.like.get.useQuery({ itemId: +itemId });
   const toggleLike = api.like.toggle.useMutation({
     async onSuccess() {
       await itemRefetch();
@@ -82,10 +76,8 @@ const Item = ({ session }: { session: Session | null; }) => {
       });
       return;
     }
-    // setLiked(p => !p);
     toggleLike.mutate({
-      itemId,
-      userId: user.id,
+      itemId
     });
   };
   const curuser = api.user.getCurrent.useQuery();
@@ -93,15 +85,15 @@ const Item = ({ session }: { session: Session | null; }) => {
   return (
     <MinScreen>
       <div className='text-3xl'>{item?.name}</div>
-      {/* {JSON.stringify(session)} */}
       {JSON.stringify(curuser.data)}
       <div>
         {item?.likesCount} {item?.likesCount === 1 ? 'like' : 'likes'}
         <Button onClick={onLiked} variant={'ghost'}>{liked ? <Heart className='fill-destructive stroke-destructive' /> : <Heart />}</Button>
       </div>
-      <div>
-        <div>{item?.commentsCount} comments</div>
-      </div>
+
+      <hr className="h-px my-2 bg-primary border-0 w-full" />
+
+      <div className='w-2/3 py-2'>{item?.commentsCount} comments</div>
       <Form {...commentForm}>
         <form onSubmit={commentForm.handleSubmit(onCreateComment)} className="w-2/3 space-y-6">
           <FormField

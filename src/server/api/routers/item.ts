@@ -46,5 +46,7 @@ export const itemRouter = createTRPCRouter({
       if (allTags.length > 0) {
         await ctx.db.insert(itemTags).values(allTags.map(tag => ({ itemId: item[0]!.id, tagId: tag })));
       }
+      return item;
     }),
+
 });

@@ -27,7 +27,18 @@
       "customFieldAdd": "Qo'shing"
     },
     "view": {
-      "addItem": "Narsa Qo'shing"
+      "title": "Kolleksiya",
+      "addItem": "Narsa Qo'shing",
+      "addCollection": "Kolleksiya Qo'shing"
+    }
+  },
+  "item": {
+    "create": {
+      "title": "Element Yarating",
+      "name": "Nomi",
+      "tags": "Taglar Tanlang",
+      "newTags": "Yangi Taglar Yarating",
+      "newTagsPlaceholder": "Yangi tag yaratish uchun 'Enter' ni bosing."
     }
   }
 }

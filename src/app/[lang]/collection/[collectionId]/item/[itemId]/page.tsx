@@ -1,8 +1,7 @@
 import { auth } from '@/server/auth';
-import Item from './form';
+import Item from './view';
 // import { Dashboard, Landing } from './components';
 
-export default async function Layout() {
-  const session = await auth();
-  return <Item session={session} />;
+export default async function Page() {
+  return <Item />;
 }

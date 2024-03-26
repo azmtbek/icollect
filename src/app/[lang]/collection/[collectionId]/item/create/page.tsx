@@ -1,7 +1,7 @@
 'use client';
 import MinScreen from '@/components/layout/min-screen';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { MultiSelectTags } from '@/components/custom/multi-select-tags';
@@ -18,42 +18,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
-
-
-// const customFieldNames = [
-//   "customString1",
-//   "customString2",
-//   "customString3",
-
-//   "customInteger1",
-//   "customInteger2",
-//   "customInteger3",
-
-//   "customText1",
-//   "customText2",
-//   "customText3",
-
-//   "customDate1",
-//   "customDate2",
-//   "customDate3",
-// ] as const;
-// const customFieldMapper = {
-//   "customString1": 'string',
-//   "customString2": 'string',
-//   "customString3": 'string',
-
-//   "customInteger1": 'integer',
-//   "customInteger2": 'integer',
-//   "customInteger3": 'integer',
-
-//   "customText1": 'text',
-//   "customText2": 'text',
-//   "customText3": 'text',
-
-//   "customDate1": 'date',
-//   "customDate2": 'date',
-//   "customDate3": 'date',
-// } as const;
+import { useLocale } from '@/components/provider/locale-provider';
+import { type Locale } from '@/i18n-config';
+import Link from 'next/link';
 
 const customFields = [
   "customString",
@@ -114,7 +81,7 @@ const itemSchema = z.object({
 type ItemType = z.infer<typeof itemSchema>;
 
 const CreateItem = () => {
-  const { collectionId } = useParams<{ collectionId: string; }>();
+  const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
   const router = useRouter();
   const {
     data: collection,
@@ -143,9 +110,13 @@ const CreateItem = () => {
   const { data: tags } = api.tag.getAll.useQuery();
 
   const createItem = api.item.create.useMutation({
-    onSuccess() {
-      form.reset();
-      setTagInput('');
+    onSuccess(data) {
+      const id = data[0]?.id ?? '';
+      toast({
+        description: "Item created.",
+      });
+
+      router.push(`/${lang}/collection/${collectionId}/item/${id}`);
     },
     onError(error) {
       toast({
@@ -188,12 +159,21 @@ const CreateItem = () => {
   }, [collection]);
 
   const [tagInput, setTagInput] = useState('');
+  const locale = useLocale((state) => state.item.create);
+  const localeCollection = useLocale((state) => state.collection.view);
+
 
   return (
     <MinScreen>
       <Card className='w-80 md:w-96'>
         <CardHeader>
-          <CardTitle>Create An Item for {collection?.name}</CardTitle>
+          <CardTitle>{locale.title}</CardTitle>
+          <CardDescription>
+            {localeCollection.title} :{' '}
+            <Link href={`/${lang}/collection/${collectionId}`}>
+              {collection?.name}
+            </Link>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -204,7 +184,7 @@ const CreateItem = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Name
+                      {locale.name}
                     </FormLabel>
                     <FormControl>
                       <Input placeholder='The War of Art' {...field} />
@@ -218,7 +198,7 @@ const CreateItem = () => {
                 name="tags"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Select Tags</FormLabel>
+                    <FormLabel>{locale.tags}</FormLabel>
                     <MultiSelectTags
                       options={tags?.map(tag => ({ value: tag.name, label: tag.name })) ?? []}
                       selected={field.value}
@@ -235,7 +215,7 @@ const CreateItem = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Add new Tags
+                      {locale.newTags}
                     </FormLabel>
                     <FormDescription className='flex gap-1 flex-wrap'>
                       {field.value?.map(tag =>
@@ -258,7 +238,7 @@ const CreateItem = () => {
                       )}
                     </FormDescription>
                     <FormControl>
-                      <Input placeholder='Press Enter to create a tag.'
+                      <Input placeholder={locale.newTagsPlaceholder}
                         // {...field}
                         value={tagInput}
                         onChange={(e) => { setTagInput(e.target.value); }}
