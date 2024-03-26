@@ -10,19 +10,24 @@
   },
   "collection": {
     "create": {
-      "title": "Create A Collection",
-      "name": "Nomi",
+      "title": "Kolleksiya Yarating",
+      "name": "Name",
       "namePlaceholder": "My Book",
       "description": "Description",
       "descriptionPlaceholder": "Describe Your Collection",
       "topic": "Topic",
       "create": "Create",
+      "creating": "Creating...",
       "goBack": "Go Back",
       "customString": "String Field",
       "customText": "Text Field",
       "customDate": "Date Field",
       "customInteger": "Integer Field",
-      "customFieldPlaceholder": "Select Custom Field"
+      "customFieldPlaceholder": "Select Custom Field",
+      "customFieldAdd": "Add Field"
+    },
+    "view": {
+      "addItem": "Add Item"
     }
   }
 }

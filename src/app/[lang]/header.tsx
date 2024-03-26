@@ -28,12 +28,12 @@ export const Header = async ({ lang }: Props) => {
         <div className='flex gap-4 items-center'>
           {currUser?.isAdmin &&
             <Link href={`/${lang}/admin`}>
-              <Button variant={'outline'} className='text-xl'>Admin</Button>
+              <Button variant={'link'} className='text-xl'>Admin</Button>
             </Link>
           }
           {currUser &&
             <Link href={`/${lang}/collection`}>
-              <Button variant={'outline'} className='text-xl'>{dictionary.titles.collections}</Button>
+              <Button variant={'link'} className='text-xl'>{dictionary.titles.collections}</Button>
             </Link>
           }
           {currUser?.name}

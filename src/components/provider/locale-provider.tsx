@@ -1,13 +1,12 @@
 'use client';
 import { type Dictionoary } from '@/get-dictionary';
-// import { defaultDictinary } from 'dictionaries/default';
-import dict from "dictionaries/en.json";
+import defaultDictionary from "dictionaries/en.json";
 
 import { createContext, useContext } from 'react';
 
 type DictType = Awaited<ReturnType<Dictionoary>>;
 
-const LocaleContext = createContext<DictType>(dict);
+const LocaleContext = createContext<DictType>(defaultDictionary);
 
 export function LocaleProvider({ children, dictionary }: { children: React.ReactNode; dictionary: DictType; }) {
   return (
@@ -17,24 +16,13 @@ export function LocaleProvider({ children, dictionary }: { children: React.React
   );
 }
 
-// TODO: check if it is working
-export type UseLocale =
-  <TState, Selected = unknown>(
-    selector: (state: TState) => Selected,
-  ) => Selected;
+// export type UseLocale =
+//   <TState, Selected = unknown>(
+//     selector: (state: TState) => Selected,
+//   ) => Selected;
 
 
 export function useLocale<Selected>(selector: (state: DictType) => Selected): Selected {
   const context = useContext(LocaleContext);
   return selector(context);
-  // return context;
 }
-
-
-// export function LocaleProvider({ children }:{}) {
-//   return (
-//     <Locale>
-//       {children}
-//     </Locale>
-//   );
-// }

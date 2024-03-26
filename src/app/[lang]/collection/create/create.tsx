@@ -40,7 +40,6 @@ const collectionSchema = z.object({
   customDate3: defaultCustomFieldSchema,
 });
 
-// const defaultCustomFieldState = { state: false, name: '' };
 type CollectionType = z.infer<typeof collectionSchema>;
 
 
@@ -54,46 +53,38 @@ const customString = ['customString1', 'customString2', 'customString3'] as cons
 const customInteger = ['customInteger1', 'customInteger2', 'customInteger3'] as const;
 const customDate = ['customDate1', 'customDate2', 'customDate3'] as const;
 const customText = ['customText1', 'customText2', 'customText3'] as const;
+
 const customFieldMapper = {
   "customString": customString,
   "customDate": customDate,
   "customInteger": customInteger,
   "customText": customText,
 };
-
-// const defaultSelectState = customFields.map(name => ({ [name]: [] as string[] }));
-
-// const customFieldNames = [
-//   "customString1",
-//   "customString2",
-//   "customString3",
-
-//   "customInteger1",
-//   "customInteger2",
-//   "customInteger3",
-
-//   "customText1",
-//   "customText2",
-//   "customText3",
-
-//   "customDate1",
-//   "customDate2",
-//   "customDate3",
-// ] as const;
+const customFieldReverter = {
+  customString1: "customString",
+  customString2: "customString",
+  customString3: "customString",
+  customInteger1: "customInteger",
+  customInteger2: "customInteger",
+  customInteger3: "customInteger",
+  customText1: "customText",
+  customText2: "customText",
+  customText3: "customText",
+  customDate1: "customDate",
+  customDate2: "customDate",
+  customDate3: "customDate",
+} as const;
 
 const defaultCustomFields = {
   customString1: false,
   customString2: false,
   customString3: false,
-
   customInteger1: false,
   customInteger2: false,
   customInteger3: false,
-
   customText1: false,
   customText2: false,
   customText3: false,
-
   customDate1: false,
   customDate2: false,
   customDate3: false,
@@ -109,6 +100,18 @@ const CreateCollection = () => {
       name: "",
       topicId: "",
       description: "",
+      customString1: undefined,
+      customString2: undefined,
+      customString3: undefined,
+      customInteger1: undefined,
+      customInteger2: undefined,
+      customInteger3: undefined,
+      customText1: undefined,
+      customText2: undefined,
+      customText3: undefined,
+      customDate1: undefined,
+      customDate2: undefined,
+      customDate3: undefined,
     }
   });
   const { toast } = useToast();
@@ -173,7 +176,6 @@ const CreateCollection = () => {
     });
     form.resetField(field);
     form.resetField(`${field}.name`, { defaultValue: '' });
-    // form.resetField(`${field}.state`);
   };
   return (
     <MinScreen>
@@ -252,7 +254,7 @@ const CreateCollection = () => {
                             {locale[customField]}
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder={locale.namePlaceholder} {...field} />
+                            <Input  {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -262,7 +264,7 @@ const CreateCollection = () => {
                       control={form.control}
                       name={(`${customFieldNum}.state`)}
                       render={({ field }) => (
-                        <FormItem className='w-full'>
+                        <FormItem className='w-full hidden '>
                           <FormLabel>
                             {locale[customField]}
                           </FormLabel>
@@ -287,15 +289,17 @@ const CreateCollection = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.keys(customForms)?.map((field, i) =>
-                      <SelectItem value={field} key={i}>{field}</SelectItem>
-                    )}
+                    {Object.keys(customForms)?.map((field, i) => {
+                      if (customForms[field as keyof CustomFieldsType]) return;
+                      let crop = customFieldReverter[field as keyof CustomFieldsType];
+                      return <SelectItem value={field} key={i}>{locale[crop]}</SelectItem>;
+                    })}
                   </SelectContent>
                 </Select>
-                <Button type='button' onClick={selectCustomFields} disabled={currField === ''}>Add Field</Button>
+                <Button type='button' onClick={selectCustomFields} disabled={currField === ''}>{locale.customFieldAdd}</Button>
               </div>
               <div className='flex justify-between'>
-                <Button type="submit">{locale.create} {createCollection.isLoading && "Creating"}</Button>
+                <Button type="submit" disabled={createCollection.isLoading}>{createCollection.isLoading ? locale.creating : locale.create}</Button>
                 <Button variant='outline' onClick={() => router.back()}>{locale.goBack}</Button>
               </div>
             </form>

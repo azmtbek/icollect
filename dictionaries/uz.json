@@ -12,17 +12,22 @@
     "create": {
       "title": "Create A Collection",
       "name": "Nomi",
-      "namePlaceholder": "My Book",
-      "description": "Description",
-      "descriptionPlaceholder": "Describe Your Collection",
-      "topic": "Topic",
-      "create": "Create",
-      "goBack": "Go Back",
-      "customString": "String Field",
-      "customText": "Text Field",
-      "customDate": "Date Field",
-      "customInteger": "Integer Field",
-      "customFieldPlaceholder": "Select Custom Field"
+      "namePlaceholder": "Kitobim",
+      "description": "Tavsif",
+      "descriptionPlaceholder": "Kolleksiyangizni tavsiflang",
+      "topic": "Mavzu",
+      "create": "Yarating",
+      "creating": "Yaratilmoqda...",
+      "goBack": "Ortga",
+      "customString": "Qisqa Tekst",
+      "customText": "Tekst",
+      "customDate": "Sana",
+      "customInteger": "Raqam",
+      "customFieldPlaceholder": "Qo'shimcha maydon tanlang",
+      "customFieldAdd": "Qo'shing"
+    },
+    "view": {
+      "addItem": "Narsa Qo'shing"
     }
   }
 }

@@ -12,6 +12,11 @@ export const itemRouter = createTRPCRouter({
     .query(({ ctx }) => {
       return ctx.db.query.items.findMany();
     }),
+  getCollectionItems: publicProcedure
+    .input(z.object({ collectionId: z.number() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.query.items.findMany({ where: eq(items.collectionId, input.collectionId) });
+    }),
   getById: publicProcedure
     .input(z.object({ itemId: z.string() }))
     .query(({ ctx, input }) => {
