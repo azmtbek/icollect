@@ -46,8 +46,8 @@ const CreateTag = ({ refatch }: { refatch: () => Promise<UseQueryResult>; }) => 
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const createTag = api.admin.createTag.useMutation({
-    onSuccess() {
-      refatch();
+    async onSuccess() {
+      await refatch();
       setError('');
       setName('');
     },

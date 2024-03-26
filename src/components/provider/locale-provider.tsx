@@ -17,14 +17,14 @@ export function LocaleProvider({ children, dictionary }: { children: React.React
   );
 }
 
-
-export interface UseLocale<StateType = unknown> {
-  <TState extends StateType = StateType, Selected = unknown>(
+// TODO: check if it is working
+export type UseLocale =
+  <TState extends unknown, Selected = unknown>(
     selector: (state: TState) => Selected,
-  ): Selected;
-}
+  ) => Selected;
 
-export function useLocale<Selected extends unknown>(selector: (state: DictType) => Selected): Selected {
+
+export function useLocale<Selected>(selector: (state: DictType) => Selected): Selected {
   const context = useContext(LocaleContext);
   return selector(context);
   // return context;

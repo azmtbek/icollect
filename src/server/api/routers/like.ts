@@ -5,7 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { items, likes, users } from "@/server/db/schema";
+import { items, likes } from "@/server/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 
 export const likeRouter = createTRPCRouter({

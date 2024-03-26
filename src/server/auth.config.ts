@@ -1,9 +1,4 @@
 import { NextAuthConfig } from 'next-auth';
-import {
-  api
-} from '@/trpc/server';
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import * as schema from "./db/schema";
 import "next-auth";
 
 export const authConfig = {
@@ -14,8 +9,8 @@ export const authConfig = {
   ],
   callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
-      let isLoggedIn = !!auth?.user;
-      let isOnDashboard = nextUrl.pathname.split('/')[1] === 'admin';
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.split('/')[1] === 'admin';
       if (isOnDashboard) {
         if (isLoggedIn) {
           return true;

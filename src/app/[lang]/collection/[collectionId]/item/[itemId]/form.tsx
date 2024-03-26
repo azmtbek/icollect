@@ -22,23 +22,24 @@ const commentSchema = z.object({
 type CommentType = z.infer<typeof commentSchema>;
 
 const Item = ({ session }: { session: Session | null; }) => {
-  const { collectionId, itemId } = useParams();
-  const userEmail = session?.user?.email ? session?.user?.email : '';
-  const { data: user } = userEmail !== '' ? api.user.getByEmail.useQuery({ email: userEmail }) : { data: { id: '' } };
-  if (typeof itemId !== 'string') return;
-  const { data: item, refetch: itemRefetch } = api.item.getById.useQuery({ itemId });
-  const { data: comments, refetch: commentsRefatch } = api.comment.getAllByItemId.useQuery({ itemId });
-
+  const { itemId } = useParams<{ itemId: string; }>();
   const commentForm = useForm<CommentType>({
     resolver: zodResolver(commentSchema),
     defaultValues: {
       text: ''
     },
   });
+
+  const userEmail = session?.user?.email ? session?.user?.email : '';
+  const { data: user } = userEmail !== '' ? api.user.getByEmail.useQuery({ email: userEmail }) : { data: { id: '' } };
+  const { data: item, refetch: itemRefetch } = api.item.getById.useQuery({ itemId });
+  const { data: comments, refetch: commentsRefatch } = api.comment.getAllByItemId.useQuery({ itemId });
+
+
   // const session = useSession();
   const createComment = api.comment.create.useMutation({
-    onSuccess() {
-      commentsRefatch();
+    async onSuccess() {
+      await commentsRefatch();
       itemRefetch();
       commentForm.reset();
     }
@@ -88,6 +89,7 @@ const Item = ({ session }: { session: Session | null; }) => {
     });
   };
   const curuser = api.user.getCurrent.useQuery();
+
   return (
     <MinScreen>
       <div className='text-3xl'>{item?.name}</div>

@@ -1,15 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
-
-import { auth } from "@/server/auth";
-import { api } from "@/trpc/server";
 import MinScreen from "@/components/layout/min-screen";
-import { Locale } from "@/i18n-config";
 
-export default async function Home({
-  params: { lang },
-}: {
-  params: { lang: Locale; };
-}) {
+export default async function Home() {
   noStore();
 
   return (

@@ -13,7 +13,6 @@ import { ZodError } from "zod";
 
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
-import { api } from "@/trpc/server";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 
@@ -31,27 +30,11 @@ import { eq } from "drizzle-orm";
  */
 export const createTRPCContext = async (opts: { headers: Headers; }) => {
   const session = await auth();
-  // if (!session || !session.user) {
   return {
     db,
     session,
     ...opts
   };
-  // }
-
-  // const user = await api.user.getByEmail.query({ email: session.user.email });
-  // return {
-  //   db,
-  //   session: {
-  //     ...session,
-  //     user: {
-  //       ...session?.user,
-  //       isAdmin: user.isAdmin,
-  //       id: user.id
-  //     }
-  //   },
-  //   ...opts,
-  // };
 };
 
 /**
@@ -113,7 +96,7 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
   const user = await ctx.db.query.users.findFirst({
     where: (eq(users.email, ctx.session.user.email))
   });
-  if (!user || !user.id) {
+  if (!user?.id || user?.status === 'blocked') {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
@@ -132,7 +115,7 @@ export const adminProcedure = t.procedure.use(async ({ ctx, next }) => {
     where: (eq(users.email, ctx.session.user.email))
   });
   // const user = await api.user.getByEmail.query({ email: ctx.session.user.email });
-  if (!user || !user.isAdmin) {
+  if (!user?.isAdmin || user?.status === 'blocked') {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({

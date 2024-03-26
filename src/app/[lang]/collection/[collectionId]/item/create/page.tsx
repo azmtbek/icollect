@@ -285,13 +285,6 @@ const CreateItem = () => {
                   </FormItem>
                 )}
               />
-              {/* {collection && Object.keys(collection)
-                .filter((c) => c.startsWith('custom_string') && c.endsWith('state') && collection[c])
-                .map(c => <div>{c}</div>)} */}
-              {/* {activeCustomFields?.map(cField => {
-                return <></>;
-              })
-              } */}
               {customFields.map(customField => {
                 if (customField == 'customString')
                   return customFieldMapper[customField].map(customFieldNum => {

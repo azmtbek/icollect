@@ -93,7 +93,7 @@ const Login = ({ login }: { login: ({ email, password }: { email: string, passwo
         </CardContent>
         <CardFooter>
           <p className="text-center text-sm text-gray-600">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link href={`/${lang}/register`} className='font-semibold text-gray-400'> Register</Link>
             .
           </p>

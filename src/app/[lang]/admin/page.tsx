@@ -12,15 +12,15 @@ type Props = {
 
 const Admin = async ({ params: { lang } }: Props) => {
   const users = await api.user.getAll.query();
-  const blockUsers = async () => {
-    'use server';
-  };
-  const deleteUsers = async () => {
-    'use server';
-  };
-  const unblockUsers = async () => {
-    'use server';
-  };
+  // const blockUsers = async () => {
+  //   'use server';
+  // };
+  // const deleteUsers = async () => {
+  //   'use server';
+  // };
+  // const unblockUsers = async () => {
+  //   'use server';
+  // };
 
   return (
     <MinScreen>
@@ -38,9 +38,9 @@ const Admin = async ({ params: { lang } }: Props) => {
       </div>
       <UsersTable
         users={users}
-        blockUsers={blockUsers}
-        deleteUsers={deleteUsers}
-        unblockUsers={unblockUsers}
+      // blockUsers={blockUsers}
+      // deleteUsers={deleteUsers}
+      // unblockUsers={unblockUsers}
       />
     </MinScreen>
   );

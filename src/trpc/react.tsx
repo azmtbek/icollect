@@ -7,8 +7,6 @@ import { useState } from "react";
 
 import { type AppRouter } from "@/server/api/root";
 import { getUrl, transformer } from "./shared";
-import { useParams } from "next/navigation";
-import { Locale } from "@/i18n-config";
 
 const createQueryClient = () => new QueryClient();
 

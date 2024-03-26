@@ -31,8 +31,8 @@ const CreateTopic = ({ refatch }: { refatch: () => Promise<UseQueryResult>; }) =
   const [error, setError] = useState('');
   const createTopic = api.admin.createTopic.useMutation(
     {
-      onSuccess() {
-        refatch();
+      async onSuccess() {
+        await refatch();
         setError('');
         setName('');
       },

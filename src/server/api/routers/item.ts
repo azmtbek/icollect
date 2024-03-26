@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { itemTags, items, tags } from "@/server/db/schema";
@@ -39,7 +38,7 @@ export const itemRouter = createTRPCRouter({
 
       const allTags = [...input.tags.map(t => +t), ...createdTags.map(t => t.id)];
 
-      if (item && item[0] && allTags.length > 0) {
+      if (allTags.length > 0) {
         await ctx.db.insert(itemTags).values(allTags.map(tag => ({ itemId: item[0]!.id, tagId: tag })));
       }
     }),

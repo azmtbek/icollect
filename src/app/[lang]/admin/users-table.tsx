@@ -154,13 +154,15 @@ export const columns: ColumnDef<UserData>[] = [
 
 type DataTableProps = {
   users: UserData[];
-  blockUsers: (userIds: string[]) => Promise<void>;
-  unblockUsers: (userIds: string[]) => Promise<void>;
-  deleteUsers: (userIds: string[]) => Promise<void>;
+  // blockUsers: (userIds: string[]) => Promise<void>;
+  // unblockUsers: (userIds: string[]) => Promise<void>;
+  // deleteUsers: (userIds: string[]) => Promise<void>;
 };
 
 
-export function UsersTable({ users, blockUsers, unblockUsers, deleteUsers }: DataTableProps) {
+export function UsersTable({ users,
+  // blockUsers, unblockUsers, deleteUsers
+}: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -203,13 +205,13 @@ export function UsersTable({ users, blockUsers, unblockUsers, deleteUsers }: Dat
         />
         <Button
           onClick={() => {
-            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
             setPending(true);
-            blockUsers(selectedUserIds).then(() => {
-              router.refresh();
-              table.toggleAllPageRowsSelected(false);
-              setPending(false);
-            });
+            // blockUsers(selectedUserIds).then(() => {
+            //   router.refresh();
+            //   table.toggleAllPageRowsSelected(false);
+            //   setPending(false);
+            // });
           }}
           variant={'outline'}
           disabled={pending}
@@ -220,13 +222,13 @@ export function UsersTable({ users, blockUsers, unblockUsers, deleteUsers }: Dat
         </Button>
         <Button
           onClick={() => {
-            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
             setPending(true);
-            unblockUsers(selectedUserIds).then(() => {
-              router.refresh();
-              table.toggleAllPageRowsSelected(false);
-              setPending(false);
-            });
+            // unblockUsers(selectedUserIds).then(() => {
+            //   router.refresh();
+            //   table.toggleAllPageRowsSelected(false);
+            //   setPending(false);
+            // });
           }}
           disabled={pending}
           variant={'outline'}>
@@ -235,12 +237,12 @@ export function UsersTable({ users, blockUsers, unblockUsers, deleteUsers }: Dat
         <Button
           onClick={() => {
             setPending(true);
-            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
-            deleteUsers(selectedUserIds).then(() => {
-              router.refresh();
-              table.toggleAllPageRowsSelected(false);
-              setPending(false);
-            });
+            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            // deleteUsers(selectedUserIds).then(() => {
+            //   router.refresh();
+            //   table.toggleAllPageRowsSelected(false);
+            //   setPending(false);
+            // });
 
           }}
           disabled={pending}
