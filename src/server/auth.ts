@@ -1,4 +1,4 @@
-import type { DefaultSession, User } from "next-auth";
+import type { DefaultSession } from "next-auth";
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt-ts';
@@ -34,7 +34,7 @@ export const {
         const user = await api.user.getByEmail.query({ email });
         if (user == null) return null;
         if (user.status === 'blocked') return null;
-        const passwordsMatch = await compare(password, user.password!);
+        const passwordsMatch = await compare(password, user.password);
         if (passwordsMatch) return user;
         return null;
       },

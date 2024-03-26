@@ -298,7 +298,7 @@ const CreateItem = () => {
                         render={({ field }) => (
                           <FormItem className='w-full'>
                             <FormLabel>
-                              {collection && collection[`${customFieldNum}Name`]}
+                              {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
                               <Input {...field} />
@@ -320,7 +320,7 @@ const CreateItem = () => {
                         render={({ field }) => (
                           <FormItem className='w-full'>
                             <FormLabel>
-                              {collection && collection[`${customFieldNum}Name`]}
+                              {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
                               <Input  {...field} type='number' />
@@ -342,7 +342,7 @@ const CreateItem = () => {
                         render={({ field }) => (
                           <FormItem className='w-full'>
                             <FormLabel>
-                              {collection && collection[`${customFieldNum}Name`]}
+                              {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
                               <Input {...field} />
@@ -364,7 +364,7 @@ const CreateItem = () => {
                         render={({ field }) => (
                           <FormItem className='w-full'>
                             <FormLabel>
-                              {collection && collection[`${customFieldNum}Name`]}
+                              {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>

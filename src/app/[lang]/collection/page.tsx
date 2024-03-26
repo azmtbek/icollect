@@ -1,28 +1,19 @@
-'use client';
-import MinScreen from '@/components/layout/min-screen';
-import { Button } from '@/components/ui/button';
+import { unstable_noStore as noStore } from "next/cache";
 import { type Locale } from '@/i18n-config';
-import { api } from '@/trpc/react';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import React from 'react';
+import { api } from '@/trpc/server';
+import { redirect } from 'next/navigation';
+import Collections from './view';
 
-const Collections = () => {
-  const { lang } = useParams<{ lang: Locale; }>();
-  const { data: collections } = api.collection.getUserCollections.useQuery();
-  return (
-    <MinScreen>
-      <div>
-        <Link href={`/${lang}/collection/create`}><Button>Add Collection</Button></Link>
-      </div>
-      <div>Collections</div>
-      {collections?.map(col =>
-        <div key={col.id}><Link href={`/${lang}/collection/${col.id}`}>
-          {col.name}
-        </Link>
-        </div>)}
-    </MinScreen>
-  );
+const Page = async ({
+  params
+}: {
+  params: { lang: Locale; };
+}) => {
+  noStore();
+  const currUser = await api.user.getCurrent.query();
+  if (!currUser) redirect(`/${params.lang}/login`);
+
+  return <Collections />;
 };
 
-export default Collections;
+export default Page;

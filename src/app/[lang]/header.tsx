@@ -27,12 +27,12 @@ export const Header = async ({ lang }: Props) => {
         <div></div>
         <div className='flex gap-4 items-center'>
           {currUser?.isAdmin &&
-            <Link href={`${lang}/admin`}>
+            <Link href={`/${lang}/admin`}>
               <Button variant={'outline'} className='text-xl'>Admin</Button>
             </Link>
           }
           {currUser &&
-            <Link href={`${lang}/collection`}>
+            <Link href={`/${lang}/collection`}>
               <Button variant={'outline'} className='text-xl'>{dictionary.titles.collections}</Button>
             </Link>
           }

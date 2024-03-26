@@ -38,6 +38,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { api } from "@/trpc/react";
 
 export type UserData = {
   id: string;
@@ -153,16 +154,19 @@ export const columns: ColumnDef<UserData>[] = [
 ];
 
 type DataTableProps = {
-  users: UserData[];
+  // users: UserData[];
   // blockUsers: (userIds: string[]) => Promise<void>;
   // unblockUsers: (userIds: string[]) => Promise<void>;
   // deleteUsers: (userIds: string[]) => Promise<void>;
 };
 
 
-export function UsersTable({ users,
-  // blockUsers, unblockUsers, deleteUsers
-}: DataTableProps) {
+export function UsersTable(
+  {
+    // users,
+    // blockUsers, unblockUsers, deleteUsers
+  }: DataTableProps) {
+  const { data: users } = api.user.getAll.useQuery();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -174,7 +178,7 @@ export function UsersTable({ users,
   const [pending, setPending] = React.useState(false);
 
   const table = useReactTable({
-    data: users,
+    data: users ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

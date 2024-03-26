@@ -40,12 +40,12 @@ const Item = ({ session }: { session: Session | null; }) => {
   const createComment = api.comment.create.useMutation({
     async onSuccess() {
       await commentsRefatch();
-      itemRefetch();
+      await itemRefetch();
       commentForm.reset();
     }
   });
   const onCreateComment = (values: CommentType) => {
-    if (!user || !user.id) {
+    if (!user?.id) {
       toast({
         title: "Not Signed in",
         description: "Please sign in to comment"
@@ -62,20 +62,20 @@ const Item = ({ session }: { session: Session | null; }) => {
     });
   };
   // const [liked, setLiked] = useState(false);
-  const { data: liked } = (user && user?.id) ? api.like.get.useQuery({
+  const { data: liked } = (user?.id) ? api.like.get.useQuery({
     itemId,
     userId: user.id,
   }) : { data: false };
   const toggleLike = api.like.toggle.useMutation({
-    onSuccess() {
-      itemRefetch();
+    async onSuccess() {
+      await itemRefetch();
     },
     onError(error) {
       error.data?.code;
     }
   });
   const onLiked = () => {
-    if (!user || !user.id) {
+    if (!user?.id) {
       toast({
         title: "Not Signed in",
         description: "Please sign in to comment"

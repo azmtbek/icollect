@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   adminProcedure,
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { users } from "@/server/db/schema";
@@ -11,7 +10,6 @@ import { eq } from "drizzle-orm";
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { nanoid } from 'nanoid';
-import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
   getAll: adminProcedure

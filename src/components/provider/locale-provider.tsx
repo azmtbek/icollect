@@ -19,7 +19,7 @@ export function LocaleProvider({ children, dictionary }: { children: React.React
 
 // TODO: check if it is working
 export type UseLocale =
-  <TState extends unknown, Selected = unknown>(
+  <TState, Selected = unknown>(
     selector: (state: TState) => Selected,
   ) => Selected;
 

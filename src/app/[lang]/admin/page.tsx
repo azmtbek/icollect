@@ -1,8 +1,9 @@
+import { unstable_noStore as noStore } from "next/cache";
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import MinScreen from '@/components/layout/min-screen';
-import { api } from '@/trpc/server';
+// import { api } from '@/trpc/server';
 import { UsersTable } from './users-table';
 import { type Locale } from '@/i18n-config';
 
@@ -11,7 +12,8 @@ type Props = {
 };
 
 const Admin = async ({ params: { lang } }: Props) => {
-  const users = await api.user.getAll.query();
+  noStore();
+  // const users = await api.user.getAll.query();
   // const blockUsers = async () => {
   //   'use server';
   // };
@@ -37,7 +39,7 @@ const Admin = async ({ params: { lang } }: Props) => {
         </Link>
       </div>
       <UsersTable
-        users={users}
+      // users={users}
       // blockUsers={blockUsers}
       // deleteUsers={deleteUsers}
       // unblockUsers={unblockUsers}

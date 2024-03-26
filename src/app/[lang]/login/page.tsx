@@ -1,9 +1,11 @@
 
+import { unstable_noStore as noStore } from 'next/cache';
 import React from 'react';
 import Login from './form';
 import { signIn } from "@/server/auth";
 
 const Page = async () => {
+  noStore();
   const login = async ({ email, password }: { email: string, password: string; }) => {
     'use server';
     await signIn('credentials', {
