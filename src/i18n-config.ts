@@ -2,7 +2,7 @@ export const i18n = {
   defaultLocale: "en",
   locales: ["en",
     // "de",
-    "uz",
+    // "uz",
     // "ru"
   ],
 } as const;

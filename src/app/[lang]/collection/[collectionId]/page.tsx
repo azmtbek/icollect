@@ -7,9 +7,8 @@ import { api } from '@/trpc/react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React, { useMemo } from 'react';
-import { columns } from './columns';
+import { useColumns } from './columns';
 import { DataTable } from './data-table';
-import { Item } from '@/lib/types/item';
 
 const Collection = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
@@ -19,10 +18,9 @@ const Collection = () => {
   const { data: tags } = api.tag.getItemTagNames.useQuery({ itemId: items?.[0]?.id });
   const filteredItems = useMemo(() => {
     console.log(items);
-
     return items?.map(i => ({ ...i, tags: tags?.map(t => '' + t.tag?.id) })) ?? [];
-    // return items?.map(i => ({ ...i, tags: tags?.[i.id]?.tags ?? [] })) ?? [];
   }, [items]);
+  const columns = useColumns();
   return (
     <MinScreen>
       <div className='flex items-center justify-between w-full'>

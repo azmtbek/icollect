@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { DataTable } from './data-table';
-import { columns } from './col-columns';
+import { columns } from './columns';
 
 const Collections = () => {
   const { lang } = useParams<{ lang: Locale; }>();

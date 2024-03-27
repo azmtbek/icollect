@@ -23,22 +23,16 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Payment } from "./columns";
 import { DataTablePagination } from "@/components/custom/data-table-pagination";
 import { DataTableViewOptions } from "@/components/custom/data-table-column-toggle";
+import { Trash2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends { id: number; }, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -71,17 +65,33 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="flex items-center py-4 ">
+      <div className="flex items-center py-4 gap-4 ">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter names..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <DataTableViewOptions table={table} />
+        <Button
+          onClick={() => {
+            // setPending(true);
+            const selectedIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            console.log(selectedIds);
+            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            // deleteUsers(selectedUserIds).then(() => {
+            //   router.refresh();
+            //   table.toggleAllPageRowsSelected(false);
+            //   setPending(false);
+            // });
 
+          }}
+          disabled={!table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
+          variant={'destructive'}>
+          <Trash2 />
+        </Button>
+        <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border w-full">
         <Table>

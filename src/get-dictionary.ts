@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 const dictionaries = {
   en: () => import("../dictionaries/en.json").then((module) => module.default),
   // de: () => import("../dictionaries/de.json").then((module) => module.default),
-  uz: () => import("../dictionaries/uz.json").then((module) => module.default),
+  // uz: () => import("../dictionaries/uz.json").then((module) => module.default),
   // ru: () => import("../dictionaries/ru.json").then((module) => module.default),
 };
 

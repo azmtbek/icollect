@@ -29,7 +29,8 @@
     "view": {
       "title": "Collection",
       "addItem": "Add Item",
-      "addCollection": "Add Collection"
+      "addCollection": "Add Collection",
+      "goToItem": "Go to Item"
     }
   },
   "item": {

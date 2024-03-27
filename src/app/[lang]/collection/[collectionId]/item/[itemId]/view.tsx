@@ -1,130 +1,92 @@
 'use client';
 import MinScreen from '@/components/layout/min-screen';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Heart } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { type Session } from 'next-auth';
+import { Comments } from './comments';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Like } from './like';
+import { Collection } from '@/lib/types/collection';
+import { Item } from '@/lib/types/item';
+import { Separator } from '@/components/ui/separator';
+import { useLocale } from '@/components/provider/locale-provider';
+import Link from 'next/link';
+import { Locale } from '@/i18n-config';
 
-const commentSchema = z.object({
-  text: z.string()
-    .trim()
-    .min(1, { message: 'Please at least a character.' })
-    .max(1000, { message: 'Currently, we only support 1000 charcters long comments.' })
-});
-type CommentType = z.infer<typeof commentSchema>;
 
 const Item = () => {
-  const { itemId } = useParams<{ itemId: string; }>();
-  const commentForm = useForm<CommentType>({
-    resolver: zodResolver(commentSchema),
-    defaultValues: {
-      text: ''
-    },
-  });
-
+  const { itemId, collectionId, lang } = useParams<{ itemId: string; collectionId: string; lang: Locale; }>();
   const { data: user } = api.user.getCurrent.useQuery();
   const { data: item, refetch: itemRefetch } = api.item.getById.useQuery({ itemId });
-  const { data: comments, refetch: commentsRefatch } = api.comment.getAllByItemId.useQuery({ itemId });
-
-
-  const createComment = api.comment.create.useMutation({
-    async onSuccess() {
-      await commentsRefatch();
-      await itemRefetch();
-      commentForm.reset();
-    }
-  });
-  const onCreateComment = (values: CommentType) => {
-    if (!user?.id) {
-      toast({
-        title: "Not Signed in",
-        description: "Please sign in to comment"
-      });
-      return;
-    }
-    createComment.mutate({
-      text: values.text,
-      itemId: itemId,
-      createdById: user.id,
-    });
-    toast({
-      description: "testing " + JSON.stringify(values.text)
-    });
-  };
-  const { data: liked } = api.like.get.useQuery({ itemId: +itemId });
-  const toggleLike = api.like.toggle.useMutation({
-    async onSuccess() {
-      await itemRefetch();
-    },
-    onError(error) {
-      error.data?.code;
-    }
-  });
-  const onLiked = () => {
-    if (!user?.id) {
-      toast({
-        title: "Not Signed in",
-        description: "Please sign in to comment"
-      });
-      return;
-    }
-    toggleLike.mutate({
-      itemId
-    });
-  };
-  const curuser = api.user.getCurrent.useQuery();
-
+  const { data: collection, isLoading: collectionIsLoading } = api.collection.getById.useQuery({ id: +collectionId });
+  const locale = useLocale(state => state.collection.view);
   return (
     <MinScreen>
-      <div className='text-3xl'>{item?.name}</div>
-      {JSON.stringify(curuser.data)}
-      <div>
-        {item?.likesCount} {item?.likesCount === 1 ? 'like' : 'likes'}
-        <Button onClick={onLiked} variant={'ghost'}>{liked ? <Heart className='fill-destructive stroke-destructive' /> : <Heart />}</Button>
-      </div>
+      <Card className='w-full'>
+        <CardHeader className='flex items-center'>
+          <CardTitle>{item?.name}</CardTitle>
+          <CardDescription>
+            <Link href={`/${lang}/collection/${collectionId}`}
+              className="w-full h-full underline-offset-4 hover:underline">
+              {locale.title} : {collection?.name}
+            </Link>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div> {collection && Object.keys(collection)
+            .filter(col => col.startsWith('custom') && col.endsWith("State") && collection[col as keyof Collection])
+            .map(col => col.replace('State', ''))
+            .map((col => {
+              let itm = item && item[col as keyof Omit<Item, "tags">];
+              if (itm instanceof Date)
+                itm = new Intl.DateTimeFormat("en-US").format(itm);
 
-      <hr className="h-px my-2 bg-primary border-0 w-full" />
+              return <div>
+                <div className='text-xl w-full'>
+                  <div className='pb-4 flex items-center justify-start'>
+                    <Separator className='w-1/6' />
+                  </div>
+                  {collection[`${col}Name` as keyof Collection]}:
+                </div>
+                {itm
+                  ? <div className='pl-10 pt-4 pb-6 '>{itm}</div>
+                  : <div className='pl-10 pt-4 pb-6 italic'>No Value</div>
+                }
 
-      <div className='w-2/3 py-2'>{item?.commentsCount} comments</div>
-      <Form {...commentForm}>
-        <form onSubmit={commentForm.handleSubmit(onCreateComment)} className="w-2/3 space-y-6">
-          <FormField
-            control={commentForm.control}
-            name="text"
-            render={({ field }) => (
-              <FormItem>
-                {/* <FormLabel>Add a Comment</FormLabel> */}
-                <FormControl>
-                  <Textarea placeholder="Add a comment" {...field}
-                    className="min-h-fit resize-none"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+              </div>;
+            }))}
+          </div>
+
+
+          <Like
+            userId={user?.id || ''}
+            itemId={itemId}
+            likesCount={item?.likesCount || 0}
+            itemRefetch={itemRefetch}
           />
-          <Button type="submit"
-            disabled={!commentForm.formState.isValid}
-            className={commentForm.formState.isValid ? '' : 'invisible'}
-          >Create</Button>
-        </form>
-      </Form>
-      <div>
-        {comments?.map(comment => <div key={comment.id}>
-          <span>{comment.createdById}</span>
-          <div>{comment.text.split('\n').map((t, i) => <span key={i}>{t} <br /></span>)}</div>
-        </div>)}
-      </div>
+        </CardContent>
+        <CardFooter className='flex flex-col'>
+          {/* <hr className="h-px my-2 bg-primary border-0 w-full" /> */}
+          <Separator />
+          <div className='py-6'></div>
+          <Comments
+            userId={user?.id || ''}
+            itemId={itemId}
+            commentsCount={item?.commentsCount || 0}
+            itemRefetch={itemRefetch}
+          />
+        </CardFooter>
+      </Card>
     </MinScreen>
   );
 };
 
-export default Item;;
+export default Item;
+
