@@ -52,12 +52,12 @@ const Page = async ({
 }) => {
   noStore();
   const currUser = await api.user.getCurrent.query();
-  const data = await getData();
+  // const data = await getData();
   if (!currUser) redirect(`/${params.lang}/login`);
 
   return <>
     <MinScreen>
-      <DataTable columns={columns} data={data} />
+      {/* <DataTable columns={columns} data={data} /> */}
       <Collections />
     </MinScreen>
   </>;

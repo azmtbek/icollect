@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { type Locale } from '@/i18n-config';
-import { type Collection, collectionSchema } from '@/lib/types';
+import { type Collection, collectionSchema } from '@/lib/types/collection';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
@@ -68,28 +68,29 @@ const defaultCustomFields = {
 // TODO: test results
 type CustomFieldsType = typeof defaultCustomFields;
 // type CustomFieldsType = Omit<Collection, "id" | "name" | "topicId" | "description">;
+type CreateCollection = Omit<Collection, "id">;
 
 const CreateCollection = () => {
   const router = useRouter();
   const { lang } = useParams<{ lang: Locale; }>();
-  const form = useForm<Collection>({
-    resolver: zodResolver(collectionSchema),
+  const form = useForm<CreateCollection>({
+    resolver: zodResolver(collectionSchema.omit({ id: true })),
     defaultValues: {
-      name: "",
-      topicId: undefined,
-      description: "",
-      customString1: undefined,
-      customString2: undefined,
-      customString3: undefined,
-      customInteger1: undefined,
-      customInteger2: undefined,
-      customInteger3: undefined,
-      customText1: undefined,
-      customText2: undefined,
-      customText3: undefined,
-      customDate1: undefined,
-      customDate2: undefined,
-      customDate3: undefined,
+      // name: "",
+      // topicId: undefined,
+      // description: "",
+      // customString1: undefined,
+      // customString2: undefined,
+      // customString3: undefined,
+      // customInteger1: undefined,
+      // customInteger2: undefined,
+      // customInteger3: undefined,
+      // customText1: undefined,
+      // customText2: undefined,
+      // customText3: undefined,
+      // customDate1: undefined,
+      // customDate2: undefined,
+      // customDate3: undefined,
     }
   });
   const { toast } = useToast();
@@ -111,10 +112,10 @@ const CreateCollection = () => {
     }
   });
 
-  const locale = useLocale((state) => state.collection.create);
+  const locale = useLocale((state) => state.collection);
   const { data: topics } = api.admin.getTopics.useQuery();
 
-  const onSubmit = (values: Collection) => {
+  const onSubmit = (values: CreateCollection) => {
 
     createCollection.mutate(values
       // {
@@ -147,20 +148,19 @@ const CreateCollection = () => {
       return ({ ...state, [currField]: !state[currField] });
     });
     setCurrField('');
-    form.setValue(`${currField}.state`, true);
+    form.setValue(`${currField}State`, true);
   };
   const removeCustomField = (field: keyof CustomFieldsType) => {
     setCustomForms((state) => {
       return ({ ...state, [field]: false });
     });
-    form.resetField(field);
-    form.resetField(`${field}.name`, { defaultValue: '' });
+    // form.resetField(`${field}Name`, { defaultValue: '' });
   };
   return (
     <MinScreen>
       <Card className='w-full'>
         <CardHeader>
-          <CardTitle>{locale.title}</CardTitle>
+          <CardTitle>{locale.create.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -174,7 +174,7 @@ const CreateCollection = () => {
                       {locale.name}
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder={locale.namePlaceholder} {...field} />
+                      <Input placeholder={locale.create.namePlaceholder} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -189,7 +189,7 @@ const CreateCollection = () => {
                       {locale.description}
                     </FormLabel>
                     <FormControl>
-                      <Textarea placeholder={locale.descriptionPlaceholder} {...field} value={field.value ?? ''} />
+                      <Textarea placeholder={locale.create.descriptionPlaceholder} {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -220,51 +220,53 @@ const CreateCollection = () => {
                 )}
               />
               {customFields.map(customField => {
-                return customFieldMapper[customField].map(customFieldNum =>
-                  <div
-                    key={customFieldNum}
-                    className={`flex w-full justify-center items-end gap-2 ${customForms[customFieldNum] ? '' : 'hidden'}`}>
-                    <FormField
-                      control={form.control}
-                      name={(`${customFieldNum}.name`)}
-                      render={({ field }) => (
-                        <FormItem className='w-full'>
-                          <FormLabel>
-                            {locale[customField]}
-                          </FormLabel>
-                          <FormControl>
-                            <Input  {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={(`${customFieldNum}.state`)}
-                      render={({ field }) => (
-                        <FormItem className='w-full hidden '>
-                          <FormLabel>
-                            {locale[customField]}
-                          </FormLabel>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type='button' onClick={() => removeCustomField(customFieldNum)}><Trash2 /></Button>
-                  </div>);
+                return customFieldMapper[customField].map(customFieldNum => {
+                  return customForms[customFieldNum] &&
+                    <div
+                      key={customFieldNum}
+                      className={`flex w-full justify-center items-end gap-2`}>
+                      <FormField
+                        control={form.control}
+                        name={(`${customFieldNum}Name`)}
+                        render={({ field }) => (
+                          <FormItem className='w-full'>
+                            <FormLabel>
+                              {locale[customField]}
+                            </FormLabel>
+                            <FormControl>
+                              <Input  {...field} value={field.value ?? ''} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={(`${customFieldNum}State`)}
+                        render={({ field }) => (
+                          <FormItem className='w-full hidden '>
+                            <FormLabel>
+                              {locale[customField]}
+                            </FormLabel>
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button type='button' onClick={() => removeCustomField(customFieldNum)}><Trash2 /></Button>
+                    </div>;
+                });
               })}
               <div className='flex gap-2'>
                 <Select onValueChange={(value: keyof CustomFieldsType) => setCurrField(value)} value={currField}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={locale.customFieldPlaceholder} />
+                      <SelectValue placeholder={locale.create.customFieldPlaceholder} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -275,11 +277,13 @@ const CreateCollection = () => {
                     })}
                   </SelectContent>
                 </Select>
-                <Button type='button' onClick={selectCustomFields} disabled={currField === ''}>{locale.customFieldAdd}</Button>
+                <Button type='button' onClick={selectCustomFields} disabled={currField === ''}>{locale.create.customFieldAdd}</Button>
               </div>
               <div className='flex justify-between'>
-                <Button type="submit" disabled={createCollection.isLoading}>{createCollection.isLoading ? locale.creating : locale.create}</Button>
-                <Button variant='outline' onClick={() => router.back()}>{locale.goBack}</Button>
+                <Button type="submit" disabled={createCollection.isLoading}>{
+                  createCollection.isLoading ? locale.create.creating : locale.create.create
+                }</Button>
+                <Button variant='outline' onClick={() => router.back()}>{locale.create.goBack}</Button>
               </div>
             </form>
           </Form>

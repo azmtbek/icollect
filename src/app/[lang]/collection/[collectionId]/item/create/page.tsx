@@ -21,6 +21,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { useLocale } from '@/components/provider/locale-provider';
 import { type Locale } from '@/i18n-config';
 import Link from 'next/link';
+import { Item, itemSchema } from '@/lib/types/item';
 
 const customFields = [
   "customString",
@@ -59,26 +60,26 @@ const defaultCustomFields = {
   customDate3: false,
 };
 
-const itemSchema = z.object({
-  name: z.string().min(2),
-  tags: z.array(z.string().trim()),
-  newTags: z.array(z.string().trim().max(100, { message: "Currently, we only support max 100 character length tags" })),
+// const itemSchema = z.object({
+//   name: z.string().min(2),
+//   tags: z.array(z.string().trim()),
+//   newTags: z.array(z.string().trim().max(100, { message: "Currently, we only support max 100 character length tags" })),
 
-  customString1: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
-  customString2: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
-  customString3: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
-  customInteger1: z.coerce.number().optional(),
-  customInteger2: z.coerce.number().optional(),
-  customInteger3: z.coerce.number().optional(),
-  customText1: z.string().optional(),
-  customText2: z.string().optional(),
-  customText3: z.string().optional(),
-  customDate1: z.date().optional(),
-  customDate2: z.date().optional(),
-  customDate3: z.date().optional(),
-});
+//   customString1: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
+//   customString2: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
+//   customString3: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
+//   customInteger1: z.coerce.number().optional(),
+//   customInteger2: z.coerce.number().optional(),
+//   customInteger3: z.coerce.number().optional(),
+//   customText1: z.string().optional(),
+//   customText2: z.string().optional(),
+//   customText3: z.string().optional(),
+//   customDate1: z.date().optional(),
+//   customDate2: z.date().optional(),
+//   customDate3: z.date().optional(),
+// });
 
-type ItemType = z.infer<typeof itemSchema>;
+// type ItemType = z.infer<typeof itemSchema>;
 
 const CreateItem = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
@@ -87,8 +88,8 @@ const CreateItem = () => {
     data: collection,
   } = api.collection.getById.useQuery({ id: +collectionId });
 
-  const form = useForm<ItemType>({
-    resolver: zodResolver(itemSchema),
+  const form = useForm<Omit<Item, "id"> & { newTags: string[]; }>({
+    resolver: zodResolver(itemSchema.omit({ id: true }).extend({ newTags: z.array(z.string().nullish()).nullish() })),
     defaultValues: {
       name: "",
       tags: [],
@@ -125,12 +126,10 @@ const CreateItem = () => {
     }
   });
 
-  const onSubmit = (values: ItemType) => {
+  const onSubmit = (values: Omit<Item, "id"> & { newTags: string[]; }) => {
     createItem.mutate({
-      name: values.name,
+      ...values,
       collectionId: +collectionId,
-      tags: values.tags,
-      newTags: values.newTags,
     });
   };
   // const activeCustomFields = useMemo(() => {
@@ -201,7 +200,7 @@ const CreateItem = () => {
                     <FormLabel>{locale.tags}</FormLabel>
                     <MultiSelectTags
                       options={tags?.map(tag => ({ value: tag.name, label: tag.name })) ?? []}
-                      selected={field.value}
+                      selected={field.value as []}
                       onChange={field.onChange}
                       className="w-[30rem]"
                     />
@@ -281,7 +280,7 @@ const CreateItem = () => {
                               {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} value={field.value ?? ''} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -303,7 +302,7 @@ const CreateItem = () => {
                               {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
-                              <Input  {...field} type='number' />
+                              <Input  {...field} type='number' value={field.value ?? ''} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -325,7 +324,7 @@ const CreateItem = () => {
                               {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} value={field.value ?? undefined} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -368,7 +367,7 @@ const CreateItem = () => {
                               <PopoverContent className="w-auto p-0" align="start">
                                 <Calendar
                                   mode="single"
-                                  selected={field.value}
+                                  selected={field.value ?? undefined}
                                   onSelect={field.onChange}
                                   disabled={(date) =>
                                     date > new Date() || date < new Date("1900-01-01")
@@ -385,9 +384,10 @@ const CreateItem = () => {
                   });
 
               })}
+              <div> {JSON.stringify(form.formState.errors)}</div>
 
               <div className='flex justify-between' >
-                <Button type="submit">Create</Button>
+                <Button type="submit" disabled={createItem.isLoading}>{createItem.isLoading ? locale.creating : locale.create}</Button>
                 <Button variant='outline' onClick={() => router.back()}>Go back</Button>
               </div>
             </form>

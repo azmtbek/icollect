@@ -9,20 +9,20 @@
     "system": "sistema"
   },
   "collection": {
+    "name": "Nomi",
+    "description": "Tavsif",
+    "topic": "Mavzu",
+    "customString": "Qisqa Tekst",
+    "customText": "Tekst",
+    "customDate": "Sana",
+    "customInteger": "Raqam",
     "create": {
       "title": "Create A Collection",
-      "name": "Nomi",
       "namePlaceholder": "Kitobim",
-      "description": "Tavsif",
       "descriptionPlaceholder": "Kolleksiyangizni tavsiflang",
-      "topic": "Mavzu",
       "create": "Yarating",
       "creating": "Yaratilmoqda...",
       "goBack": "Ortga",
-      "customString": "Qisqa Tekst",
-      "customText": "Tekst",
-      "customDate": "Sana",
-      "customInteger": "Raqam",
       "customFieldPlaceholder": "Qo'shimcha maydon tanlang",
       "customFieldAdd": "Qo'shing"
     },
@@ -38,6 +38,8 @@
       "name": "Nomi",
       "tags": "Taglar Tanlang",
       "newTags": "Yangi Taglar Yarating",
+      "create": "Create",
+      "creating": "Creating...",
       "newTagsPlaceholder": "Yangi tag yaratish uchun 'Enter' ni bosing."
     }
   }

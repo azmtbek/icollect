@@ -29,7 +29,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Payment } from "./columns";
 import { DataTablePagination } from "@/components/custom/data-table-pagination";
 import { DataTableViewOptions } from "@/components/custom/data-table-column-toggle";
 

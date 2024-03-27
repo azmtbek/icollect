@@ -20,6 +20,7 @@ import { useLocale } from "@/components/provider/locale-provider";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Locale } from "@/i18n-config";
+import { Item } from "@/lib/types/item";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -31,7 +32,8 @@ import { Locale } from "@/i18n-config";
 //   text: string;
 // };
 
-export const columns: ColumnDef<Collection>[] = [
+
+export const columns: ColumnDef<Omit<Item, "newTags">>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -89,21 +91,38 @@ export const columns: ColumnDef<Collection>[] = [
   //   },
   // },
   {
-    accessorKey: "topicId",
+    accessorKey: "tags",
     header: "Topic",
     cell: ({ row }) => {
-      const { data: topic } = api.topic.getTopicById.useQuery({ id: row.original.topicId });
-      return topic?.name;
+      // const { data: topic } = api.tag..useQuery({ id: row.original.tags });
+      // return topic?.name;
+      return 'topic';
     }
   },
-  // {
-  //   accessorKey: "customString1Name",
-  //   header: "customString1Name"
-  // },
-  // {
-  //   accessorKey: "customString2Name",
-  //   header: "customString2Name"
-  // },
+  {
+    accessorKey: "customString1",
+    header: "customString1Name"
+  },
+  {
+    accessorKey: "customString2",
+    header: "customString2Name"
+  },
+  {
+    accessorKey: "customString3",
+    header: "customString3Name"
+  },
+  {
+    accessorKey: "customDate1",
+    header: "customDate1Name"
+  },
+  {
+    accessorKey: "customDate2",
+    header: "customDate2Name"
+  },
+  {
+    accessorKey: "customDate3",
+    header: "customDate3Name"
+  },
   // {
   //   id: "customString3Name",
   //   accessorFn: row => row.customString3State && row.customString3Name,

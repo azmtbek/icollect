@@ -9,20 +9,20 @@
     "system": "system"
   },
   "collection": {
+    "name": "Name",
+    "topic": "Topic",
+    "customString": "String Field",
+    "customText": "Text Field",
+    "customDate": "Date Field",
+    "customInteger": "Integer Field",
+    "description": "Description",
     "create": {
-      "title": "Kolleksiya Yarating",
-      "name": "Name",
+      "title": "Create Collection",
       "namePlaceholder": "My Book",
-      "description": "Description",
       "descriptionPlaceholder": "Describe Your Collection",
-      "topic": "Topic",
       "create": "Create",
       "creating": "Creating...",
       "goBack": "Go Back",
-      "customString": "String Field",
-      "customText": "Text Field",
-      "customDate": "Date Field",
-      "customInteger": "Integer Field",
       "customFieldPlaceholder": "Select Custom Field",
       "customFieldAdd": "Add Field"
     },
@@ -38,6 +38,8 @@
       "name": "Name",
       "tags": "Select Tags",
       "newTags": "Add New Tags",
+      "create": "Create",
+      "creating": "Creating...",
       "newTagsPlaceholder": "Press Enter to create a tag."
     }
   }

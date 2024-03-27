@@ -6,7 +6,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { itemTags, tags } from "@/server/db/schema";
+import { itemTags, items, tags } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 
 export const tagRouter = createTRPCRouter({
@@ -14,9 +14,51 @@ export const tagRouter = createTRPCRouter({
     .query(({ ctx }) => {
       return ctx.db.query.tags.findMany();
     }),
-  getItemTags: publicProcedure
+  getAllItemTags: publicProcedure
     .query(({ ctx }) => {
       return ctx.db.query.itemTags.findMany();
+    }),
+  getMultipleByItemId: publicProcedure
+    .input(z.object({
+      itemIds: z.array(z.number())
+    })).query(({ ctx, input }) => {
+      const x = input.itemIds.map(async (itemId) =>
+        await ctx.db.select(
+          {
+            itemId: items.id,
+            tags: tags.name
+          }
+        )
+          .from(itemTags)
+          .leftJoin(tags, eq(itemTags.tagId, tags.id))
+          .leftJoin(items, eq(itemTags.itemId, items.id))
+          .where(eq(items.id, itemId))
+      );
+      return x;
+    }),
+  getItemTags: publicProcedure
+    .input(z.object({
+      itemId: z.number()
+    }))
+    .query(async ({ ctx, input }) => {
+      const itemTag = await ctx.db.query.itemTags.findMany({ where: eq(itemTags.itemId, input.itemId) });
+    }),
+  getItemTagNames: publicProcedure
+    .input(z.object({
+      itemId: z.number().optional()
+    }))
+    .query(({ ctx, input }) => {
+      if (!input.itemId) return [];
+      return ctx.db.select(
+        // {
+        //   // itemId: items.id,
+        //   tags: tags.name
+        // }
+      )
+        .from(itemTags)
+        .leftJoin(tags, eq(itemTags.tagId, tags.id))
+        .leftJoin(items, eq(itemTags.itemId, items.id))
+        .where(eq(items.id, input.itemId));
     }),
   deleteItemTag: adminProcedure.input(z.object({
     itemId: z.number(),

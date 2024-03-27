@@ -9,7 +9,6 @@ import { useParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { DataTable } from './data-table';
 import { columns } from './col-columns';
-import { Collection } from '@/lib/types';
 
 const Collections = () => {
   const { lang } = useParams<{ lang: Locale; }>();
@@ -17,21 +16,19 @@ const Collections = () => {
   const localeTitles = useLocale((state) => state.titles);
   const { data: collections } = api.collection.getUserCollections.useQuery();
   const filteredCollections = useMemo(() => {
+    console.log(collections);
+
     return collections ?? [];
   }, [collections]);
   return (
-    <MinScreen>
-      <div>
+    <>
+      <div className='flex items-center justify-between w-full'>
+        <div className='text-2xl'>{localeTitles.collections}</div>
         <Link href={`/${lang}/collection/create`}><Button>{locale.addCollection}</Button></Link>
       </div>
-      <div>{localeTitles.collections}</div>
-      {filteredCollections.map(col =>
-        <div key={col.id}><Link href={`/${lang}/collection/${col.id}`}>
-          {col.name}
-        </Link>
-        </div>)}
+
       <DataTable data={filteredCollections} columns={columns} />
-    </MinScreen>
+    </>
   );
 };
 
