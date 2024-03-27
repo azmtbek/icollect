@@ -18,14 +18,12 @@ export const Header = async ({ lang }: Props) => {
     <header className='sticky h-16 pt-3 w-full border-b-2'>
       <div className='flex justify-between items-center container'>
         <div className='flex gap-2 items-center'>
-          <Link href={`/${lang}`} className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>
+          <Link href={`/${lang}`}
+            className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>
             iCollect
           </Link>
           <ThemeButton dictionary={dictionary.theme} />
           <LocaleSwitcher />
-        </div>
-        <div></div>
-        <div className='flex gap-4 items-center'>
           {currUser?.isAdmin &&
             <Link href={`/${lang}/admin`}>
               <Button variant={'link'} className='text-xl'>Admin</Button>
@@ -36,7 +34,10 @@ export const Header = async ({ lang }: Props) => {
               <Button variant={'link'} className='text-xl'>{dictionary.titles.collections}</Button>
             </Link>
           }
-          {currUser?.name}
+        </div>
+        <div></div>
+        <div className='flex gap-4 items-center'>
+          <Button variant={'secondary'}>{currUser?.name}</Button>
           {currUser ?
             <SignOut /> :
             <SignIn />}

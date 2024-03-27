@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { DataTable } from './data-table';
 import { columns } from './columns';
+import { CSVLink } from "react-csv";
 
 const Collections = () => {
   const { lang } = useParams<{ lang: Locale; }>();
@@ -20,11 +21,18 @@ const Collections = () => {
 
     return collections ?? [];
   }, [collections]);
+
   return (
     <>
       <div className='flex items-center justify-between w-full'>
         <div className='text-2xl'>{localeTitles.collections}</div>
-        <Link href={`/${lang}/collection/create`}><Button>{locale.addCollection}</Button></Link>
+        <div>
+          <div className='flex items-center gap-3'>
+            <CSVLink data={filteredCollections} filename='data.csv'> <Button variant={'outline'}>Export to CSV</Button></CSVLink>
+            <Link href={`/${lang}/collection/create`}><Button>{locale.addCollection}</Button></Link>
+          </div>
+        </div>
+
       </div>
 
       <DataTable data={filteredCollections} columns={columns} />

@@ -21,15 +21,6 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Locale } from "@/i18n-config";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-// export type Payment = {
-//   id: string;
-//   amount: number;
-//   status: "pending" | "processing" | "success" | "failed";
-//   email: string;
-//   text: string;
-// };
 
 export const columns: ColumnDef<Collection>[] = [
   {
@@ -61,33 +52,10 @@ export const columns: ColumnDef<Collection>[] = [
   {
     accessorKey: "description",
     header: ({ column }) => {
-      // return (
-      //   <Button
-      //     variant="ghost"
-      //     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      //   >
-      //     Email
-      //     <ArrowUpDown className="ml-2 h-4 w-4" />
-      //   </Button>
-      // );
       const locale = useLocale(state => state.collection);
-
-      return < DataTableColumnHeader column={column} title={locale.description} />;
+      return <DataTableColumnHeader column={column} title={locale.description} />;
     },
   },
-  // {
-  //   accessorKey: "amount",
-  //   header: () => <div className="text-right">Amount</div>,
-  //   cell: ({ row }) => {
-  //     const amount = parseFloat(row.getValue("amount"));
-  //     const formatted = new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: "USD",
-  //     }).format(amount);
-
-  //     return <div className="text-right font-medium">{formatted}</div>;
-  //   },
-  // },
   {
     accessorKey: "topicId",
     header: "Topic",

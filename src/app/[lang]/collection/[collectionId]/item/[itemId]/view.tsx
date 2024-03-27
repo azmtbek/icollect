@@ -50,8 +50,8 @@ const Item = () => {
 
               return <div>
                 <div className='text-xl w-full'>
-                  <div className='pb-4 flex items-center justify-start'>
-                    <Separator className='w-1/6' />
+                  <div className='py-4 flex items-center justify-center'>
+                    <Separator className='w-1/12' />
                   </div>
                   {collection[`${col}Name` as keyof Collection]}:
                 </div>
