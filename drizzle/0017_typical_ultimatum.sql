@@ -1,0 +1,1 @@
+ALTER TABLE "icollect_tag" ALTER COLUMN "count" SET NOT NULL;

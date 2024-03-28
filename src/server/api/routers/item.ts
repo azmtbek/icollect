@@ -2,12 +2,13 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
+  protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { itemTags, items, tags } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
-import { TRPCError } from "@trpc/server";
-import { itemSchema } from "@/lib/types/item";
+import { SQL, eq, inArray, sql } from "drizzle-orm";
+import { createItemSchema, itemSchema } from "@/lib/types/item";
+import { increment } from "@/server/db";
 
 export const itemRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -19,12 +20,7 @@ export const itemRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const reItems = await ctx.db.select()
         .from(items)
-        // .leftJoin(items, eq(itemTags.itemId, items.id))
-        // .leftJoin(tags, eq(itemTags.tagId, tags.id))
         .where(eq(items.collectionId, input.collectionId));
-      // const reItems = await ctx.db.query.items.findMany({
-      //   where: eq(items.collectionId, input.collectionId)
-      // });
       return reItems;
     }),
   getById: publicProcedure
@@ -32,21 +28,38 @@ export const itemRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.db.query.items.findFirst({ where: eq(items.id, +input.itemId) });
     }),
-  create: publicProcedure
-    .input(itemSchema.omit({ id: true }).extend({ newTags: z.array(z.string()), collectionId: z.number() }))
+  create: protectedProcedure
+    .input(createItemSchema)
     .mutation(async ({ ctx, input }) => {
-      const item = await ctx.db.insert(items).values(input).returning({ id: items.id });
+      const { newTags, tags: inputTags, ...rest } = input;
+      // item insert
+      let item = await ctx.db.insert(items).values(rest).returning({ id: items.id });
+      const itemId = item[0] && item[0].id;
 
+      // create new tags
       let createdTags: { id: number; }[] = [];
-      if (input.newTags.length > 0)
-        createdTags = await ctx.db.insert(tags).values(
-          input.newTags.map((tag) => ({ name: tag }))
-        ).returning({ id: tags.id });
+      if (newTags)
+        createdTags = await ctx.db
+          .insert(tags)
+          .values(newTags.map((tag) => ({ name: tag })))
+          .onConflictDoUpdate({ target: tags.id, set: { count: increment(tags.count) } })
+          .returning({ id: tags.id });
 
-      const allTags = [...(input?.tags as []), ...createdTags.map(t => t.id)];
+      const allTagIds = [...(inputTags ? inputTags.map(t => +t) : []), ...createdTags.map(t => t.id)];
 
-      if (allTags.length > 0) {
-        await ctx.db.insert(itemTags).values(allTags.map(tag => ({ itemId: item[0]!.id, tagId: tag })));
+      // create case for single update query
+      const sqlChunks: SQL[] = [];
+      sqlChunks.push(sql`(case`);
+      for (const tagId of allTagIds) {
+        sqlChunks.push(sql`when ${tags.id} = ${tagId} then ${increment(tags.count)}`);
+      }
+      sqlChunks.push(sql`end)`);
+      const finalSql: SQL = sql.join(sqlChunks, sql.raw(" "));
+
+      // update tags count  and insert itemTags
+      if (allTagIds.length > 0 && itemId) {
+        await ctx.db.update(tags).set({ count: finalSql }).where(inArray(tags.id, allTagIds));
+        await ctx.db.insert(itemTags).values(allTagIds.map(tag => ({ itemId: itemId, tagId: tag })));
       }
       return item;
     }),

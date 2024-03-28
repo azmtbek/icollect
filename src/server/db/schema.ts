@@ -29,6 +29,7 @@ export const collections = pgTable("collection", {
   createdById: text("createdById")
     .references(() => users.id, { onDelete: "set null" }),
   isDeleted: boolean("isDeleted").default(false),
+  itemCount: integer("itemCount").notNull().default(0),
 
   // custom fields 
   customString1State: boolean("custom_string1_state").notNull().default(false),
@@ -77,6 +78,7 @@ export const items = pgTable("item", {
   createdById: text("createdById")
     .references(() => users.id, { onDelete: "set null" }),
   isDeleted: boolean("isDeleted").default(false),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
 
   // custom fields 
   customString1: varchar("custom_string1", { length: 256 }),
@@ -113,7 +115,8 @@ export const itemTags = pgTable(
 
 export const tags = pgTable("tag", {
   id: serial("id").notNull().primaryKey(),
-  name: text("name").unique().notNull()
+  name: text("name").unique().notNull(),
+  count: integer("count").notNull().default(0)
 });
 
 export const comments = pgTable(

@@ -8,7 +8,7 @@ import { MultiSelectTags } from '@/components/custom/multi-select-tags';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Badge } from '@/components/ui/badge';
 import { CalendarIcon, X } from 'lucide-react';
@@ -20,7 +20,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { useLocale } from '@/components/provider/locale-provider';
 import { type Locale } from '@/i18n-config';
 import Link from 'next/link';
-import { Item, createItemSchema } from '@/lib/types/item';
+import { type CreateItem, Item, createItemSchema } from '@/lib/types/item';
 import { collectionToItem } from '@/lib/collection-item-mapper';
 
 const customFields = [
@@ -61,14 +61,13 @@ const defaultCustomFields = {
 };
 
 const CreateItem = () => {
-  const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
   const router = useRouter();
-  const {
-    data: collection,
-  } = api.collection.getById.useQuery({ id: +collectionId });
+  const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
+  const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
+  const { data: tags } = api.tag.getAll.useQuery();
 
-  const form = useForm<Omit<Item, "id"> & { newTags: string[]; }>({
-    resolver: zodResolver(createItemSchema),
+  const form = useForm<Omit<CreateItem, "collectionId">>({
+    resolver: zodResolver(createItemSchema.omit({ collectionId: true })),
     defaultValues: {
       name: "",
       tags: [],
@@ -87,32 +86,39 @@ const CreateItem = () => {
       customDate3: undefined,
     }
   });
-  const { data: tags } = api.tag.getAll.useQuery();
 
   const createItem = api.item.create.useMutation({
     onSuccess(data) {
       const id = data[0]?.id ?? '';
-      toast({
-        description: "Item created.",
-      });
-
+      toast({ description: "Item created." });
       router.push(`/${lang}/collection/${collectionId}/item/${id}`);
     },
     onError(error) {
-      toast({
-        description: error.message
-      });
+      toast({ description: error.message });
     }
   });
 
-  const onSubmit = (values: Omit<Item, "id"> & { newTags: string[]; }) => {
+  const onSubmit = (values: Omit<CreateItem, "collectionId">) => {
+    console.log("this tags", values.tags);
+    // const selectedTagIds = tags?.filter(t => values.tags?.includes(t.name)).map(t => t.id);
     createItem.mutate({
       ...values,
       collectionId: +collectionId,
+      // tags: selectedTagIds
     });
   };
-
   const [customForms, setCustomForms] = useState(defaultCustomFields);
+  const customFieldsMemo = useMemo(() => {
+
+    const customItemFieldNames = collectionToItem(collection);
+    // return Object.keys(defaultCustomFields).map(field => {
+    //   if (customitemFieldNames.includes(field)) {
+    //     return ({ field: true });
+    //   }
+    //   return field;
+    // });
+    return customItemFieldNames;
+  }, [collection]);
   useEffect(() => {
     if (!collection) return;
     const customitemFieldNames = collectionToItem(collection);
@@ -129,15 +135,15 @@ const CreateItem = () => {
 
   const [tagInput, setTagInput] = useState('');
   const locale = useLocale((state) => state.item.create);
-  const localeCollection = useLocale((state) => state.collection.view);
+  const localeCollection = useLocale((state) => state.collection);
 
 
-  const onCreateTag = (value: string[], onChange: (val: string[]) => void) => {
-
+  const onCreateTag = (value: string[] | undefined, onChange: (val: string[]) => void) => {
     if (tags?.find(t => t.name === tagInput)) {
       toast({ description: "This tag already exists. Please select it from above fieled." });
       return;
     }
+    if (!value) return;
     const selected = value;
     onChange(
       selected?.includes(tagInput)
@@ -153,7 +159,7 @@ const CreateItem = () => {
         <CardHeader>
           <CardTitle>{locale.title}</CardTitle>
           <CardDescription>
-            {localeCollection.title} :{' '}
+            {localeCollection.view.title} :{' '}
             <Link href={`/${lang}/collection/${collectionId}`}>
               {collection?.name}
             </Link>
@@ -184,8 +190,13 @@ const CreateItem = () => {
                   <FormItem>
                     <FormLabel>{locale.tags}</FormLabel>
                     <MultiSelectTags
-                      options={tags?.map(tag => ({ value: tag.name, label: tag.name, id: tag.id })) ?? []}
-                      selected={field.value as string[]}
+                      options={
+                        Object.fromEntries(
+                          tags?.map(tag =>
+                            ([tag.id, { value: tag.name, label: tag.name, id: tag.id }])
+                          ) ?? []
+                        )}
+                      selected={field.value || []}
                       onChange={field.onChange}
                       className="w-80 md:w-96"
                     />
@@ -207,9 +218,10 @@ const CreateItem = () => {
                           key={tag}
                           variant="secondary"
                           className='px-2.5 text-xs py-0 ring-1 ring-gray-400'
-                          onClick={() => {
-
+                          onClick={(e) => {
+                            if (!field.value) return e.preventDefault();
                             const selected = field.value;
+
                             field.onChange(
                               selected?.includes(tag)
                                 ? selected.filter((item) => item !== tag)
@@ -227,12 +239,14 @@ const CreateItem = () => {
                           value={tagInput}
                           onChange={(e) => { setTagInput(e.target.value); }}
                           onKeyDown={(e) => {
+                            if (!field.value) return e.preventDefault();
                             if (e.key === 'Enter') {
                               e.preventDefault();
                               tagInput && onCreateTag(field.value, field.onChange);
                             }
                           }} />
                         <Button onClick={(e) => {
+                          if (!field.value) return e.preventDefault();
                           e.preventDefault();
                           tagInput && onCreateTag(field.value, field.onChange);
                         }}
@@ -243,6 +257,10 @@ const CreateItem = () => {
                   </FormItem>
                 )}
               />
+
+              {customFieldsMemo.map(c => {
+                return <div>div</div>;
+              })}
               {customFields.map(customField => {
                 if (customField == 'customString')
                   return customFieldMapper[customField].map(customFieldNum => {
@@ -259,7 +277,7 @@ const CreateItem = () => {
                               {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
-                              <Input {...field} value={field.value ?? ''} />
+                              <Input {...field} value={field.value ?? ''} placeholder={localeCollection.customString} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -281,7 +299,7 @@ const CreateItem = () => {
                               {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
-                              <Input  {...field} type='number' value={field.value ?? ''} />
+                              <Input  {...field} type='number' value={field.value ?? ''} placeholder={localeCollection.customInteger} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -303,7 +321,7 @@ const CreateItem = () => {
                               {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <FormControl>
-                              <Input {...field} value={field.value ?? undefined} />
+                              <Input {...field} value={field.value ?? undefined} placeholder={localeCollection.customText} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -321,7 +339,7 @@ const CreateItem = () => {
                         name={customFieldNum}
                         render={({ field }) => (
                           <FormItem className='w-full'>
-                            <FormLabel>
+                            <FormLabel className='pr-2'>
                               {collection?.[`${customFieldNum}Name`]}
                             </FormLabel>
                             <Popover>
@@ -337,7 +355,7 @@ const CreateItem = () => {
                                     {field.value ? (
                                       format(field.value, "PPP")
                                     ) : (
-                                      <span>Pick a date</span>
+                                      <span>{localeCollection.customDate}</span>
                                     )}
                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                   </Button>

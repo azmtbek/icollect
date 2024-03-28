@@ -1,0 +1,1 @@
+ALTER TABLE "icollect_tag" ADD COLUMN "count" integer DEFAULT 0;

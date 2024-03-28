@@ -3,7 +3,8 @@ import { z } from "zod";
 export const itemSchema = z.object({
   id: z.number(),
   name: z.string().min(1),
-  tags: z.array(z.string().nullish()).nullish(),
+  tags: z.array(z.coerce.number()).nullish(),
+  collectionId: z.coerce.number(),
   customString1: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).nullish(),
   customString2: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).nullish(),
   customString3: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).nullish(),
@@ -24,7 +25,7 @@ export const itemSchema = z.object({
 export const createItemSchema = itemSchema
   .omit({ id: true })
   .extend({
-    newTags: z.array(z.string().nullish()).nullish()
+    newTags: z.array(z.string()).nullish()
   });
 
 export type Item = z.infer<typeof itemSchema>;

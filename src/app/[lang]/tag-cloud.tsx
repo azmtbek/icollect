@@ -1,16 +1,8 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { api } from '@/trpc/react';
+import { useMemo } from 'react';
 import { type ColorOptions, TagCloud } from 'react-tagcloud';
-
-const data = [
-  { value: 'JavaScript', count: 38 },
-  { value: 'React', count: 300 },
-  { value: 'Nodejs', count: 28 },
-  { value: 'Express.js', count: 25 },
-  { value: 'HTML5', count: 133 },
-  { value: 'MongoDB', count: 18 },
-  { value: 'CSS3', count: 10020 },
-];
 
 
 
@@ -30,14 +22,19 @@ const customRenderer = (tag: any, size: number, color: string) => {
 
 
 const CustomTagsCloud = ({ className }: { className?: string; }) => {
+  const { data: tags } = api.tag.getAll.useQuery();
+  const mappedTags = useMemo(() => {
+    return tags?.map(tag => ({ ...tag, value: tag.name })) ?? [];
+  }, [tags]);
 
   return <Card className={className}>
     <CardHeader>
       <CardTitle>Tags</CardTitle>
+
     </CardHeader>
     <CardContent>
       <TagCloud
-        tags={data}
+        tags={mappedTags}
         colorOptions={options}
         onClick={(tag) => console.log('clicking on tag:', tag)}
         minSize={20} maxSize={50}

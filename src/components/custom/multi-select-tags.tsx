@@ -19,34 +19,38 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 export type OptionType = {
-  label: string;
-  value: string;
+  [id: number]: {
+    label: string;
+    value: string;
+    id: number;
+  };
 };
 
 interface MultiSelectProps {
-  options: OptionType[];
-  selected: string[];
-  onChange: React.Dispatch<React.SetStateAction<string[]>>;
+  options: OptionType;
+  selected: number[];
+  onChange: React.Dispatch<React.SetStateAction<number[]>>;
   className?: string;
-  // newTags: string[];
-  // setNewTags: React.Dispatch<React.SetStateAction<string[]>>;
 }
+
+// const selectMapper = (id,) => {
+
+// };
 
 function MultiSelectTags({
   options,
   selected,
   onChange,
   className,
-  // newTags,
-  // setNewTags,
   ...props
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
 
-  const handleUnselect = (item: string) => {
+  const handleUnselect = (item: number) => {
     onChange(selected.filter((i) => i !== item));
     // setNewTags(newTags.filter((i) => i !== item));
   };
+  // const select;
 
   return (
     <Popover open={open} onOpenChange={setOpen} {...props}>
@@ -67,7 +71,7 @@ function MultiSelectTags({
                 className="mr-1 mb-1 ring-1 ring-gray-400"
                 onClick={() => handleUnselect(item)}
               >
-                {item}
+                {options?.[item]?.value}
                 <button
                   className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   onKeyDown={(e) => {
@@ -96,15 +100,16 @@ function MultiSelectTags({
             <CommandEmpty>No tag found. Create a tag in the next field.</CommandEmpty>
             {
               <CommandGroup className="max-h-64 overflow-auto">
-                {options.map((option) => (
-
-                  <CommandItem
-                    key={option.value}
+                {Object.values(options).map((opt) => {
+                  // const opt = Object.values(option)[0];
+                  if (!opt) return;
+                  return <CommandItem
+                    key={opt.id}
                     onSelect={() => {
                       onChange(
-                        selected.includes(option.value)
-                          ? selected.filter((item) => item !== option.value)
-                          : [...selected, option.value]
+                        selected.includes(opt.id)
+                          ? selected.filter((item) => item !== opt.id)
+                          : [...selected, opt.id]
                       );
                       setOpen(true);
                     }}
@@ -112,15 +117,15 @@ function MultiSelectTags({
                     <Check
                       className={cn(
                         'mr-2 h-4 w-4',
-                        selected.includes(option.value)
+                        selected.includes(opt.id)
                           ? 'opacity-100'
                           : 'opacity-0'
                       )}
                     />
-                    {option.label}
-                  </CommandItem>
+                    {opt.label}
+                  </CommandItem>;
 
-                ))}
+                })}
               </CommandGroup>
             }
           </CommandList>
