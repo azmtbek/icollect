@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/custom/data-tabe-column-header";
-import { Collection } from "@/lib/types/collection";
+import { Collection, CollectionCustomFieldKeys, CollectionCustomFields } from "@/lib/types/collection";
 import { api } from "@/trpc/react";
 import { useLocale } from "@/components/provider/locale-provider";
 import Link from "next/link";
@@ -22,6 +22,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Locale } from "@/i18n-config";
 import { Item } from "@/lib/types/item";
 import { useMemo } from "react";
+import { collectionToItem } from "@/lib/collection-item-mapper";
 
 
 export const useColumns = () => {
@@ -64,28 +65,19 @@ export const useColumns = () => {
           return 'Tags';
         }
       },
-      ...(!collection ? [] : Object.keys(collection)
-        .filter(c => c.startsWith('custom') && c.endsWith("State") && collection[c as keyof Collection])
-        .map(key => {
-          console.log('key', key);
-          return `${key.replace("State", 'Name')}`;
-        })
+      ...(collectionToItem(collection)
+        .map(key => key + "Name" as CollectionCustomFieldKeys)
         .map((key) => ({
-          id: collection[key as keyof Collection] as string,
+          id: collection?.[key] as string,
           accessorKey: key.replace("Name", ""),
-          header: ({ column }: { column: any; }) => {
-
-            return <DataTableColumnHeader column={column} title={collection[key as keyof Collection] as string} />;
-          },
+          header: ({ column }: { column: any; }) =>
+            <DataTableColumnHeader column={column} title={collection?.[key] as string} />,
           cell: ({ row }: { row: Row<Item>; }) => {
-            // console.log('val', key, row.getValue(key.replace("Name", '')));
-            console.log('sell', key.replace("", ""));
-            console.log(row.getValue(collection[key as keyof Collection] as string));
-            let itm: any = row.getValue(collection[key as keyof Collection] as string);
-            if (!itm) return <>{itm || ''}</>;
+            let itm: any = row.getValue(collection?.[key] as string);
+            if (!itm) return <>{itm}</>;
             if (itm instanceof Date)
               itm = new Intl.DateTimeFormat("en-US").format(itm);
-            return <div>{itm || ""}</div>;
+            return <div>{itm}</div>;
           },
         }))),
       {

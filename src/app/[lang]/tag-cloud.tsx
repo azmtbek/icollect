@@ -16,7 +16,7 @@ const data = [
 
 const options: ColorOptions = {
   luminosity: 'bright',
-  hue: 'green',
+  hue: 'blue',
 };
 
 

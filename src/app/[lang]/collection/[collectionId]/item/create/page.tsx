@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Badge } from '@/components/ui/badge';
 import { CalendarIcon, X } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -21,7 +20,8 @@ import { Calendar } from '@/components/ui/calendar';
 import { useLocale } from '@/components/provider/locale-provider';
 import { type Locale } from '@/i18n-config';
 import Link from 'next/link';
-import { Item, itemSchema } from '@/lib/types/item';
+import { Item, createItemSchema } from '@/lib/types/item';
+import { collectionToItem } from '@/lib/collection-item-mapper';
 
 const customFields = [
   "customString",
@@ -60,27 +60,6 @@ const defaultCustomFields = {
   customDate3: false,
 };
 
-// const itemSchema = z.object({
-//   name: z.string().min(2),
-//   tags: z.array(z.string().trim()),
-//   newTags: z.array(z.string().trim().max(100, { message: "Currently, we only support max 100 character length tags" })),
-
-//   customString1: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
-//   customString2: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
-//   customString3: z.string().max(256, { message: 'String is supported only 256 characters, use text instead.' }).optional(),
-//   customInteger1: z.coerce.number().optional(),
-//   customInteger2: z.coerce.number().optional(),
-//   customInteger3: z.coerce.number().optional(),
-//   customText1: z.string().optional(),
-//   customText2: z.string().optional(),
-//   customText3: z.string().optional(),
-//   customDate1: z.date().optional(),
-//   customDate2: z.date().optional(),
-//   customDate3: z.date().optional(),
-// });
-
-// type ItemType = z.infer<typeof itemSchema>;
-
 const CreateItem = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
   const router = useRouter();
@@ -89,7 +68,7 @@ const CreateItem = () => {
   } = api.collection.getById.useQuery({ id: +collectionId });
 
   const form = useForm<Omit<Item, "id"> & { newTags: string[]; }>({
-    resolver: zodResolver(itemSchema.omit({ id: true }).extend({ newTags: z.array(z.string().nullish()).nullish() })),
+    resolver: zodResolver(createItemSchema),
     defaultValues: {
       name: "",
       tags: [],
@@ -132,29 +111,20 @@ const CreateItem = () => {
       collectionId: +collectionId,
     });
   };
-  // const activeCustomFields = useMemo(() => {
-
-  //   return customFieldNames.filter(c => x?.includes(c));
-  // }, [collection]);
 
   const [customForms, setCustomForms] = useState(defaultCustomFields);
   useEffect(() => {
     if (!collection) return;
-    const x = collection && Object.keys(collection)
-      .filter((c) =>
-        c.startsWith('custom') &&
-        c.endsWith('State') &&
-        collection[c as keyof typeof collection])
-      .map((c) => c.replace('State', ''));
+    const customitemFieldNames = collectionToItem(collection);
+
     setCustomForms((state) => {
       for (const s in state) {
-        if (x.includes(s)) {
+        if (customitemFieldNames.includes(s)) {
           state[s as keyof typeof state] = true;
         }
       }
       return state;
     });
-    console.log(collection);
   }, [collection]);
 
   const [tagInput, setTagInput] = useState('');
@@ -162,9 +132,24 @@ const CreateItem = () => {
   const localeCollection = useLocale((state) => state.collection.view);
 
 
+  const onCreateTag = (value: string[], onChange: (val: string[]) => void) => {
+
+    if (tags?.find(t => t.name === tagInput)) {
+      toast({ description: "This tag already exists. Please select it from above fieled." });
+      return;
+    }
+    const selected = value;
+    onChange(
+      selected?.includes(tagInput)
+        ? selected.filter((item: string) => item !== tagInput)
+        : [...selected, tagInput]
+    );
+    setTagInput('');
+  };
+
   return (
     <MinScreen>
-      <Card className='w-80 md:w-96'>
+      <Card className='w-full md:w-2/4'>
         <CardHeader>
           <CardTitle>{locale.title}</CardTitle>
           <CardDescription>
@@ -199,10 +184,10 @@ const CreateItem = () => {
                   <FormItem>
                     <FormLabel>{locale.tags}</FormLabel>
                     <MultiSelectTags
-                      options={tags?.map(tag => ({ value: tag.name, label: tag.name })) ?? []}
-                      selected={field.value as []}
+                      options={tags?.map(tag => ({ value: tag.name, label: tag.name, id: tag.id })) ?? []}
+                      selected={field.value as string[]}
                       onChange={field.onChange}
-                      className="w-[30rem]"
+                      className="w-80 md:w-96"
                     />
                     <FormMessage />
                   </FormItem>
@@ -237,28 +222,22 @@ const CreateItem = () => {
                       )}
                     </FormDescription>
                     <FormControl>
-                      <Input placeholder={locale.newTagsPlaceholder}
-                        // {...field}
-                        value={tagInput}
-                        onChange={(e) => { setTagInput(e.target.value); }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && tagInput) {
-                            if (tags?.find(t => t.name === tagInput)) {
+                      <div className='flex gap-2'>
+                        <Input placeholder={locale.newTagsPlaceholder}
+                          value={tagInput}
+                          onChange={(e) => { setTagInput(e.target.value); }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
                               e.preventDefault();
-                              toast({ description: "This tag already exists. Please select it from above fieled." });
-                              return;
+                              tagInput && onCreateTag(field.value, field.onChange);
                             }
-                            console.log(tagInput);
-                            const selected = field.value;
-                            field.onChange(
-                              selected?.includes(tagInput)
-                                ? selected.filter((item) => item !== tagInput)
-                                : [...selected, tagInput]
-                            );
-                            setTagInput('');
-                            e.preventDefault();
-                          }
-                        }} />
+                          }} />
+                        <Button onClick={(e) => {
+                          e.preventDefault();
+                          tagInput && onCreateTag(field.value, field.onChange);
+                        }}
+                          disabled={!tagInput}>Create A Tag</Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -384,10 +363,11 @@ const CreateItem = () => {
                   });
 
               })}
-              <div> {JSON.stringify(form.formState.errors)}</div>
-
               <div className='flex justify-between' >
-                <Button type="submit" disabled={createItem.isLoading}>{createItem.isLoading ? locale.creating : locale.create}</Button>
+                <Button type="submit"
+                  disabled={createItem.isLoading}>
+                  {createItem.isLoading ? locale.creating : locale.create}
+                </Button>
                 <Button variant='outline' onClick={() => router.back()}>Go back</Button>
               </div>
             </form>
@@ -398,4 +378,4 @@ const CreateItem = () => {
   );
 };
 
-export default CreateItem;;
+export default CreateItem;;;

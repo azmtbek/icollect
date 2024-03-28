@@ -38,10 +38,10 @@
       "title": "Create An Item",
       "name": "Name",
       "tags": "Select Tags",
-      "newTags": "Add New Tags",
+      "newTags": "Create Tags",
       "create": "Create",
       "creating": "Creating...",
-      "newTagsPlaceholder": "Press Enter to create a tag."
+      "newTagsPlaceholder": "Create a new tag."
     }
   }
 }

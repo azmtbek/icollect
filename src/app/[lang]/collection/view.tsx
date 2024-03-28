@@ -1,5 +1,4 @@
 'use client';
-import MinScreen from '@/components/layout/min-screen';
 import { useLocale } from '@/components/provider/locale-provider';
 import { Button } from '@/components/ui/button';
 import { type Locale } from '@/i18n-config';
@@ -17,8 +16,6 @@ const Collections = () => {
   const localeTitles = useLocale((state) => state.titles);
   const { data: collections } = api.collection.getUserCollections.useQuery();
   const filteredCollections = useMemo(() => {
-    console.log(collections);
-
     return collections ?? [];
   }, [collections]);
 

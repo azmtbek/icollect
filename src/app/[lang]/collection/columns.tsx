@@ -69,7 +69,6 @@ export const columns: ColumnDef<Collection>[] = [
     cell: ({ row }) => {
       const collection = row.original;
       const { lang } = useParams<{ lang: Locale; }>();
-      const router = useRouter();
       return (
         <div className="text-right">
           <DropdownMenu>
@@ -82,7 +81,9 @@ export const columns: ColumnDef<Collection>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Links</DropdownMenuLabel>
               <DropdownMenuItem>
-                <Link href={`/${lang}/collection/${collection?.id}/`} className="w-full h-full underline-offset-4 hover:underline">
+                <Link
+                  href={`/${lang}/collection/${collection?.id}/`}
+                  className="w-full h-full underline-offset-4 hover:underline">
                   Go to Collection
                 </Link>
               </DropdownMenuItem>
