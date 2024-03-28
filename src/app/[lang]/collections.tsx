@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 const Collections = ({ className }: { className: string; }) => {
-  const { data: collections, isLoading } = api.collection.getAll.useQuery();
+  const { data: collections, isLoading } = api.collection.getBiggestFive.useQuery();
   const { lang } = useParams<{ lang: Locale; }>();
   return < Card className={className} >
     <CardHeader>
@@ -27,7 +27,6 @@ const Collections = ({ className }: { className: string; }) => {
           </div>)
         }
       </div>
-
     </CardContent>
   </Card >;
 };

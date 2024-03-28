@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { type Locale } from '@/i18n-config';
-import { type Collection, collectionSchema } from '@/lib/types/collection';
+import { collectionSchema, type CreateCollection } from '@/lib/types/collection';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
@@ -67,8 +67,6 @@ const defaultCustomFields = {
 
 // TODO: test results
 type CustomFieldsType = typeof defaultCustomFields;
-// type CustomFieldsType = Omit<Collection, "id" | "name" | "topicId" | "description">;
-type CreateCollection = Omit<Collection, "id">;
 
 const CreateCollection = () => {
   const router = useRouter();
@@ -76,7 +74,7 @@ const CreateCollection = () => {
   const form = useForm<CreateCollection>({
     resolver: zodResolver(collectionSchema.omit({ id: true })),
     defaultValues: {
-      // name: "",
+      // name: "name",
       // topicId: undefined,
       // description: "",
       // customString1: undefined,

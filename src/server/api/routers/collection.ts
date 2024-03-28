@@ -6,7 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { collections } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { collectionSchema } from "@/lib/types/collection";
 
@@ -18,6 +18,10 @@ export const collectionRouter = createTRPCRouter({
   getAll: publicProcedure
     .query(({ ctx }) => {
       return ctx.db.query.collections.findMany();
+    }),
+  getBiggestFive: publicProcedure
+    .query(({ ctx }) => {
+      return ctx.db.query.collections.findMany({ orderBy: desc(collections.itemCount), limit: 5 });
     }),
   getById: publicProcedure
     .input(z.object({ id: z.number() }))
