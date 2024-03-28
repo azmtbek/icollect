@@ -9,23 +9,27 @@ import { useParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useColumns } from './columns';
 import { DataTable } from './data-table';
+import Image from 'next/image';
 
 const Collection = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
   const locale = useLocale((state) => state.collection.view);
   const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
   const { data: items } = api.item.getCollectionItems.useQuery({ collectionId: +collectionId });
-  const { data: tags } = api.tag.getItemTagNames.useQuery({ itemId: items?.[0]?.id });
+  // const { data: tags } = api.tag.getItemTagNames.useQuery({ itemId: items?.[0]?.id });
   const filteredItems = useMemo(() => {
     console.log(items);
-    return items?.map(i => ({ ...i, tags: tags?.map(t => '' + t.tag?.id) })) ?? [];
-  }, [items, tags]);
+    return items ?? [];
+  }, [items]);
   const columns = useColumns();
   return (
     <MinScreen>
       <div className='flex items-center justify-between w-full'>
         <div className='text-2xl'>{locale.title} : {collection?.name}</div>
         <Link href={`/${lang}/collection/${collectionId}/item/create`}><Button>{locale.addItem}</Button></Link>
+      </div>
+      <div>
+        {collection?.image && <Image alt='collectionImage' width={200} height={200} src={collection?.image} />}
       </div>
       <DataTable data={filteredItems} columns={columns} />
     </MinScreen >

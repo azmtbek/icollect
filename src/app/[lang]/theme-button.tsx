@@ -11,13 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Dictionoary } from "@/get-dictionary";
+import { useLocale } from "@/components/provider/locale-provider";
 
-export default function ThemeButton({
-  dictionary,
-}: {
-  dictionary: Awaited<ReturnType<Dictionoary>>["theme"];
-}) {
+export default function ThemeButton() {
   const { setTheme } = useTheme();
+  const locale = useLocale(state => state.theme);
 
   return (
     <DropdownMenu>
@@ -30,13 +28,13 @@ export default function ThemeButton({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          {dictionary.light}
+          {locale.light}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          {dictionary.dark}
+          {locale.dark}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          {dictionary.system}
+          {locale.system}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

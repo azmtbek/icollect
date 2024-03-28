@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { DataTable } from './data-table';
-import { columns } from './columns';
+import { useColumns } from './columns';
 import { CSVLink } from "react-csv";
 
 const Collections = () => {
@@ -15,6 +15,7 @@ const Collections = () => {
   const locale = useLocale((state) => state.collection.view);
   const localeTitles = useLocale((state) => state.titles);
   const { data: collections } = api.collection.getUserCollections.useQuery();
+  const columns = useColumns();
   const filteredCollections = useMemo(() => {
     return collections ?? [];
   }, [collections]);
@@ -25,7 +26,9 @@ const Collections = () => {
         <div className='text-2xl'>{localeTitles.collections}</div>
         <div>
           <div className='flex items-center gap-3'>
-            <CSVLink data={filteredCollections} filename='data.csv'> <Button variant={'outline'}>Export to CSV</Button></CSVLink>
+            <CSVLink data={filteredCollections} filename='data.csv'>
+              <Button variant={'outline'}>Export to CSV</Button>
+            </CSVLink>
             <Link href={`/${lang}/collection/create`}><Button>{locale.addCollection}</Button></Link>
           </div>
         </div>

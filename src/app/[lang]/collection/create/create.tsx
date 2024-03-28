@@ -1,4 +1,5 @@
 'use client';
+import { MultiUploader } from '@/components/custom/upload-collection-image';
 import MinScreen from '@/components/layout/min-screen';
 import { useLocale } from '@/components/provider/locale-provider';
 import { Button } from '@/components/ui/button';
@@ -6,17 +7,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { type Locale } from '@/i18n-config';
 import { collectionSchema, type CreateCollection } from '@/lib/types/collection';
+import { UploadButton, useUploadThing } from '@/lib/uploadthing';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const customFields = [
   "customString",
@@ -71,6 +75,8 @@ type CustomFieldsType = typeof defaultCustomFields;
 const CreateCollection = () => {
   const router = useRouter();
   const { lang } = useParams<{ lang: Locale; }>();
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const form = useForm<CreateCollection>({
     resolver: zodResolver(collectionSchema.omit({ id: true })),
     defaultValues: {
@@ -94,10 +100,13 @@ const CreateCollection = () => {
   const { toast } = useToast();
   const createCollection = api.collection.create.useMutation({
     onSuccess(data) {
-      const id = data[0]?.id ?? '';
+      const id = data[0]?.id;
       toast({
         description: "Collection created.",
       });
+      const lst = Array.from(inputRef?.current?.files || []);
+      if (lst?.length > 0 && id)
+        startUpload(lst, { collectionId: id });
 
       router.push(`/${lang}/collection/${id}`);
     },
@@ -114,27 +123,23 @@ const CreateCollection = () => {
   const { data: topics } = api.admin.getTopics.useQuery();
 
   const onSubmit = (values: CreateCollection) => {
-
-    createCollection.mutate(values
-      // {
-      // name: values.name,
-      // description: values.description,
-      // topicId: values.topicId,
-      // customString1: values.customString1,
-      // customString2: values.customString2,
-      // customString3: values.customString3,
-      // customInteger1: values.customInteger1,
-      // customInteger2: values.customInteger2,
-      // customInteger3: values.customInteger3,
-      // customText1: values.customText1,
-      // customText2: values.customText2,
-      // customText3: values.customText3,
-      // customDate1: values.customDate1,
-      // customDate2: values.customDate2,
-      // customDate3: values.customDate3,
-      // }
-    );
+    createCollection.mutate(values);
   };
+
+  const { startUpload, permittedFileInfo } = useUploadThing(
+    "imageUploader",
+    {
+      onClientUploadComplete: () => {
+        toast({ description: "image uploaded successfully!" });
+      },
+      onUploadError: () => {
+        toast({ description: "error occurred while image uploading" });
+      },
+      onUploadBegin: () => {
+        // alert("upload has begun");
+      },
+    },
+  );
 
 
   const [customForms, setCustomForms] = useState(defaultCustomFields);
@@ -142,16 +147,20 @@ const CreateCollection = () => {
 
   const selectCustomFields = () => {
     if (currField === '') return;
+
     setCustomForms((state) => {
       return ({ ...state, [currField]: !state[currField] });
     });
     setCurrField('');
     form.setValue(`${currField}State`, true);
+    form.setFocus(`${currField}Name`);
+
   };
   const removeCustomField = (field: keyof CustomFieldsType) => {
     setCustomForms((state) => {
       return ({ ...state, [field]: false });
     });
+    form.setValue(`${field}State`, false);
     // form.resetField(`${field}Name`, { defaultValue: '' });
   };
   return (
@@ -193,6 +202,24 @@ const CreateCollection = () => {
                   </FormItem>
                 )}
               />
+              {/* <UploadButton
+                // endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  // Do something with the response
+                  console.log("Files: ", res);
+                  alert("Upload Completed");
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  alert(`ERROR! ${error.message}`);
+                }}
+              /> */}
+              {/* <MultiUploader permittedFileInfo={permittedFileInfo} /> */}
+              <div className="grid w-full max-w-sm items-center gap-1.5">
+                <Label htmlFor="image">Image</Label>
+                <Input id="image" type="file" ref={inputRef} />
+                <button onClick={e => { e.preventDefault(); console.log('ref', inputRef.current?.value); }}>click</button>
+              </div>
               <FormField
                 control={form.control}
                 name="topicId"
@@ -278,6 +305,7 @@ const CreateCollection = () => {
                 <Button type='button' onClick={selectCustomFields} disabled={currField === ''}>{locale.create.customFieldAdd}</Button>
               </div>
               <div className='flex justify-between'>
+                {JSON.stringify(form.formState.errors)}
                 <Button type="submit" disabled={createCollection.isLoading}>{
                   createCollection.isLoading ? locale.create.creating : locale.create.create
                 }</Button>

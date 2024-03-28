@@ -16,9 +16,10 @@ export const authConfig = {
           return true;
         }
         return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/', nextUrl));
       }
+      // else if (isLoggedIn) {
+      //   return Response.redirect(new URL('/', nextUrl));
+      // }
       return true;
     },
   },

@@ -48,10 +48,10 @@ export const tagRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       if (!input.itemId) return [];
       return ctx.db.select(
-        // {
-        //   // itemId: items.id,
-        //   tags: tags.name
-        // }
+        {
+          // itemId: items.id,
+          id: tags.id
+        }
       )
         .from(itemTags)
         .leftJoin(tags, eq(itemTags.tagId, tags.id))

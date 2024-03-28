@@ -22,7 +22,7 @@ export const Header = async ({ lang }: Props) => {
             className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>
             iCollect
           </Link>
-          <ThemeButton dictionary={dictionary.theme} />
+          <ThemeButton />
           <LocaleSwitcher />
           {currUser?.isAdmin &&
             <Link href={`/${lang}/admin`}>

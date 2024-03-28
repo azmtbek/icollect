@@ -38,10 +38,20 @@ export const collectionRouter = createTRPCRouter({
     .query(async ({ ctx }) => {
       return ctx.db.query.collections.findMany({ where: eq(collections.createdById, ctx.session.user.id) });
     }),
-  create: protectedProcedure.input(collectionSchema.omit({ id: true })).mutation(async ({ ctx, input }) => {
-    return ctx.db.insert(collections).values({
-      createdById: ctx.session?.user.id,
-      ...input
-    }).returning({ id: collections.id });
-  })
+  create: protectedProcedure.
+    input(collectionSchema.omit({ id: true }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.insert(collections).values({
+        createdById: ctx.session?.user.id,
+        ...input
+      }).returning({ id: collections.id });
+    }),
+  updateImageUrl: protectedProcedure
+    .input(z.object({ imageUrl: z.string(), collectionId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.update(collections).set({
+        image: input.imageUrl
+      }).where(eq(collections.id, input.collectionId));
+
+    })
 });
