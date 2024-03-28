@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { type Dictionoary } from "@/get-dictionary";
+// import { type Dictionoary } from "@/get-dictionary";
 import { useLocale } from "@/components/provider/locale-provider";
 
 export default function ThemeButton() {

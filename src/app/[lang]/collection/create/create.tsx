@@ -20,7 +20,6 @@ import { Trash2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 const customFields = [
   "customString",
@@ -104,7 +103,7 @@ const CreateCollection = () => {
       toast({
         description: "Collection created.",
       });
-      const lst = Array.from(inputRef?.current?.files || []);
+      const lst = Array.from(inputRef?.current?.files ?? []);
       if (lst?.length > 0 && id)
         startUpload(lst, { collectionId: id });
 
@@ -202,8 +201,9 @@ const CreateCollection = () => {
                   </FormItem>
                 )}
               />
-              {/* <UploadButton
-                // endpoint="imageUploader"
+              <UploadButton
+                endpoint="imageUploader"
+                input={{ collectionId: 9 }}
                 onClientUploadComplete={(res) => {
                   // Do something with the response
                   console.log("Files: ", res);
@@ -213,10 +213,10 @@ const CreateCollection = () => {
                   // Do something with the error.
                   alert(`ERROR! ${error.message}`);
                 }}
-              /> */}
+              />
               {/* <MultiUploader permittedFileInfo={permittedFileInfo} /> */}
               <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="image">Image</Label>
+                <Label htmlFor="image">Image (max file size: {permittedFileInfo?.config.image?.maxFileSize})</Label>
                 <Input id="image" type="file" ref={inputRef} />
                 <button onClick={e => { e.preventDefault(); console.log('ref', inputRef.current?.value); }}>click</button>
               </div>

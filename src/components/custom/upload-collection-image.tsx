@@ -2,7 +2,7 @@
 import { useDropzone } from "@uploadthing/react";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 
-import { PermittedFileInfo, useUploadThing } from "@/lib/uploadthing";
+import { type PermittedFileInfo } from "@/lib/uploadthing";
 import { useCallback, useState } from "react";
 
 export function MultiUploader({ permittedFileInfo }: { permittedFileInfo: PermittedFileInfo; }) {

@@ -10,6 +10,7 @@ import React, { useMemo } from 'react';
 import { useColumns } from './columns';
 import { DataTable } from './data-table';
 import Image from 'next/image';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 const Collection = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
@@ -29,7 +30,9 @@ const Collection = () => {
         <Link href={`/${lang}/collection/${collectionId}/item/create`}><Button>{locale.addItem}</Button></Link>
       </div>
       <div>
-        {collection?.image && <Image alt='collectionImage' width={200} height={200} src={collection?.image} />}
+        {collection?.image &&
+          <Image alt='collectionImage' width={800} height={400} src={collection?.image} />
+        }
       </div>
       <DataTable data={filteredItems} columns={columns} />
     </MinScreen >

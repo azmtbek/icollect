@@ -46,7 +46,7 @@ export const collectionRouter = createTRPCRouter({
         ...input
       }).returning({ id: collections.id });
     }),
-  updateImageUrl: protectedProcedure
+  updateImageUrl: publicProcedure
     .input(z.object({ imageUrl: z.string(), collectionId: z.number() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.update(collections).set({
