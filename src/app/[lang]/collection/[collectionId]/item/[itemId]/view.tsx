@@ -13,19 +13,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Like } from './like';
-import { Collection } from '@/lib/types/collection';
+import { type Collection } from '@/lib/types/collection';
 import { Item } from '@/lib/types/item';
 import { Separator } from '@/components/ui/separator';
 import { useLocale } from '@/components/provider/locale-provider';
 import Link from 'next/link';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
+import { collectionToItem } from '@/lib/collection-item-mapper';
 
 
 const Item = () => {
   const { itemId, collectionId, lang } = useParams<{ itemId: string; collectionId: string; lang: Locale; }>();
   const { data: user } = api.user.getCurrent.useQuery();
   const { data: item, refetch: itemRefetch } = api.item.getById.useQuery({ itemId });
-  const { data: collection, isLoading: collectionIsLoading } = api.collection.getById.useQuery({ id: +collectionId });
+  const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
   const locale = useLocale(state => state.collection.view);
   return (
     <MinScreen>
@@ -40,20 +41,18 @@ const Item = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div> {collection && Object.keys(collection)
-            .filter(col => col.startsWith('custom') && col.endsWith("State") && collection[col as keyof Collection])
-            .map(col => col.replace('State', ''))
+          <div> {collectionToItem(collection)
             .map((col => {
               let itm = item && item[col as keyof Omit<Item, "tags">];
               if (itm instanceof Date)
                 itm = new Intl.DateTimeFormat("en-US").format(itm);
 
-              return <div>
+              return <div key={col}>
                 <div className='text-xl w-full'>
                   <div className='py-4 flex items-center justify-center'>
                     <Separator className='w-1/12' />
                   </div>
-                  {collection[`${col}Name` as keyof Collection]}:
+                  {collection?.[`${col}Name` as keyof Collection]}:
                 </div>
                 {itm
                   ? <div className='pl-10 pt-4 pb-6 '>{itm}</div>
@@ -66,9 +65,9 @@ const Item = () => {
 
 
           <Like
-            userId={user?.id || ''}
+            userId={user?.id ?? ''}
             itemId={itemId}
-            likesCount={item?.likesCount || 0}
+            likesCount={item?.likesCount ?? 0}
             itemRefetch={itemRefetch}
           />
         </CardContent>
@@ -77,9 +76,9 @@ const Item = () => {
           <Separator />
           <div className='py-6'></div>
           <Comments
-            userId={user?.id || ''}
+            userId={user?.id ?? ''}
             itemId={itemId}
-            commentsCount={item?.commentsCount || 0}
+            commentsCount={item?.commentsCount ?? 0}
             itemRefetch={itemRefetch}
           />
         </CardFooter>

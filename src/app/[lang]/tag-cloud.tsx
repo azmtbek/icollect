@@ -12,15 +12,6 @@ const options: ColorOptions = {
 };
 
 
-const customRenderer = (tag: any, size: number, color: string) => {
-  return (
-    <span key={tag.value} style={{ color }} className={`tag-${size} w-full px-2`}>
-      {tag.value}
-    </span>
-  );
-};
-
-
 const CustomTagsCloud = ({ className }: { className?: string; }) => {
   const { data: tags } = api.tag.getAll.useQuery();
   const mappedTags = useMemo(() => {
@@ -38,7 +29,6 @@ const CustomTagsCloud = ({ className }: { className?: string; }) => {
         colorOptions={options}
         onClick={(tag) => console.log('clicking on tag:', tag)}
         minSize={20} maxSize={50}
-        // renderer={customRenderer}
         className='flex flex-wrap gap-2'
       />
     </CardContent>

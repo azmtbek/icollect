@@ -1,5 +1,4 @@
-import { Collection } from "./types/collection";
-import { ItemCustomFields } from "./types/item";
+import { type Collection } from "./types/collection";
 
 export const collectionToItem = (collection: Collection | undefined) => {
   return collection ?

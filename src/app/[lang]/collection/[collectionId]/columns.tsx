@@ -1,7 +1,7 @@
 "use client";
 
-import { Column, ColumnDef, Row } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import type { Column, ColumnDef, Row } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,23 +14,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/custom/data-tabe-column-header";
-import { Collection, CollectionCustomFieldKeys, CollectionCustomFields } from "@/lib/types/collection";
+import { type CollectionCustomFieldKeys } from "@/lib/types/collection";
 import { api } from "@/trpc/react";
 import { useLocale } from "@/components/provider/locale-provider";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { Locale } from "@/i18n-config";
-import { Item } from "@/lib/types/item";
+import { useParams } from "next/navigation";
+import { type Locale } from "@/i18n-config";
+import { type Item } from "@/lib/types/item";
 import { useMemo } from "react";
 import { collectionToItem } from "@/lib/collection-item-mapper";
 
 
 export const useColumns = () => {
-  const { collectionId } = useParams<{ collectionId: string; }>();
-  const { data: collection, isLoading: collectionIsLoading } = api.collection.getById.useQuery({ id: +collectionId });
+  const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
+  const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
   const locale = useLocale(state => state.collection.view);
-  const columns = useMemo(() => {
 
+  const columns = useMemo(() => {
     const columns: ColumnDef<Item>[] = [
       {
         id: "select",
@@ -61,7 +61,7 @@ export const useColumns = () => {
       {
         accessorKey: "tags",
         header: "Tag",
-        cell: ({ row }) => {
+        cell: () => {
           return 'Tags';
         }
       },
@@ -70,10 +70,10 @@ export const useColumns = () => {
         .map((key) => ({
           id: collection?.[key] as string,
           accessorKey: key.replace("Name", ""),
-          header: ({ column }: { column: any; }) =>
+          header: ({ column }: { column: Column<Item>; }) =>
             <DataTableColumnHeader column={column} title={collection?.[key] as string} />,
           cell: ({ row }: { row: Row<Item>; }) => {
-            let itm: any = row.getValue(collection?.[key] as string);
+            let itm: string | Date | number | boolean = row.getValue(collection?.[key] as string);
             if (!itm) return <>{itm}</>;
             if (itm instanceof Date)
               itm = new Intl.DateTimeFormat("en-US").format(itm);
@@ -84,7 +84,6 @@ export const useColumns = () => {
         id: "actions",
         cell: ({ row }) => {
           const item = row.original;
-          const { lang } = useParams<{ lang: Locale; }>();
           return (
             <div className="text-right">
               <DropdownMenu>
@@ -114,7 +113,7 @@ export const useColumns = () => {
       },
     ];
     return columns;
-  }, [collection]);
+  }, [collection, collectionId, locale, lang]);
 
   return columns;
 };

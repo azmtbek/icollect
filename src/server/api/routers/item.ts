@@ -6,8 +6,8 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { itemTags, items, tags } from "@/server/db/schema";
-import { SQL, eq, inArray, sql } from "drizzle-orm";
-import { createItemSchema, itemSchema } from "@/lib/types/item";
+import { type SQL, eq, inArray, sql } from "drizzle-orm";
+import { createItemSchema } from "@/lib/types/item";
 import { increment } from "@/server/db";
 
 export const itemRouter = createTRPCRouter({
@@ -33,8 +33,8 @@ export const itemRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { newTags, tags: inputTags, ...rest } = input;
       // item insert
-      let item = await ctx.db.insert(items).values(rest).returning({ id: items.id });
-      const itemId = item[0] && item[0].id;
+      const item = await ctx.db.insert(items).values(rest).returning({ id: items.id });
+      const itemId = item?.[0]?.id;
 
       // create new tags
       let createdTags: { id: number; }[] = [];

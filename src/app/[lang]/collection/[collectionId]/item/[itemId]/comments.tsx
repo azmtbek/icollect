@@ -19,7 +19,7 @@ type CommentType = z.infer<typeof commentSchema>;
 
 export const Comments = (
   { userId, itemId, commentsCount, itemRefetch }:
-    { userId: string, itemId: string, commentsCount: number; itemRefetch: () => void; }
+    { userId: string, itemId: string, commentsCount: number; itemRefetch: () => Promise<unknown>; }
 ) => {
   const { data: comments, refetch: commentsRefatch } = api.comment.getAllByItemId.useQuery({ itemId });
 

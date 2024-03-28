@@ -270,7 +270,7 @@ const CreateCollection = () => {
                   <SelectContent>
                     {Object.keys(customForms)?.map((field, i) => {
                       if (customForms[field as keyof CustomFieldsType]) return;
-                      let crop = customFieldReverter[field as keyof CustomFieldsType];
+                      const crop = customFieldReverter[field as keyof CustomFieldsType];
                       return <SelectItem value={field} key={i}>{locale[crop]}</SelectItem>;
                     })}
                   </SelectContent>

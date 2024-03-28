@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/vercel-postgres';
 import { sql as sqlVercel } from '@vercel/postgres';
 import * as schema from "./schema";
-import { AnyColumn, SQL, sql, } from 'drizzle-orm';
+import { type AnyColumn, sql, } from 'drizzle-orm';
 
 export const db = drizzle(sqlVercel, { schema });
 

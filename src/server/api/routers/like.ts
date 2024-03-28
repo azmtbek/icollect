@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
 } from "@/server/api/trpc";
 import { items, likes } from "@/server/db/schema";
 import { and, eq, } from "drizzle-orm";
@@ -23,7 +22,7 @@ export const likeRouter = createTRPCRouter({
       return row ? true : false;
     }),
   toggle: protectedProcedure.input(z.object({
-    itemId: z.coerce.number().min(1),
+    itemId: z.coerce.number(),
   })).mutation(async ({ ctx, input }) => {
     const userLiked = await ctx.db.query.likes
       .findFirst({

@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 const Tag = () => {
   const { data: tags, refetch: refetchTags } = api.tag.getAll.useQuery();
-  const { data: itemTags, refetch: refetchItemTags } = api.tag.getItemTags.useQuery();
+  const { data: itemTags, refetch: refetchItemTags } = api.tag.getItemTagsAll.useQuery();
   const deleteItemTag = api.tag.deleteItemTag.useMutation({
     async onSuccess() {
       await refetchItemTags();

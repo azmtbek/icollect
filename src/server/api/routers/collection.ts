@@ -29,6 +29,8 @@ export const collectionRouter = createTRPCRouter({
       const collection = await ctx.db.query.collections.findFirst({ where: eq(collections.id, input.id) });
       if (!collection || collection.isDeleted)
         throw new TRPCError({ code: "NOT_FOUND" });
+
+      // eslint-disable-next-line  @typescript-eslint/no-unused-vars
       const { isDeleted, ...rest } = collection;
       return rest;
     }),

@@ -1,17 +1,17 @@
 "use client";
 
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
-import { Table } from "@tanstack/react-table";
+// import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+// import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { type Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+// } from "@/components/ui/dropdown-menu";
 import { Trash2 } from "lucide-react";
 
 interface DataTableViewOptionsProps<TData> {
@@ -33,7 +33,7 @@ export function DataTableViewOptions<TData>({
           //   table.toggleAllPageRowsSelected(false);
           //   setPending(false);
           // });
-
+          console.log(selectedIds);
         }}
         disabled={false}
         variant={'destructive'}>

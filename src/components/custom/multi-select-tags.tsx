@@ -18,13 +18,13 @@ import {
 } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 
-export type OptionType = {
-  [id: number]: {
+export type OptionType = Record<
+  number,
+  {
     label: string;
     value: string;
     id: number;
-  };
-};
+  }>;
 
 interface MultiSelectProps {
   options: OptionType;

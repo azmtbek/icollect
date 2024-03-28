@@ -20,7 +20,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { useLocale } from '@/components/provider/locale-provider';
 import { type Locale } from '@/i18n-config';
 import Link from 'next/link';
-import { type CreateItem, Item, createItemSchema } from '@/lib/types/item';
+import { type CreateItem, createItemSchema } from '@/lib/types/item';
 import { collectionToItem } from '@/lib/collection-item-mapper';
 
 const customFields = [
@@ -196,7 +196,7 @@ const CreateItem = () => {
                             ([tag.id, { value: tag.name, label: tag.name, id: tag.id }])
                           ) ?? []
                         )}
-                      selected={field.value || []}
+                      selected={field.value ?? []}
                       onChange={field.onChange}
                       className="w-80 md:w-96"
                     />
@@ -259,7 +259,7 @@ const CreateItem = () => {
               />
 
               {customFieldsMemo.map(c => {
-                return <div>div</div>;
+                return <div key={c}>{c}</div>;
               })}
               {customFields.map(customField => {
                 if (customField == 'customString')

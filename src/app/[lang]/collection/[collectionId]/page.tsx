@@ -13,13 +13,13 @@ import { DataTable } from './data-table';
 const Collection = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
   const locale = useLocale((state) => state.collection.view);
-  const { data: collection, isLoading: collectionIsLoading } = api.collection.getById.useQuery({ id: +collectionId });
-  const { data: items, isLoading: itemIsloading } = api.item.getCollectionItems.useQuery({ collectionId: +collectionId });
+  const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
+  const { data: items } = api.item.getCollectionItems.useQuery({ collectionId: +collectionId });
   const { data: tags } = api.tag.getItemTagNames.useQuery({ itemId: items?.[0]?.id });
   const filteredItems = useMemo(() => {
     console.log(items);
     return items?.map(i => ({ ...i, tags: tags?.map(t => '' + t.tag?.id) })) ?? [];
-  }, [items]);
+  }, [items, tags]);
   const columns = useColumns();
   return (
     <MinScreen>

@@ -36,12 +36,10 @@ export const tagRouter = createTRPCRouter({
       );
       return x;
     }),
-  getItemTags: publicProcedure
-    .input(z.object({
-      itemId: z.number()
-    }))
-    .query(async ({ ctx, input }) => {
-      const itemTag = await ctx.db.query.itemTags.findMany({ where: eq(itemTags.itemId, input.itemId) });
+  getItemTagsAll: publicProcedure
+    .query(async ({ ctx }) => {
+      const itemTag = await ctx.db.query.itemTags.findMany();
+      return itemTag;
     }),
   getItemTagNames: publicProcedure
     .input(z.object({

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Locale } from "@/i18n-config";
+import { type Locale } from "@/i18n-config";
 import { api } from "@/trpc/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";

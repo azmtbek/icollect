@@ -1,4 +1,4 @@
-
+'use client';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
@@ -20,7 +20,7 @@ export const Like = ({
       error.data?.code;
     }
   });
-  const onLiked = () => {
+  const onLiked = async () => {
     if (!userId) {
       toast({
         title: "Not Signed in",
@@ -28,8 +28,8 @@ export const Like = ({
       });
       return;
     }
-    toggleLike.mutate({ itemId });
-    refetch();
+    toggleLike.mutate({ itemId: +itemId });
+    await refetch();
   };
   return <div className='flex items-center justify-end'>
     {likesCount} {likesCount === 1 ? 'like' : 'likes'}
