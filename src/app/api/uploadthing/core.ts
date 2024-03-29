@@ -1,7 +1,6 @@
 export const runtime = "nodejs";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { NextApiRequest } from "next";
 import { revalidatePath } from "next/cache";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";

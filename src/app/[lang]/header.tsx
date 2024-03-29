@@ -7,6 +7,7 @@ import { api } from '@/trpc/server';
 import LocaleSwitcher from './locale-switcher';
 import { type Locale } from '@/i18n-config';
 import { getDictionary } from '@/get-dictionary';
+import SearchInput from './search-input';
 
 type Props = { lang: Locale; };
 
@@ -36,6 +37,7 @@ export const Header = async ({ lang }: Props) => {
           }
         </div>
         <div></div>
+        <SearchInput />
         <div className='flex gap-4 items-center'>
           <Button variant={'secondary'}>{currUser?.name}</Button>
           {currUser ?

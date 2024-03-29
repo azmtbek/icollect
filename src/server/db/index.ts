@@ -12,3 +12,4 @@ export const increment = (column: AnyColumn, value = 1) => {
 export const decrement = (column: AnyColumn, value = 1) => {
   return sql`${column} - ${value}`;
 };
+

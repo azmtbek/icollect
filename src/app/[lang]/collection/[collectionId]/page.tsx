@@ -30,7 +30,7 @@ const Collection = () => {
       </div>
       <div>
         {collection?.image &&
-          <Image alt='collectionImage' width={800} height={400} src={collection?.image} />
+          <Image alt='collectionImage' width={800} height={400} src={collection?.image} className='rounded-xl' />
         }
       </div>
       <DataTable data={filteredItems} columns={columns} />

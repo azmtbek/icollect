@@ -1,12 +1,23 @@
+import { unstable_noStore as noStore } from "next/cache";
+// import { type Locale } from '@/i18n-config';
+// import { api } from '@/trpc/server';
+// import { redirect } from 'next/navigation';
+// import Collections from './view';
 
-import { unstable_noStore as noStore } from 'next/cache';
-import React from 'react';
+import MinScreen from "@/components/layout/min-screen";
+import Search from "./search";
 
-const Search = async () => {
+const Page = async () => {
   noStore();
-  return (
-    <div>Search</div>
-  );
+  // const currUser = await api.user.getCurrent.query();
+  // if (!currUser) redirect(`/${params.lang}/login`);
+  // const { data: results } = api.search.getResults.useQuery({ search });
+
+  return <>
+    <MinScreen>
+      <Search />
+    </MinScreen>
+  </>;
 };
 
-export default Search;
+export default Page;

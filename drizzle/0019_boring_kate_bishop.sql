@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "icollect_item_name_idx" ON "icollect_item" ("name");
