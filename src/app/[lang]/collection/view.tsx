@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { type Locale } from '@/i18n-config';
 import { api } from '@/trpc/react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { DataTable } from './data-table';
 import { useColumns } from './columns';
@@ -12,10 +12,13 @@ import { CSVLink } from "react-csv";
 
 const Collections = () => {
   const { lang } = useParams<{ lang: Locale; }>();
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('user');
   const locale = useLocale((state) => state.collection.view);
   const localeTitles = useLocale((state) => state.titles);
-  const { data: collections } = api.collection.getUserCollections.useQuery();
+  const { data: collections } = api.collection.getUserCollections.useQuery(userId ? { userId } : undefined);
   const columns = useColumns();
+
   const filteredCollections = useMemo(() => {
     return collections ?? [];
   }, [collections]);

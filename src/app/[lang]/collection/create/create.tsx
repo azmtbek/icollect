@@ -120,7 +120,7 @@ const CreateCollection = () => {
   });
 
   const locale = useLocale((state) => state.collection);
-  const { data: topics } = api.admin.getTopics.useQuery();
+  const { data: topics } = api.topic.getAll.useQuery();
 
   const onSubmit = (values: CreateCollection) => {
     createCollection.mutate(values);

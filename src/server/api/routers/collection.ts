@@ -11,9 +11,6 @@ import { TRPCError } from "@trpc/server";
 import { collectionSchema } from "@/lib/types/collection";
 
 
-// const ;
-
-
 export const collectionRouter = createTRPCRouter({
   getAll: publicProcedure
     .query(({ ctx }) => {
@@ -35,14 +32,17 @@ export const collectionRouter = createTRPCRouter({
       return rest;
     }),
   getUserCollections: protectedProcedure
-    .query(async ({ ctx }) => {
+    .input(z.object({ userId: z.string() }).optional())
+    .query(async ({ ctx, input }) => {
+      if (input && ctx.session.user.isAdmin)
+        return ctx.db.query.collections.findMany({ where: eq(collections.createdById, input.userId) });
       return ctx.db.query.collections.findMany({ where: eq(collections.createdById, ctx.session.user.id) });
     }),
   create: protectedProcedure.
     input(collectionSchema.omit({ id: true }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.insert(collections).values({
-        createdById: ctx.session?.user.id,
+        createdById: ctx.session.user.id,
         ...input
       }).returning({ id: collections.id });
     }),

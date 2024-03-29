@@ -103,7 +103,14 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: { ...ctx.session.user, id: user.id } },
+      session: {
+        ...ctx.session, user: {
+          ...ctx.session.user,
+          isAdmin: user.isAdmin,
+          status: user.status,
+          id: user.id
+        }
+      },
     },
   });
 });
@@ -121,7 +128,14 @@ export const adminProcedure = t.procedure.use(async ({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: { ...ctx.session.user, isAdmin: user.isAdmin, id: user.id } },
+      session: {
+        ...ctx.session, user: {
+          ...ctx.session.user,
+          isAdmin: user.isAdmin,
+          status: user.status,
+          id: user.id
+        }
+      },
     },
   });
 });

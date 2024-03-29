@@ -18,7 +18,6 @@ const Users = () => {
       <div className='flex items-center justify-between w-full'>
         <div className='text-2xl'>{localeTitles.admin}</div>
       </div>
-
       <DataTable data={filteredUsers} columns={columns} />
     </>
   );
