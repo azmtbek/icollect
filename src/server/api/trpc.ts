@@ -107,6 +107,7 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
         ...ctx.session, user: {
           ...ctx.session.user,
           isAdmin: user.isAdmin,
+          isDeleted: user.isDeleted,
           status: user.status,
           id: user.id
         }

@@ -49,13 +49,14 @@ export const Header = async ({ lang }: Props) => {
   );
 };
 
-function SignOut() {
+async function SignOut() {
+  const signout = async () => {
+    'use server';
+    await signOut();
+  };
   return (
     <form
-      action={async () => {
-        'use server';
-        await signOut();
-      }}
+      action={signout}
     >
       <Button type="submit" variant="outline">
         Sign out
@@ -64,13 +65,14 @@ function SignOut() {
   );
 }
 
-function SignIn() {
+async function SignIn() {
+  const signin = async () => {
+    'use server';
+    await signIn();
+  };
   return (
     <form
-      action={async () => {
-        'use server';
-        await signIn();
-      }}
+      action={signin}
     >
       <Button type="submit" variant="outline">
         Sign In

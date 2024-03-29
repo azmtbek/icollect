@@ -7,6 +7,7 @@ export const userSchema = z.object({
   image: z.string().nullish(),
   status: z.string(),
   isAdmin: z.boolean(),
+  isDeleted: z.boolean(),
   createdAt: z.date(),
 });
 

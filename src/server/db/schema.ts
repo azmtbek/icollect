@@ -194,6 +194,7 @@ export const users = pgTable("user", {
   password: text("password").notNull(),
   status: varchar("status", { length: 10 }).notNull().default("active"),
   isAdmin: boolean("isAdmin").notNull().default(false),
+  isDeleted: boolean("isDeleted").notNull().default(false),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 

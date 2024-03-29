@@ -1,0 +1,1 @@
+ALTER TABLE "icollect_user" ADD COLUMN "isDeleted" boolean DEFAULT false NOT NULL;

@@ -39,18 +39,9 @@ const Login = ({ login }: { login: ({ email, password }: { email: string, passwo
     },
   });
 
-  function onSubmit(values: RegisterType) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    // 'use server';
-    // signIn('credentials', {
-    //   // redirectTo: '/admin',
-    //   callbackUrl: '/',
-    //   email: values.email,
-    //   password: values.password,
-    // });
+  const onSubmit = (values: RegisterType) => {
     login({ email: values.email, password: values.password });
-  }
+  };
   return (
     <div className='flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center'>
       <Card>

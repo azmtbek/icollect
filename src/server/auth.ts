@@ -33,7 +33,7 @@ export const {
         if (!email || !password) return null;
         const user = await api.user.getByEmail.query({ email });
         if (user == null) return null;
-        if (user.status === 'blocked') return null;
+        if (user.status === 'blocked' || user.isDeleted) return null;
         const passwordsMatch = await compare(password, user.password);
         if (passwordsMatch) return user;
         return null;

@@ -28,15 +28,20 @@ import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/custom/data-table-pagination";
 import { DataTableViewOptions } from "@/components/custom/data-table-column-toggle";
 import { Trash2 } from "lucide-react";
+import { LockClosedIcon, LockOpen1Icon, LockOpen2Icon } from "@radix-ui/react-icons";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading: boolean;
 }
 
 export function DataTable<TData extends { id: string; }, TValue>({
   columns,
   data,
+  isLoading,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -64,6 +69,7 @@ export function DataTable<TData extends { id: string; }, TValue>({
       rowSelection,
     },
   });
+  // const ;
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -76,6 +82,39 @@ export function DataTable<TData extends { id: string; }, TValue>({
           }
           className="max-w-sm"
         />
+        <Button
+          onClick={() => {
+            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            // setPending(true);
+            // blockUsers(selectedUserIds).then(() => {
+            //   router.refresh();
+            //   table.toggleAllPageRowsSelected(false);
+            //   setPending(false);
+            // });
+            // console.log(selectedUserIds);
+          }}
+          variant={'outline'}
+        // disabled={pending}
+        >
+          <LockClosedIcon />
+          <span className="px-1"></span>
+          Block
+        </Button>
+        <Button
+          onClick={() => {
+            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            // setPending(true);
+            // unblockUsers(selectedUserIds).then(() => {
+            //   router.refresh();
+            //   table.toggleAllPageRowsSelected(false);
+            //   setPending(false);
+            // });
+          }}
+          // disabled={pending}
+          variant={'outline'}>
+          <LockOpen1Icon />
+          Unblock
+        </Button>
         <Button
           onClick={() => {
             // setPending(true);
@@ -129,17 +168,42 @@ export function DataTable<TData extends { id: string; }, TValue>({
                   ))}
                 </TableRow>
               ))
+            ) : (isLoading ? (table.getHeaderGroups().map((headerGroup) => (<>
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableCell key={header.id} className="">
+                    <Skeleton className="w-full h-8 px-2" />
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableCell key={header.id} className="">
+                    <Skeleton className="w-full h-8 px-2" />
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableCell key={header.id} className="">
+                    <Skeleton className="w-full h-8 px-2" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            </>
+            ))
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
+            )
             )}
           </TableBody>
         </Table>
       </div>
       <DataTablePagination table={table} />
-    </div>
+    </div >
   );
 }
