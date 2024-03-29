@@ -5,10 +5,10 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { itemTags, items, tags } from "@/server/db/schema";
+import { collections, itemTags, items, tags } from "@/server/db/schema";
 import { type SQL, eq, inArray, sql, desc } from "drizzle-orm";
 import { createItemSchema } from "@/lib/types/item";
-import { increment } from "@/server/db";
+import { increment, updateMany } from "@/server/db";
 
 export const itemRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -40,6 +40,11 @@ export const itemRouter = createTRPCRouter({
       const item = await ctx.db.insert(items).values(rest).returning({ id: items.id });
       const itemId = item?.[0]?.id;
 
+      // update collections count
+      await ctx.db.update(collections).set({
+        itemCount: increment(collections.itemCount)
+      }).where(eq(collections.id, input.collectionId));
+
       // create new tags
       let createdTags: { id: number; }[] = [];
       if (newTags)
@@ -52,17 +57,11 @@ export const itemRouter = createTRPCRouter({
       const allTagIds = [...(inputTags ? inputTags.map(t => +t) : []), ...createdTags.map(t => t.id)];
 
       // create case for single update query
-      const sqlChunks: SQL[] = [];
-      sqlChunks.push(sql`(case`);
-      for (const tagId of allTagIds) {
-        sqlChunks.push(sql`when ${tags.id} = ${tagId} then ${increment(tags.count)}`);
-      }
-      sqlChunks.push(sql`end)`);
-      const finalSql: SQL = sql.join(sqlChunks, sql.raw(" "));
+      const updateCase = updateMany(allTagIds, tags.id, increment(tags.count));
 
       // update tags count  and insert itemTags
       if (allTagIds.length > 0 && itemId) {
-        await ctx.db.update(tags).set({ count: finalSql }).where(inArray(tags.id, allTagIds));
+        await ctx.db.update(tags).set({ count: updateCase }).where(inArray(tags.id, allTagIds));
         await ctx.db.insert(itemTags).values(allTagIds.map(tag => ({ itemId: itemId, tagId: tag })));
       }
       return item;

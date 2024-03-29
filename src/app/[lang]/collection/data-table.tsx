@@ -78,16 +78,8 @@ export function DataTable<TData extends { id: number; }, TValue>({
         />
         <Button
           onClick={() => {
-            // setPending(true);
             const selectedIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
             console.log(selectedIds);
-            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
-            // deleteUsers(selectedUserIds).then(() => {
-            //   router.refresh();
-            //   table.toggleAllPageRowsSelected(false);
-            //   setPending(false);
-            // });
-
           }}
           disabled={!table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
           variant={'destructive'}>
