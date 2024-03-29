@@ -7,7 +7,7 @@ import {
 } from "@/server/api/trpc";
 import { collections, itemTags, items, tags } from "@/server/db/schema";
 import { type SQL, eq, inArray, sql, desc } from "drizzle-orm";
-import { createItemSchema } from "@/lib/types/item";
+import { createItemSchema, itemSchema } from "@/lib/types/item";
 import { increment, updateMany } from "@/server/db";
 
 export const itemRouter = createTRPCRouter({
@@ -66,5 +66,14 @@ export const itemRouter = createTRPCRouter({
       }
       return item;
     }),
-
+  update: protectedProcedure.
+    input(itemSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.update(items).set({ ...input }).where(eq(items.id, input.id));
+    }),
+  delete: protectedProcedure.
+    input(itemSchema.pick({ id: true, }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.update(items).set({ isDeleted: true }).where(eq(items.id, input.id));;
+    }),
 });
