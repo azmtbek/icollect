@@ -1,0 +1,1 @@
+-- ALTER TABLE "icollect_item" ALTER COLUMN "fts" SET DATA TYPE tsvector generated always as (to_tsvector('simple', name || ' ' || custom_string1 || ' ' || custom_string2 || ' ' || custom_string3 || ' ' || custom_text1 || ' ' || custom_text2 || ' ' || custom_text3)) stored;

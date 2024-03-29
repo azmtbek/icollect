@@ -12,20 +12,21 @@ import {
 import { type AdapterAccount } from "next-auth/adapters";
 
 import { customType } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
-export const tsvector = customType<{
-  data: string;
-  config: { sources: string[]; };
-}>({
-  dataType(config) {
-    if (config) {
-      const sources = config.sources.join(" || ' ' || ");
-      return `tsvector generated always as (to_tsvector('simple', ${sources})) stored`;
-    } else {
-      return `tsvector`;
-    }
-  },
-});
+// export const tsvector = customType<{
+//   data: string;
+//   config: { sources: string[]; };
+// }>({
+//   dataType(config) {
+//     if (config) {
+//       const sources = config.sources.join(" || ' ' || ");
+//       return `tsvector (to_tsvector('simple', ${sources})) stored`;
+//     } else {
+//       return `tsvector`;
+//     }
+//   },
+// });
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -130,6 +131,7 @@ export const items = pgTable("item", {
 },
   (item) => ({
     nameIdx: index("icollect_item_name_idx").on(item.name),
+    // ftsIdx: index("icollect_item_fts_idx").on(item.fts).using(sql`gin(${item.fts})`),
   })
 );
 

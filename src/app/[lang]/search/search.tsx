@@ -13,6 +13,7 @@ const Search = () => {
   const searchP = useSearchParams();
   const search = searchP?.get('q') ?? '';
   const { data: results } = api.search.getResults.useQuery({ search });
+  // const { data: resultsFTS } = api.search.getResultsFTS.useQuery({ search });
 
   return (
     <Card className='w-full'>
@@ -33,6 +34,19 @@ const Search = () => {
             </div>;
           })}
           </div>
+          <hr />
+          {/* <div>FTS</div>
+          <div className='flex flex-col'>{resultsFTS?.map(item => {
+            return <div key={item.id} className='w-full'>
+              <Link href={`/${lang}/collection/${item.collectionId}/item/${item.id}`}>
+                <Button variant={'ghost'}
+                  className='size-full cursor-pointer hover:bg-secondary border-t rounded-none py-4'>
+                  {item.name}
+                </Button>
+              </Link>
+            </div>;
+          })}
+          </div> */}
         </CardContent>
       </div>
     </Card>
