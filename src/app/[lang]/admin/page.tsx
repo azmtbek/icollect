@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import MinScreen from '@/components/layout/min-screen';
 // import { api } from '@/trpc/server';
-import { UsersTable } from './users-table';
+// import { UsersTable } from './users-table';
 import { type Locale } from '@/i18n-config';
+import Users from "./view";
 
 type Props = {
   params: { lang: Locale; };
@@ -13,16 +14,6 @@ type Props = {
 
 const Admin = async ({ params: { lang } }: Props) => {
   noStore();
-  // const users = await api.user.getAll.query();
-  // const blockUsers = async () => {
-  //   'use server';
-  // };
-  // const deleteUsers = async () => {
-  //   'use server';
-  // };
-  // const unblockUsers = async () => {
-  //   'use server';
-  // };
 
   return (
     <MinScreen>
@@ -38,12 +29,8 @@ const Admin = async ({ params: { lang } }: Props) => {
           </Button>
         </Link>
       </div>
-      <UsersTable
-      // users={users}
-      // blockUsers={blockUsers}
-      // deleteUsers={deleteUsers}
-      // unblockUsers={unblockUsers}
-      />
+      {/* <UsersTable /> */}
+      <Users />
     </MinScreen>
   );
 };

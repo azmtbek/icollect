@@ -192,9 +192,9 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   password: text("password").notNull(),
-  status: varchar("status", { length: 10 }).default("active"),
-  isAdmin: boolean("isAdmin").default(false),
-  createdAt: timestamp("createdAt").defaultNow(),
+  status: varchar("status", { length: 10 }).notNull().default("active"),
+  isAdmin: boolean("isAdmin").notNull().default(false),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
 export const accounts = pgTable(
