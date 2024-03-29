@@ -13,6 +13,7 @@ const Search = () => {
   const searchP = useSearchParams();
   const search = searchP?.get('q') ?? '';
   const { data: results } = api.search.getResults.useQuery({ search });
+
   return (
     <Card className='w-full'>
 

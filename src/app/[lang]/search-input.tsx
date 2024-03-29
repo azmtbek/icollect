@@ -11,9 +11,16 @@ const SearchInput = () => {
   const [search, setSearch] = useState('');
   return (
     <div className='flex gap-2'>
-      <Input type='search' placeholder='Search' onChange={(e) => {
-        e.preventDefault(); setSearch(e.target.value);
-      }}
+      <Input type='search' placeholder='Search'
+        onChange={(e) => {
+          e.preventDefault(); setSearch(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            router.push(`/${lang}/search?q=${search}`);
+          }
+        }}
       />
       <Button variant={'outline'} onClick={(e) => {
         e.preventDefault();
