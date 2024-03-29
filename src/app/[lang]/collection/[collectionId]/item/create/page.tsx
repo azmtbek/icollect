@@ -258,8 +258,9 @@ const CreateItem = () => {
                 )}
               />
 
-              {customFieldsMemo.map(c => {
-                return <div key={c}>{c}</div>;
+              {customFieldsMemo.map(customField => {
+                // TODO: change mapping to this way
+                return <div key={customField}></div>;
               })}
               {customFields.map(customField => {
                 if (customField == 'customString')

@@ -14,6 +14,7 @@ export const Like = ({
   const { data: liked, refetch } = api.like.get.useQuery({ itemId: +itemId });
   const toggleLike = api.like.toggle.useMutation({
     async onSuccess() {
+      await refetch();
       await itemRefetch();
     },
     onError(error) {

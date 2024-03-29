@@ -37,7 +37,7 @@ export const Comments = (
     }
   });
   const onCreateComment = (values: CommentType) => {
-    if (userId) {
+    if (!userId) {
       toast({
         title: "Not Signed in",
         description: "Please sign in to comment"
@@ -62,7 +62,6 @@ export const Comments = (
           name="text"
           render={({ field }) => (
             <FormItem>
-              {/* <FormLabel>Add a Comment</FormLabel> */}
               <FormControl>
                 <Textarea placeholder="Add a comment" {...field}
                   className="min-h-fit resize-none"
@@ -78,11 +77,13 @@ export const Comments = (
         >Create</Button>
       </form>
     </Form>
-    <div>
-      {comments?.map(comment => <div key={comment.id}>
-        <span>{comment.createdById}</span>
-        <div>{comment.text.split('\n').map((t, i) => <span key={i}>{t} <br /></span>)}</div>
-      </div>)}
+    <div className='flex flex-col gap-2 w-2/3'>
+      {comments?.map(comment =>
+        <div key={comment.id}
+          className='flex items-center justify-start w-full gap-2'>
+          <span className='border rounded p-2'>{comment.createdById}</span>
+          <div className='boarder-b rounded '>{comment.text.split('\n').map((t, i) => <span key={i}>{t} <br /></span>)}</div>
+        </div>)}
     </div>
   </>;
 };

@@ -10,7 +10,6 @@ import React, { useMemo } from 'react';
 import { useColumns } from './columns';
 import { DataTable } from './data-table';
 import Image from 'next/image';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 const Collection = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();

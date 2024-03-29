@@ -8,12 +8,15 @@ import { topics } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export const topicRouter = createTRPCRouter({
+  getAll: publicProcedure
+    .query(async ({ ctx }) => {
+      return ctx.db.query.topics.findMany();
+    }),
   getTopicById: publicProcedure
     .input(z.object({
       id: z.number()
     }))
     .query(async ({ ctx, input }) => {
-      const x = await ctx.db.query.topics.findFirst({ where: eq(topics.id, input.id) });
-      return x;
+      return ctx.db.query.topics.findFirst({ where: eq(topics.id, input.id) });
     }),
 });

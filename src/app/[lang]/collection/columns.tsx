@@ -20,13 +20,14 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { type Locale } from "@/i18n-config";
 import { useMemo } from "react";
+import { api } from "@/trpc/react";
 
 export const useColumns = () => {
   const { lang } = useParams<{ lang: Locale; collectionId: string; }>();
   const locale = useLocale(state => state.collection);
   // const { data: collections } = api.collection.getUserCollections.useQuery();
 
-  // const { data: topic } = api.topic.getTopicById.useQuery({ id: row.original.topicId });
+  const { data: topic } = api.topic.getAll.useQuery();
 
 
   const columns = useMemo(() => {
@@ -66,8 +67,9 @@ export const useColumns = () => {
       {
         accessorKey: "topicId",
         header: "Topic",
-        cell: () => {
-          return 'topic?.name';
+        cell: ({ row }) => {
+          const id = row.original.topicId;
+          return topic?.find(t => t.id === id)?.name;
         }
       },
       {
@@ -104,7 +106,7 @@ export const useColumns = () => {
       },
     ];
     return columns;
-  }, [lang, locale]);
+  }, [lang, locale, topic]);
 
   return columns;
 };

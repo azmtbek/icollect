@@ -1,5 +1,4 @@
 'use client';
-import { MultiUploader } from '@/components/custom/upload-collection-image';
 import MinScreen from '@/components/layout/min-screen';
 import { useLocale } from '@/components/provider/locale-provider';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { type Locale } from '@/i18n-config';
 import { collectionSchema, type CreateCollection } from '@/lib/types/collection';
-import { UploadButton, useUploadThing } from '@/lib/uploadthing';
+import { useUploadThing } from '@/lib/uploadthing';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
@@ -105,8 +104,10 @@ const CreateCollection = () => {
       });
       const lst = Array.from(inputRef?.current?.files ?? []);
       if (lst?.length > 0 && id)
-        startUpload(lst, { collectionId: id });
-
+        void startUpload(lst, {
+          collectionId: id,
+          lang
+        });
       router.push(`/${lang}/collection/${id}`);
     },
     onError(error) {
@@ -129,6 +130,7 @@ const CreateCollection = () => {
     "imageUploader",
     {
       onClientUploadComplete: () => {
+
         toast({ description: "image uploaded successfully!" });
       },
       onUploadError: () => {
@@ -201,24 +203,9 @@ const CreateCollection = () => {
                   </FormItem>
                 )}
               />
-              <UploadButton
-                endpoint="imageUploader"
-                input={{ collectionId: 9 }}
-                onClientUploadComplete={(res) => {
-                  // Do something with the response
-                  console.log("Files: ", res);
-                  alert("Upload Completed");
-                }}
-                onUploadError={(error: Error) => {
-                  // Do something with the error.
-                  alert(`ERROR! ${error.message}`);
-                }}
-              />
-              {/* <MultiUploader permittedFileInfo={permittedFileInfo} /> */}
               <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label htmlFor="image">Image (max file size: {permittedFileInfo?.config.image?.maxFileSize})</Label>
                 <Input id="image" type="file" ref={inputRef} />
-                <button onClick={e => { e.preventDefault(); console.log('ref', inputRef.current?.value); }}>click</button>
               </div>
               <FormField
                 control={form.control}
@@ -305,7 +292,6 @@ const CreateCollection = () => {
                 <Button type='button' onClick={selectCustomFields} disabled={currField === ''}>{locale.create.customFieldAdd}</Button>
               </div>
               <div className='flex justify-between'>
-                {JSON.stringify(form.formState.errors)}
                 <Button type="submit" disabled={createCollection.isLoading}>{
                   createCollection.isLoading ? locale.create.creating : locale.create.create
                 }</Button>
