@@ -3,8 +3,6 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import MinScreen from '@/components/layout/min-screen';
-// import { api } from '@/trpc/server';
-// import { UsersTable } from './users-table';
 import { type Locale } from '@/i18n-config';
 import Users from "./view";
 import { api } from "@/trpc/server";
@@ -17,7 +15,7 @@ type Props = {
 const Admin = async ({ params: { lang } }: Props) => {
   noStore();
   const user = await api.user.getCurrent.query();
-  if (!user) redirect(`/${lang}`);
+  if (!user || !user.isAdmin) redirect(`/${lang}`);
   return (
     <MinScreen>
       <div className='flex gap-2 w-full'>
@@ -32,7 +30,6 @@ const Admin = async ({ params: { lang } }: Props) => {
           </Button>
         </Link>
       </div>
-      {/* <UsersTable /> */}
       <Users />
     </MinScreen>
   );

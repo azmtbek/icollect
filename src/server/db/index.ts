@@ -15,7 +15,7 @@ export const decrement = (column: AnyColumn, value = 1) => {
 
 
 
-export const updateMany = (ids: unknown[], table: Table, key: AnyColumn, value: SQL<unknown>) => {
+export const updateMany = (ids: unknown[], key: AnyColumn, value: SQL | boolean | string | number) => {
   const sqlChunks: SQL[] = [];
   sqlChunks.push(sql`(case`);
   for (const id of ids) {
@@ -23,5 +23,7 @@ export const updateMany = (ids: unknown[], table: Table, key: AnyColumn, value: 
   }
   sqlChunks.push(sql`end)`);
   const finalSql: SQL = sql.join(sqlChunks, sql.raw(" "));
+  console.log(finalSql);
+
   return finalSql;
 };

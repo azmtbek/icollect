@@ -39,7 +39,7 @@ export const Header = async ({ lang }: Props) => {
         <div></div>
         <SearchInput />
         <div className='flex gap-4 items-center'>
-          <Button variant={'secondary'}>{currUser?.name}</Button>
+          {currUser && <Button variant={'secondary'} className='rounded-full'>{currUser.name}</Button>}
           {currUser ?
             <SignOut /> :
             <SignIn />}

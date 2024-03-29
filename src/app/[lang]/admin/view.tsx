@@ -7,7 +7,7 @@ import { useColumns } from './columns';
 
 const Users = () => {
   const localeTitles = useLocale((state) => state.titles);
-  const { data: users, isLoading } = api.user.getAll.useQuery();
+  const { data: users, isLoading, refetch } = api.user.getAll.useQuery();
   const columns = useColumns();
   const filteredUsers = useMemo(() => {
     return users ?? [];
@@ -18,7 +18,7 @@ const Users = () => {
       <div className='flex items-center justify-between w-full'>
         <div className='text-2xl'>{localeTitles.admin}</div>
       </div>
-      <DataTable data={filteredUsers} columns={columns} isLoading={isLoading} />
+      <DataTable data={filteredUsers} columns={columns} isLoading={isLoading} refetch={refetch} />
     </>
   );
 };

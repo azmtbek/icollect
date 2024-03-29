@@ -121,7 +121,7 @@ const Register = () => {
         <CardFooter>
           <p className="text-center text-sm text-gray-600">
             Already have an account?
-            <Link href={`/${lang}/login`} className='font-semibold text-gray-400'> Login</Link>
+            <Link href={`/login`} className='font-semibold text-gray-400'> Login</Link>
             .
           </p>
         </CardFooter>

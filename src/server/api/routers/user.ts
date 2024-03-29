@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { users } from "@/server/db/schema";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { SQL, and, eq, inArray, sql } from "drizzle-orm";
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { nanoid } from 'nanoid';
@@ -21,7 +21,7 @@ export const userRouter = createTRPCRouter({
     }),
   blockUser: adminProcedure
     .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const user = await ctx.db
         .update(users)
         .set({ status: "blocked" })
@@ -30,15 +30,15 @@ export const userRouter = createTRPCRouter({
     }),
   blockManyUsers: adminProcedure
     .input(z.object({ userIds: z.string().array() }))
-    .query(async ({ ctx, input }) => {
-      const updateCase = updateMany(input.userIds, users, users.status, sql`"blocked"`);
+    .mutation(async ({ ctx, input }) => {
+      const updateCase = updateMany(input.userIds, users.id, sql`'blocked'`);
       await ctx.db.update(users)
         .set({ status: updateCase })
         .where(inArray(users.id, input.userIds));
     }),
   unblockUser: adminProcedure
     .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const user = await ctx.db
         .update(users)
         .set({ status: "active" })
@@ -47,15 +47,15 @@ export const userRouter = createTRPCRouter({
     }),
   unblockManyUsers: adminProcedure
     .input(z.object({ userIds: z.string().array() }))
-    .query(async ({ ctx, input }) => {
-      const updateCase = updateMany(input.userIds, users, users.status, sql`"active"`);
+    .mutation(async ({ ctx, input }) => {
+      const updateCase = updateMany(input.userIds, users.id, sql`'active'`);
       await ctx.db.update(users)
         .set({ status: updateCase })
         .where(inArray(users.id, input.userIds));
     }),
   deleteUser: adminProcedure
     .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const user = await ctx.db
         .update(users)
         .set({ isDeleted: true })
@@ -65,8 +65,8 @@ export const userRouter = createTRPCRouter({
 
   deleteManyUsers: adminProcedure
     .input(z.object({ userIds: z.string().array() }))
-    .query(async ({ ctx, input }) => {
-      const updateCase = updateMany(input.userIds, users, users.isDeleted, sql`${true}`);
+    .mutation(async ({ ctx, input }) => {
+      const updateCase = updateMany(input.userIds, users.id, sql`'true'::boolean`);
       await ctx.db.update(users)
         .set({ isDeleted: updateCase })
         .where(inArray(users.id, input.userIds));

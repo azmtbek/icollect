@@ -31,17 +31,20 @@ import { Trash2 } from "lucide-react";
 import { LockClosedIcon, LockOpen1Icon, LockOpen2Icon } from "@radix-ui/react-icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
+  refetch: () => Promise<unknown>;
 }
 
 export function DataTable<TData extends { id: string; }, TValue>({
   columns,
   data,
   isLoading,
+  refetch,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -69,7 +72,25 @@ export function DataTable<TData extends { id: string; }, TValue>({
       rowSelection,
     },
   });
-  // const ;
+  const blockUsers = api.user.blockManyUsers.useMutation({
+    async onSuccess() {
+      await refetch();
+    }
+  });
+  const unblockUsers = api.user.unblockManyUsers.useMutation({
+    async onSuccess() {
+      await refetch();
+    }
+  });
+  const deleteUsers = api.user.deleteManyUsers.useMutation({
+    async onSuccess() {
+      await refetch();
+    }
+  });
+
+  const isNotSelected = React.useMemo(() =>
+    !table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected(),
+    [table.getIsSomePageRowsSelected(), table.getIsAllPageRowsSelected()]);
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -84,17 +105,12 @@ export function DataTable<TData extends { id: string; }, TValue>({
         />
         <Button
           onClick={() => {
-            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
-            // setPending(true);
-            // blockUsers(selectedUserIds).then(() => {
-            //   router.refresh();
-            //   table.toggleAllPageRowsSelected(false);
-            //   setPending(false);
-            // });
-            // console.log(selectedUserIds);
+            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            if (selectedUserIds.length > 0)
+              blockUsers.mutate({ userIds: selectedUserIds });
           }}
           variant={'outline'}
-        // disabled={pending}
+          disabled={isNotSelected}
         >
           <LockClosedIcon />
           <span className="px-1"></span>
@@ -102,33 +118,22 @@ export function DataTable<TData extends { id: string; }, TValue>({
         </Button>
         <Button
           onClick={() => {
-            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
-            // setPending(true);
-            // unblockUsers(selectedUserIds).then(() => {
-            //   router.refresh();
-            //   table.toggleAllPageRowsSelected(false);
-            //   setPending(false);
-            // });
+            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            if (selectedUserIds.length > 0)
+              unblockUsers.mutate({ userIds: selectedUserIds });
           }}
-          // disabled={pending}
+          disabled={isNotSelected}
           variant={'outline'}>
           <LockOpen1Icon />
           Unblock
         </Button>
         <Button
           onClick={() => {
-            // setPending(true);
-            const selectedIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
-            console.log(selectedIds);
-            // const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
-            // deleteUsers(selectedUserIds).then(() => {
-            //   router.refresh();
-            //   table.toggleAllPageRowsSelected(false);
-            //   setPending(false);
-            // });
-
+            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            if (selectedUserIds.length > 0)
+              deleteUsers.mutate({ userIds: selectedUserIds });
           }}
-          disabled={!table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
+          disabled={isNotSelected}
           variant={'destructive'}>
           <Trash2 />
         </Button>
