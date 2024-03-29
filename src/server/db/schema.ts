@@ -11,8 +11,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
-import { customType } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 // export const tsvector = customType<{
 //   data: string;
