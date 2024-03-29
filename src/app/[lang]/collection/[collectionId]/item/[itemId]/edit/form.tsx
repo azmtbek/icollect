@@ -109,25 +109,29 @@ const UpdateItem = () => {
     });
   }, [collection]);
 
-  const [tagInput, setTagInput] = useState('');
+  useEffect(() => {
+    form.reset(item);
+  }, [item]);
+
+  // const [tagInput, setTagInput] = useState('');
   const locale = useLocale((state) => state.item.create);
   const localeCollection = useLocale((state) => state.collection);
 
 
-  const onCreateTag = (value: string[] | undefined, onChange: (val: string[]) => void) => {
-    if (tags?.find(t => t.name === tagInput)) {
-      toast({ description: "This tag already exists. Please select it from above fieled." });
-      return;
-    }
-    if (!value) return;
-    const selected = value;
-    onChange(
-      selected?.includes(tagInput)
-        ? selected.filter((item: string) => item !== tagInput)
-        : [...selected, tagInput]
-    );
-    setTagInput('');
-  };
+  // const onCreateTag = (value: string[] | undefined, onChange: (val: string[]) => void) => {
+  //   if (tags?.find(t => t.name === tagInput)) {
+  //     toast({ description: "This tag already exists. Please select it from above fieled." });
+  //     return;
+  //   }
+  //   if (!value) return;
+  //   const selected = value;
+  //   onChange(
+  //     selected?.includes(tagInput)
+  //       ? selected.filter((item: string) => item !== tagInput)
+  //       : [...selected, tagInput]
+  //   );
+  //   setTagInput('');
+  // };
 
   return (
     <MinScreen>

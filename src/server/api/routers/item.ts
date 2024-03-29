@@ -47,7 +47,7 @@ export const itemRouter = createTRPCRouter({
 
       // create new tags
       let createdTags: { id: number; }[] = [];
-      if (newTags)
+      if (newTags && newTags?.length > 0)
         createdTags = await ctx.db
           .insert(tags)
           .values(newTags.map((tag) => ({ name: tag })))

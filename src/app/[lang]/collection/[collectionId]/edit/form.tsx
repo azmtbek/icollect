@@ -138,6 +138,7 @@ const UpdateCollection = () => {
       const fields = collectionToItem(collection);
       return ({ ...state, ...fields.reduce((ac, key) => ({ ...ac, [key]: true }), {}) });
     });
+    form.reset(collection);
   }, [collection]);
 
   const selectCustomFields = () => {
