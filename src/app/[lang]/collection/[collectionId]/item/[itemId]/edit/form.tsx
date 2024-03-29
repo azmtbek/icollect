@@ -2,7 +2,7 @@
 import MinScreen from '@/components/layout/min-screen';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { MultiSelectTags } from '@/components/custom/multi-select-tags';
 import { api } from '@/trpc/react';
@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Badge } from '@/components/ui/badge';
 import { CalendarIcon, X } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -20,7 +19,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { useLocale } from '@/components/provider/locale-provider';
 import { type Locale } from '@/i18n-config';
 import Link from 'next/link';
-import { type CreateItem, createItemSchema } from '@/lib/types/item';
+import { type Item, itemSchema } from '@/lib/types/item';
 import { collectionToItem } from '@/lib/collection-item-mapper';
 
 const customFields = [
@@ -60,34 +59,20 @@ const defaultCustomFields = {
   customDate3: false,
 };
 
-const CreateItem = () => {
+const UpdateItem = () => {
   const router = useRouter();
-  const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
+  const { collectionId, lang, itemId } = useParams<{ collectionId: string; lang: Locale; itemId: string; }>();
   const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
   const { data: tags } = api.tag.getAll.useQuery();
+  const { data: item } = api.item.getById.useQuery({ id: +itemId });
 
-  const form = useForm<Omit<CreateItem, "collectionId">>({
-    resolver: zodResolver(createItemSchema.omit({ collectionId: true })),
-    defaultValues: {
-      name: "",
-      tags: [],
-      newTags: [],
-      customString1: undefined,
-      customString2: undefined,
-      customString3: undefined,
-      customInteger1: undefined,
-      customInteger2: undefined,
-      customInteger3: undefined,
-      customText1: undefined,
-      customText2: undefined,
-      customText3: undefined,
-      customDate1: undefined,
-      customDate2: undefined,
-      customDate3: undefined,
-    }
+
+  const form = useForm<Item>({
+    resolver: zodResolver(itemSchema),
+    defaultValues: item
   });
 
-  const createItem = api.item.create.useMutation({
+  const updateItem = api.item.update.useMutation({
     onSuccess(data) {
       const id = data[0]?.id ?? '';
       toast({ description: "Item created." });
@@ -98,25 +83,16 @@ const CreateItem = () => {
     }
   });
 
-  const onSubmit = (values: Omit<CreateItem, "collectionId">) => {
+  const onSubmit = (values: Item) => {
     console.log("this tags", values.tags);
-    // const selectedTagIds = tags?.filter(t => values.tags?.includes(t.name)).map(t => t.id);
-    createItem.mutate({
+    updateItem.mutate({
       ...values,
-      collectionId: +collectionId,
-      // tags: selectedTagIds
     });
   };
   const [customForms, setCustomForms] = useState(defaultCustomFields);
   const customFieldsMemo = useMemo(() => {
 
     const customItemFieldNames = collectionToItem(collection);
-    // return Object.keys(defaultCustomFields).map(field => {
-    //   if (customitemFieldNames.includes(field)) {
-    //     return ({ field: true });
-    //   }
-    //   return field;
-    // });
     return customItemFieldNames;
   }, [collection]);
   useEffect(() => {
@@ -200,59 +176,6 @@ const CreateItem = () => {
                       onChange={field.onChange}
                       className="w-80 md:w-96"
                     />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="newTags"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {locale.newTags}
-                    </FormLabel>
-                    <FormDescription className='flex gap-1 flex-wrap'>
-                      {field.value?.map(tag =>
-                        <Badge
-                          key={tag}
-                          variant="secondary"
-                          className='px-2.5 text-xs py-0 ring-1 ring-gray-400'
-                          onClick={(e) => {
-                            if (!field.value) return e.preventDefault();
-                            const selected = field.value;
-
-                            field.onChange(
-                              selected?.includes(tag)
-                                ? selected.filter((item) => item !== tag)
-                                : [...selected, tag]
-                            );
-                          }}>
-                          {tag}
-                          <X className='className="h-1 w-3 text-muted-foreground hover:text-foreground' />
-                        </Badge>
-                      )}
-                    </FormDescription>
-                    <FormControl>
-                      <div className='flex gap-2'>
-                        <Input placeholder={locale.newTagsPlaceholder}
-                          value={tagInput}
-                          onChange={(e) => { setTagInput(e.target.value); }}
-                          onKeyDown={(e) => {
-                            if (!field.value) return e.preventDefault();
-                            if (e.key === 'Enter') {
-                              e.preventDefault();
-                              tagInput && onCreateTag(field.value, field.onChange);
-                            }
-                          }} />
-                        <Button onClick={(e) => {
-                          if (!field.value) return e.preventDefault();
-                          e.preventDefault();
-                          tagInput && onCreateTag(field.value, field.onChange);
-                        }}
-                          disabled={!tagInput}>Create A Tag</Button>
-                      </div>
-                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -384,8 +307,8 @@ const CreateItem = () => {
               })}
               <div className='flex justify-between' >
                 <Button type="submit"
-                  disabled={createItem.isLoading}>
-                  {createItem.isLoading ? locale.creating : locale.create}
+                  disabled={updateItem.isLoading}>
+                  {updateItem.isLoading ? locale.creating : locale.create}
                 </Button>
                 <Button variant='outline' onClick={() => router.back()}>Go back</Button>
               </div>
@@ -397,4 +320,4 @@ const CreateItem = () => {
   );
 };
 
-export default CreateItem;
+export default UpdateItem;

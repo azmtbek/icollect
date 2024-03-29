@@ -6,7 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { collections, itemTags, items, tags } from "@/server/db/schema";
-import { type SQL, eq, inArray, sql, desc } from "drizzle-orm";
+import { eq, inArray, desc } from "drizzle-orm";
 import { createItemSchema, itemSchema } from "@/lib/types/item";
 import { increment, updateMany } from "@/server/db";
 
@@ -28,9 +28,9 @@ export const itemRouter = createTRPCRouter({
       return reItems;
     }),
   getById: publicProcedure
-    .input(z.object({ itemId: z.string() }))
+    .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
-      return ctx.db.query.items.findFirst({ where: eq(items.id, +input.itemId) });
+      return ctx.db.query.items.findFirst({ where: eq(items.id, +input.id) });
     }),
   create: protectedProcedure
     .input(createItemSchema)
@@ -69,7 +69,7 @@ export const itemRouter = createTRPCRouter({
   update: protectedProcedure.
     input(itemSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.update(items).set({ ...input }).where(eq(items.id, input.id));
+      return ctx.db.update(items).set({ ...input }).where(eq(items.id, input.id)).returning({ id: items.id });
     }),
   delete: protectedProcedure.
     input(itemSchema.pick({ id: true, }))

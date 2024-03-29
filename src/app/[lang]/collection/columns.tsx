@@ -96,7 +96,12 @@ export const useColumns = () => {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={`/${lang}/collection/${collection.id}/edit`}
+                      className="w-full h-full">
+                      Edit
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem className="bg-destructive">Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

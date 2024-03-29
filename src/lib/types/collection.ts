@@ -45,5 +45,6 @@ export const collectionSchema = z.object({
 export type Collection = z.infer<typeof collectionSchema>;
 
 export type CreateCollection = Omit<Collection, "id">;
+export type UpdateCollection = Collection;
 export type CollectionCustomFields = Omit<Collection, "id" | "name" | "topicId" | "description">;
 export type CollectionCustomFieldKeys = keyof CollectionCustomFields;

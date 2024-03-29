@@ -25,7 +25,7 @@ import { collectionToItem } from '@/lib/collection-item-mapper';
 const Item = () => {
   const { itemId, collectionId, lang } = useParams<{ itemId: string; collectionId: string; lang: Locale; }>();
   const { data: user } = api.user.getCurrent.useQuery();
-  const { data: item, refetch: itemRefetch } = api.item.getById.useQuery({ itemId });
+  const { data: item, refetch: itemRefetch } = api.item.getById.useQuery({ id: +itemId });
   const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
   const locale = useLocale(state => state.collection.view);
   return (

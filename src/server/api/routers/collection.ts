@@ -70,7 +70,9 @@ export const collectionRouter = createTRPCRouter({
   update: protectedProcedure.
     input(collectionSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.update(collections).set({ ...input }).where(eq(collections.id, input.id));
+      return ctx.db
+        .update(collections).set({ ...input })
+        .where(eq(collections.id, input.id)).returning({ id: collections.id });;
     }),
   delete: protectedProcedure.
     input(collectionSchema.pick({ id: true, }))
