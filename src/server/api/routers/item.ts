@@ -6,7 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { itemTags, items, tags } from "@/server/db/schema";
-import { type SQL, eq, inArray, sql } from "drizzle-orm";
+import { type SQL, eq, inArray, sql, desc } from "drizzle-orm";
 import { createItemSchema } from "@/lib/types/item";
 import { increment } from "@/server/db";
 
@@ -14,6 +14,10 @@ export const itemRouter = createTRPCRouter({
   getAll: publicProcedure
     .query(({ ctx }) => {
       return ctx.db.query.items.findMany();
+    }),
+  getLatest: publicProcedure
+    .query(({ ctx }) => {
+      return ctx.db.query.items.findMany({ orderBy: desc(items.createdAt), limit: 10 });
     }),
   getCollectionItems: publicProcedure
     .input(z.object({ collectionId: z.number() }))

@@ -1,7 +1,10 @@
 {
   "titles": {
     "collections": "Kolleksialar",
-    "admin": "Admin"
+    "admin": "Admin",
+    "biggestCollections": "Eng Katta Kolleksialar",
+    "latestItems": "So'ngi Elementlar",
+    "tagsCloud": "Taglar Buluti"
   },
   "theme": {
     "light": "yorug'",
@@ -28,8 +31,9 @@
     },
     "view": {
       "title": "Kolleksiya",
-      "addItem": "Narsa Qo'shing",
-      "addCollection": "Kolleksiya Qo'shing"
+      "addItem": "Element Qo'shing",
+      "addCollection": "Kolleksiya Qo'shing",
+      "goToItem": "Elementga Boring"
     }
   },
   "item": {

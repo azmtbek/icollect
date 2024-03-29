@@ -1,7 +1,10 @@
 {
   "titles": {
     "collections": "Collections",
-    "admin": "Admin"
+    "admin": "Admin",
+    "biggestCollections": "Biggest Collections",
+    "latestItems": "Latest Items",
+    "tagsCloud": "Tags Cloud"
   },
   "theme": {
     "light": "light",
@@ -11,11 +14,11 @@
   "collection": {
     "name": "Name",
     "topic": "Topic",
+    "description": "Description",
     "customString": "String Field",
     "customText": "Text Field",
     "customDate": "Date Field",
     "customInteger": "Integer Field",
-    "description": "Description",
     "create": {
       "title": "Create Collection",
       "namePlaceholder": "My Book",

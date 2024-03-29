@@ -1,4 +1,5 @@
 'use client';
+import { useLocale } from '@/components/provider/locale-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { api } from '@/trpc/react';
 import { useMemo } from 'react';
@@ -18,9 +19,12 @@ const CustomTagsCloud = ({ className }: { className?: string; }) => {
     return tags?.map(tag => ({ ...tag, value: tag.name })) ?? [];
   }, [tags]);
 
+
+  const localeTitles = useLocale((state) => state.titles);
+
   return <Card className={className}>
     <CardHeader>
-      <CardTitle>Tags</CardTitle>
+      <CardTitle>{localeTitles.tagsCloud}</CardTitle>
 
     </CardHeader>
     <CardContent>
