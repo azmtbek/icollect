@@ -28,9 +28,8 @@ import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/custom/data-table-pagination";
 import { DataTableViewOptions } from "@/components/custom/data-table-column-toggle";
 import { Trash2 } from "lucide-react";
-import { LockClosedIcon, LockOpen1Icon, LockOpen2Icon } from "@radix-ui/react-icons";
+import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
 import { api } from "@/trpc/react";
 
 interface DataTableProps<TData, TValue> {
@@ -87,10 +86,11 @@ export function DataTable<TData extends { id: string; }, TValue>({
       await refetch();
     }
   });
-
+  const someSelected = table.getIsSomePageRowsSelected();
+  const allSelected = table.getIsAllPageRowsSelected();
   const isNotSelected = React.useMemo(() =>
-    !table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected(),
-    [table.getIsSomePageRowsSelected(), table.getIsAllPageRowsSelected()]);
+    !someSelected && !allSelected,
+    [someSelected, allSelected]);
 
   return (
     <div className="w-full flex flex-col gap-4">

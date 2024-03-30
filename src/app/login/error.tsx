@@ -16,7 +16,7 @@ export default function Error({
 
   return (
     <div>
-      <h2>Couldn't sign in. You are either blocked or don't have an account!</h2>
+      <h2>Couldn&apos;t sign in. You are either blocked or don&apos;t have an account!</h2>
       <button
         onClick={
           // Attempt to recover by trying to re-render the segment

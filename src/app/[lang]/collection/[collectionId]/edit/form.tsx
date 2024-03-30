@@ -139,7 +139,7 @@ const UpdateCollection = () => {
       return ({ ...state, ...fields.reduce((ac, key) => ({ ...ac, [key]: true }), {}) });
     });
     form.reset(collection);
-  }, [collection]);
+  }, [collection, form]);
 
   const selectCustomFields = () => {
     if (currField === '') return;

@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { users } from "@/server/db/schema";
-import { SQL, and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 import { nanoid } from 'nanoid';
@@ -83,7 +83,7 @@ export const userRouter = createTRPCRouter({
     }),
   getCurrentFull: protectedProcedure
     .query(async ({ ctx }) => {
-      if (!ctx.session || !ctx.session.user || !ctx.session.user.id) return;
+      if (!ctx.session.user.id) return;
       return ctx.db.query.users.findFirst({
         where: and(
           eq(users.id, ctx.session.user.id),

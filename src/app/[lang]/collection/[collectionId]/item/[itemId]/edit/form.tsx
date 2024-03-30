@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { CalendarIcon, X } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
@@ -111,7 +111,7 @@ const UpdateItem = () => {
 
   useEffect(() => {
     form.reset(item);
-  }, [item]);
+  }, [item, form]);
 
   // const [tagInput, setTagInput] = useState('');
   const locale = useLocale((state) => state.item.create);

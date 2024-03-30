@@ -17,8 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { api } from '@/trpc/react';
-import { useParams, useRouter } from 'next/navigation';
-import { type Locale } from '@/i18n-config';
+import { useRouter } from 'next/navigation';
+
 
 const registerSchema = z.object({
   username: z.string().min(2, { message: "Username must be at least 2 characters." }).max(255),
@@ -30,7 +30,6 @@ type RegisterType = z.infer<typeof registerSchema>;
 const Register = () => {
   const router = useRouter();
   const [pageError, setPageError] = useState('');
-  const { lang } = useParams<{ lang: Locale; }>();
 
   const form = useForm<RegisterType>({
     resolver: zodResolver(registerSchema),

@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -28,7 +27,7 @@ import { useLocale } from "@/components/provider/locale-provider";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { type Locale } from "@/i18n-config";
-import { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 
@@ -159,7 +158,7 @@ export const useColumns = ({ refetch }: {
       },
     ];
     return columns;
-  }, [lang, locale, topic]);
+  }, [lang, locale, topic, deleteCollection]);
 
   return columns;
 };

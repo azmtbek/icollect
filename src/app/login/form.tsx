@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,17 +17,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useParams } from 'next/navigation';
-import { type Locale } from '@/i18n-config';
-import { toast } from '@/components/ui/use-toast';
-
 const registerSchema = z.object({
   email: z.string().email({ message: "Please enter valid email." }),
   password: z.string().min(2, { message: "Password must be at least 2 characters." }).max(255),
 });
 type RegisterType = z.infer<typeof registerSchema>;
 
-const Login = ({ login }: { login: ({ email, password }: { email: string, password: string; }) => Promise<string>; }) => {
+const Login = ({ login }: { login: ({ email, password }: { email: string, password: string; }) => void; }) => {
   // const { lang } = useParams<{ lang: Locale; }>();
 
   const form = useForm<RegisterType>({
@@ -37,17 +33,11 @@ const Login = ({ login }: { login: ({ email, password }: { email: string, passwo
       password: "",
     },
   });
-  const [error, setError] = useState('');
   const onSubmit = async (values: RegisterType) => {
-    const x = await login({ email: values.email, password: values.password });
-    if (x) {
-      setError(x);
-      toast({ title: x });
-    }
+    login({ email: values.email, password: values.password });
   };
   return (
     <div className='flex min-h-[calc(100vh-4rem)] flex-col gap-4 items-center justify-center'>
-      {error && <div className='text-xl border rounded px-4 py-2'>{error}</div>}
       <Card>
         <CardHeader>
           <CardTitle>Login</CardTitle>
