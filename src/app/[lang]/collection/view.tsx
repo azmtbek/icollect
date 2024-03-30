@@ -16,8 +16,8 @@ const Collections = () => {
   const userId = searchParams.get('user');
   const locale = useLocale((state) => state.collection.view);
   const localeTitles = useLocale((state) => state.titles);
-  const { data: collections } = api.collection.getUserCollections.useQuery(userId ? { userId } : undefined);
-  const columns = useColumns();
+  const { data: collections, refetch } = api.collection.getUserCollections.useQuery(userId ? { userId } : undefined);
+  const columns = useColumns({ refetch });
 
   const filteredCollections = useMemo(() => {
     return collections ?? [];
