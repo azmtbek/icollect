@@ -13,8 +13,6 @@ export const decrement = (column: AnyColumn, value = 1) => {
   return sql`${column} - ${value}`;
 };
 
-
-
 export const updateMany = (ids: unknown[], key: AnyColumn, value: SQL | boolean | string | number) => {
   const sqlChunks: SQL[] = [];
   sqlChunks.push(sql`(case`);

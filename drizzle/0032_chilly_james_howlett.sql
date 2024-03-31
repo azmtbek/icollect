@@ -1,0 +1,1 @@
+ALTER TABLE "icollect_item" ALTER COLUMN "fts" SET DATA TYPE tsvector;

@@ -1,0 +1,1020 @@
+{
+  "id": "e637a040-2418-4c25-8ca9-56aaf8593cf2",
+  "prevId": "0827f8e2-6d5a-45c1-833a-98380e33d28a",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "icollect_account": {
+      "name": "icollect_account",
+      "schema": "",
+      "columns": {
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "providerAccountId": {
+          "name": "providerAccountId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token_type": {
+          "name": "token_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "session_state": {
+          "name": "session_state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "icollect_account_userId_icollect_user_id_fk": {
+          "name": "icollect_account_userId_icollect_user_id_fk",
+          "tableFrom": "icollect_account",
+          "tableTo": "icollect_user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "icollect_account_provider_providerAccountId_pk": {
+          "name": "icollect_account_provider_providerAccountId_pk",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "icollect_collection": {
+      "name": "icollect_collection",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "topicId": {
+          "name": "topicId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdById": {
+          "name": "createdById",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "itemCount": {
+          "name": "itemCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "custom_string1_state": {
+          "name": "custom_string1_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_string1_name": {
+          "name": "custom_string1_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_string2_state": {
+          "name": "custom_string2_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_string2_name": {
+          "name": "custom_string2_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_string3_state": {
+          "name": "custom_string3_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_string3_name": {
+          "name": "custom_string3_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_integer1_state": {
+          "name": "custom_integer1_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_integer1_name": {
+          "name": "custom_integer1_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_integer2_state": {
+          "name": "custom_integer2_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_integer2_name": {
+          "name": "custom_integer2_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_integer3_state": {
+          "name": "custom_integer3_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_integer3_name": {
+          "name": "custom_integer3_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_boolean1_state": {
+          "name": "custom_boolean1_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_boolean1_name": {
+          "name": "custom_boolean1_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_boolean2_state": {
+          "name": "custom_boolean2_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_boolean2_name": {
+          "name": "custom_boolean2_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_boolean3_state": {
+          "name": "custom_boolean3_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_boolean3_name": {
+          "name": "custom_boolean3_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_text1_state": {
+          "name": "custom_text1_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_text1_name": {
+          "name": "custom_text1_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_text2_state": {
+          "name": "custom_text2_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_text2_name": {
+          "name": "custom_text2_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_text3_state": {
+          "name": "custom_text3_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_text3_name": {
+          "name": "custom_text3_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_date1_state": {
+          "name": "custom_date1_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_date1_name": {
+          "name": "custom_date1_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_date2_state": {
+          "name": "custom_date2_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_date2_name": {
+          "name": "custom_date2_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_date3_state": {
+          "name": "custom_date3_state",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "custom_date3_name": {
+          "name": "custom_date3_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "icollect_collection_topicId_icollect_topic_id_fk": {
+          "name": "icollect_collection_topicId_icollect_topic_id_fk",
+          "tableFrom": "icollect_collection",
+          "tableTo": "icollect_topic",
+          "columnsFrom": [
+            "topicId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "icollect_collection_createdById_icollect_user_id_fk": {
+          "name": "icollect_collection_createdById_icollect_user_id_fk",
+          "tableFrom": "icollect_collection",
+          "tableTo": "icollect_user",
+          "columnsFrom": [
+            "createdById"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "icollect_comment": {
+      "name": "icollect_comment",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "itemId": {
+          "name": "itemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdById": {
+          "name": "createdById",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "isEdited": {
+          "name": "isEdited",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        }
+      },
+      "indexes": {
+        "icollect_comment_createdById_idx": {
+          "name": "icollect_comment_createdById_idx",
+          "columns": [
+            "createdById"
+          ],
+          "isUnique": false
+        },
+        "icollect_comment_itemId_idx": {
+          "name": "icollect_comment_itemId_idx",
+          "columns": [
+            "itemId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "icollect_comment_itemId_icollect_item_id_fk": {
+          "name": "icollect_comment_itemId_icollect_item_id_fk",
+          "tableFrom": "icollect_comment",
+          "tableTo": "icollect_item",
+          "columnsFrom": [
+            "itemId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "icollect_comment_createdById_icollect_user_id_fk": {
+          "name": "icollect_comment_createdById_icollect_user_id_fk",
+          "tableFrom": "icollect_comment",
+          "tableTo": "icollect_user",
+          "columnsFrom": [
+            "createdById"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "icollect_itemTag": {
+      "name": "icollect_itemTag",
+      "schema": "",
+      "columns": {
+        "itemId": {
+          "name": "itemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tagId": {
+          "name": "tagId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "icollect_itemTag_itemId_icollect_item_id_fk": {
+          "name": "icollect_itemTag_itemId_icollect_item_id_fk",
+          "tableFrom": "icollect_itemTag",
+          "tableTo": "icollect_item",
+          "columnsFrom": [
+            "itemId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "icollect_itemTag_tagId_icollect_tag_id_fk": {
+          "name": "icollect_itemTag_tagId_icollect_tag_id_fk",
+          "tableFrom": "icollect_itemTag",
+          "tableTo": "icollect_tag",
+          "columnsFrom": [
+            "tagId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "icollect_itemTag_itemId_tagId_pk": {
+          "name": "icollect_itemTag_itemId_tagId_pk",
+          "columns": [
+            "itemId",
+            "tagId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "icollect_item": {
+      "name": "icollect_item",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "likesCount": {
+          "name": "likesCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "commentsCount": {
+          "name": "commentsCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "collectionId": {
+          "name": "collectionId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdById": {
+          "name": "createdById",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "custom_string1": {
+          "name": "custom_string1",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_string2": {
+          "name": "custom_string2",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_string3": {
+          "name": "custom_string3",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_integer1": {
+          "name": "custom_integer1",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_integer2": {
+          "name": "custom_integer2",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_integer3": {
+          "name": "custom_integer3",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_boolean1": {
+          "name": "custom_boolean1",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_boolean2": {
+          "name": "custom_boolean2",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_boolean3": {
+          "name": "custom_boolean3",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_text1": {
+          "name": "custom_text1",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_text2": {
+          "name": "custom_text2",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_text3": {
+          "name": "custom_text3",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_date1": {
+          "name": "custom_date1",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_date2": {
+          "name": "custom_date2",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_date3": {
+          "name": "custom_date3",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "icollect_item_name_idx": {
+          "name": "icollect_item_name_idx",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "icollect_item_collectionId_icollect_collection_id_fk": {
+          "name": "icollect_item_collectionId_icollect_collection_id_fk",
+          "tableFrom": "icollect_item",
+          "tableTo": "icollect_collection",
+          "columnsFrom": [
+            "collectionId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "icollect_item_createdById_icollect_user_id_fk": {
+          "name": "icollect_item_createdById_icollect_user_id_fk",
+          "tableFrom": "icollect_item",
+          "tableTo": "icollect_user",
+          "columnsFrom": [
+            "createdById"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "icollect_like": {
+      "name": "icollect_like",
+      "schema": "",
+      "columns": {
+        "itemId": {
+          "name": "itemId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "icollect_like_itemId_icollect_item_id_fk": {
+          "name": "icollect_like_itemId_icollect_item_id_fk",
+          "tableFrom": "icollect_like",
+          "tableTo": "icollect_item",
+          "columnsFrom": [
+            "itemId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "icollect_like_userId_icollect_user_id_fk": {
+          "name": "icollect_like_userId_icollect_user_id_fk",
+          "tableFrom": "icollect_like",
+          "tableTo": "icollect_user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "icollect_like_itemId_userId_pk": {
+          "name": "icollect_like_itemId_userId_pk",
+          "columns": [
+            "itemId",
+            "userId"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "icollect_session": {
+      "name": "icollect_session",
+      "schema": "",
+      "columns": {
+        "sessionToken": {
+          "name": "sessionToken",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "name": "expires",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "icollect_session_userId_icollect_user_id_fk": {
+          "name": "icollect_session_userId_icollect_user_id_fk",
+          "tableFrom": "icollect_session",
+          "tableTo": "icollect_user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "icollect_tag": {
+      "name": "icollect_tag",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "icollect_tag_name_unique": {
+          "name": "icollect_tag_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      }
+    },
+    "icollect_topic": {
+      "name": "icollect_topic",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "icollect_topic_name_unique": {
+          "name": "icollect_topic_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      }
+    },
+    "icollect_user": {
+      "name": "icollect_user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "emailVerified": {
+          "name": "emailVerified",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "isAdmin": {
+          "name": "isAdmin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isDeleted": {
+          "name": "isDeleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "icollect_user_email_unique": {
+          "name": "icollect_user_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
+    },
+    "icollect_verificationToken": {
+      "name": "icollect_verificationToken",
+      "schema": "",
+      "columns": {
+        "identifier": {
+          "name": "identifier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "name": "expires",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "icollect_verificationToken_identifier_token_pk": {
+          "name": "icollect_verificationToken_identifier_token_pk",
+          "columns": [
+            "identifier",
+            "token"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

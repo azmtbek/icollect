@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS "icollect_item_fts_idx";

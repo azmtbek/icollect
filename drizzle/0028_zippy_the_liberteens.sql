@@ -1,0 +1,1 @@
+ALTER TABLE "icollect_item" DROP COLUMN IF EXISTS "fts";

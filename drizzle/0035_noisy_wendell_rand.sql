@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "icollect_item_fts_idx" ON "icollect_item" ("fts");

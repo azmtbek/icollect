@@ -32,7 +32,7 @@ const CustomTagsCloud = ({ className }: { className?: string; }) => {
         tags={mappedTags}
         colorOptions={options}
         onClick={(tag) => console.log('clicking on tag:', tag)}
-        minSize={20} maxSize={50}
+        minSize={12} maxSize={40}
         className='flex flex-wrap gap-2'
       />
     </CardContent>

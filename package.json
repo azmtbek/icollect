@@ -9,6 +9,7 @@
     "db:generate": "drizzle-kit generate:pg",
     "db:studio": " drizzle-kit studio",
     "db:check": "drizzle-kit check:pg",
+    "db:pull": "drizzle-kit introspect:pg",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"
