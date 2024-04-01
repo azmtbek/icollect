@@ -4,7 +4,7 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/server/api/trpc";
-import { comments, items } from "@/server/db/schema";
+import { comments, items, users } from "@/server/db/schema";
 import { asc, eq, sql } from "drizzle-orm";
 
 export const commentRouter = createTRPCRouter({
@@ -13,10 +13,18 @@ export const commentRouter = createTRPCRouter({
       itemId: z.string().min(1)
     }))
     .query(({ ctx, input }) => {
-      return ctx.db.query.comments.findMany({
-        where: eq(comments.itemId, +input.itemId),
-        orderBy: [asc(comments.createdAt)],
-      });
+      return ctx.db.select({
+        id: comments.id,
+        text: comments.text,
+        createdByName: users.name,
+        createdAt: comments.createdAt,
+        updatedAt: comments.updatedAt,
+        isEdited: comments.isEdited,
+
+      }).from(comments)
+        .leftJoin(users, eq(comments.createdById, users.id))
+        .where(eq(comments.itemId, +input.itemId))
+        .orderBy(asc(comments.createdAt));
     }),
   create: publicProcedure
     .input(z.object({

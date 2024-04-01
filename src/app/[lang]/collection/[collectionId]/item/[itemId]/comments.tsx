@@ -56,7 +56,7 @@ export const Comments = (
   return <>
     <div className='w-2/3 py-2'>{commentsCount} comments</div>
     <Form {...commentForm}>
-      <form onSubmit={commentForm.handleSubmit(onCreateComment)} className="w-2/3 space-y-6">
+      <form onSubmit={commentForm.handleSubmit(onCreateComment)} className="w-2/3 space-y-6 py-2">
         <FormField
           control={commentForm.control}
           name="text"
@@ -80,9 +80,11 @@ export const Comments = (
     <div className='flex flex-col gap-2 w-2/3'>
       {comments?.map(comment =>
         <div key={comment.id}
-          className='flex items-center justify-start w-full gap-2'>
-          <span className='border rounded p-2'>{comment.createdById}</span>
-          <div className='boarder-b rounded '>{comment.text.split('\n').map((t, i) => <span key={i}>{t} <br /></span>)}</div>
+          className='flex items-center justify-start w-full gap-2 border rounded p-2' >
+          <span className='border rounded-full p-1 self-start'>{comment.createdByName ?? 'anonymous'}</span>
+          <p className='boarder-b rounded '>
+            {comment.text.split('\n').map((t, i) => <span key={i}>{t} <br /></span>)}
+          </p>
         </div>)}
     </div>
   </>;
