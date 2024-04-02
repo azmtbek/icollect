@@ -1,9 +1,12 @@
 'use client';
 import { useLocale } from '@/components/provider/locale-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Locale } from '@/i18n-config';
+import { cn } from '@/lib/utils';
 import { api } from '@/trpc/react';
+import { useParams, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { type ColorOptions, TagCloud } from 'react-tagcloud';
+import { type ColorOptions, TagCloud, type Tag } from 'react-tagcloud';
 
 
 
@@ -12,15 +15,35 @@ const options: ColorOptions = {
   hue: 'blue',
 };
 
+declare module "react-tagcloud" {
+  interface Tag {
+    id: number;
+  }
+}
+
+const customRenderer = (tag: Tag, size: number, color: string) => {
+  return (
+    <span key={tag.value} style={{ color }} className={cn(`text-${size}xl `, ' hover:bg-secondary p-1 rounded')}>
+      {tag.value}
+    </span>
+  );
+};
+
 
 const CustomTagsCloud = ({ className }: { className?: string; }) => {
+
+  const { lang } = useParams<{ lang: Locale; }>();
   const { data: tags } = api.tag.getAll.useQuery();
   const mappedTags = useMemo(() => {
     return tags?.map(tag => ({ ...tag, value: tag.name })) ?? [];
   }, [tags]);
 
+  const router = useRouter();
 
   const localeTitles = useLocale((state) => state.titles);
+  const onClickTag = (tag: Tag) => {
+    router.push(`/${lang}/search?tag=${tag.id}`);
+  };
 
   return <Card className={className}>
     <CardHeader>
@@ -31,9 +54,10 @@ const CustomTagsCloud = ({ className }: { className?: string; }) => {
       <TagCloud
         tags={mappedTags}
         colorOptions={options}
-        onClick={(tag) => console.log('clicking on tag:', tag)}
-        minSize={12} maxSize={40}
-        className='flex flex-wrap gap-2'
+        onClick={onClickTag}
+        minSize={1} maxSize={5}
+        className='flex flex-wrap gap-2 cursor-pointer'
+        renderer={customRenderer}
       />
     </CardContent>
   </Card>;

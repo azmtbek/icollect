@@ -14,6 +14,36 @@ export const tagRouter = createTRPCRouter({
     .query(({ ctx }) => {
       return ctx.db.query.tags.findMany();
     }),
+  getItemsByTagId: publicProcedure
+    .input(z.object({
+      tagId: z.string()
+    }))
+    .query(({ ctx, input }) => {
+      return ctx.db.select({
+        id: items.id,
+        name: items.name,
+        collectionId: items.collectionId,
+        customString1: items.customString1,
+        customString2: items.customString1,
+        customString3: items.customString1,
+        customInteger1: items.customInteger1,
+        customInteger2: items.customInteger2,
+        customInteger3: items.customInteger3,
+        customText1: items.customText1,
+        customText2: items.customText2,
+        customText3: items.customText3,
+        customDate1: items.customDate1,
+        customDate2: items.customDate2,
+        customDate3: items.customDate3,
+        customBoolean1: items.customBoolean1,
+        customBoolean2: items.customBoolean2,
+        customBoolean3: items.customBoolean3,
+      })
+        .from(itemTags)
+        .leftJoin(tags, eq(itemTags.tagId, tags.id))
+        .leftJoin(items, eq(itemTags.itemId, items.id))
+        .where(eq(tags.id, +input.tagId));
+    }),
   getAllItemTags: publicProcedure
     .query(({ ctx }) => {
       return ctx.db.query.itemTags.findMany();
@@ -21,14 +51,13 @@ export const tagRouter = createTRPCRouter({
   getMultipleByItemId: publicProcedure
     .input(z.object({
       itemIds: z.array(z.number())
-    })).query(({ ctx, input }) => {
+    }))
+    .query(({ ctx, input }) => {
       const x = input.itemIds.map(async (itemId) =>
-        await ctx.db.select(
-          {
-            itemId: items.id,
-            tags: tags.name
-          }
-        )
+        await ctx.db.select({
+          itemId: items.id,
+          tags: tags.name
+        })
           .from(itemTags)
           .leftJoin(tags, eq(itemTags.tagId, tags.id))
           .leftJoin(items, eq(itemTags.itemId, items.id))
@@ -47,12 +76,9 @@ export const tagRouter = createTRPCRouter({
     }))
     .query(({ ctx, input }) => {
       if (!input.itemId) return [];
-      return ctx.db.select(
-        {
-          // itemId: items.id,
-          id: tags.id
-        }
-      )
+      return ctx.db.select({
+        id: tags.id
+      })
         .from(itemTags)
         .leftJoin(tags, eq(itemTags.tagId, tags.id))
         .leftJoin(items, eq(itemTags.itemId, items.id))

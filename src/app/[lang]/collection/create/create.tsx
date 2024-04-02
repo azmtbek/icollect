@@ -121,7 +121,6 @@ const CreateCollection = () => {
     createCollection.mutate(values);
   };
 
-
   const [customForms, setCustomForms] = useState(defaultCustomFields);
   const [currField, setCurrField] = useState<keyof CustomFieldsType | ''>('');
 
