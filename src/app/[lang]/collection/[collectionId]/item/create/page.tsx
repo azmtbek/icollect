@@ -99,24 +99,14 @@ const CreateItem = () => {
   });
 
   const onSubmit = (values: Omit<CreateItem, "collectionId">) => {
-    console.log("this tags", values.tags);
-    // const selectedTagIds = tags?.filter(t => values.tags?.includes(t.name)).map(t => t.id);
     createItem.mutate({
       ...values,
       collectionId: +collectionId,
-      // tags: selectedTagIds
     });
   };
   const [customForms, setCustomForms] = useState(defaultCustomFields);
   const customFieldsMemo = useMemo(() => {
-
     const customItemFieldNames = collectionToItem(collection);
-    // return Object.keys(defaultCustomFields).map(field => {
-    //   if (customitemFieldNames.includes(field)) {
-    //     return ({ field: true });
-    //   }
-    //   return field;
-    // });
     return customItemFieldNames;
   }, [collection]);
   useEffect(() => {

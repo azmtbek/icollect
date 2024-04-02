@@ -60,10 +60,10 @@ export const collectionRouter = createTRPCRouter({
       });
     }),
   create: protectedProcedure.
-    input(collectionSchema.omit({ id: true }))
+    input(collectionSchema.omit({ id: true }).extend({ createdById: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.insert(collections).values({
-        createdById: ctx.session.user.id,
+        createdById: (input.createdById && ctx.session.user.isAdmin) ? input.createdById : ctx.session.user.id,
         ...input
       }).returning({ id: collections.id });
     }),

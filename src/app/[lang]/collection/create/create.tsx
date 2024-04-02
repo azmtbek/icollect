@@ -16,7 +16,7 @@ import { useUploadThing } from '@/lib/uploadthing';
 import { api } from '@/trpc/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -74,6 +74,8 @@ const CreateCollection = () => {
   const router = useRouter();
   const { lang } = useParams<{ lang: Locale; }>();
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
+  const userId = searchParams.get('user');
 
   const form = useForm<CreateCollection>({
     resolver: zodResolver(collectionSchema.omit({ id: true })),
@@ -118,7 +120,8 @@ const CreateCollection = () => {
   const { data: topics } = api.topic.getAll.useQuery();
 
   const onSubmit = (values: CreateCollection) => {
-    createCollection.mutate(values);
+    const createdById = userId && { createdById: userId };
+    createCollection.mutate({ ...values, ...createdById });
   };
 
   const [customForms, setCustomForms] = useState(defaultCustomFields);
