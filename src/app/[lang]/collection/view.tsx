@@ -16,9 +16,12 @@ const Collections = () => {
   const userId = searchParams.get('user');
   const locale = useLocale((state) => state.collection.view);
   const localeTitles = useLocale((state) => state.titles);
-  const { data: collections, refetch } = api.collection.getUserCollections.useQuery(userId ? { userId } : undefined);
-  const columns = useColumns({ refetch });
+  const { data: currentUser } = api.user.getCurrent.useQuery();
 
+  const { data: collections, refetch } = api.collection
+    .getUserCollections.useQuery(userId && currentUser?.isAdmin ? { userId } : undefined);
+
+  const columns = useColumns({ refetch });
   const filteredCollections = useMemo(() => {
     return collections ?? [];
   }, [collections]);
@@ -32,7 +35,12 @@ const Collections = () => {
             <CSVLink data={filteredCollections} filename='data.csv'>
               <Button variant={'outline'}>Export to CSV</Button>
             </CSVLink>
-            <Link href={`/${lang}/collection/create`}><Button>{locale.addCollection}</Button></Link>
+            {userId ?
+              (currentUser?.isAdmin ?
+                <Link href={`/${lang}/collection/create?user=${userId}`}><Button>{locale.addCollection}</Button></Link>
+                : null)
+              : <Link href={`/${lang}/collection/create`}><Button>{locale.addCollection}</Button></Link>
+            }
           </div>
         </div>
 

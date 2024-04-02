@@ -77,25 +77,20 @@ const CreateCollection = () => {
 
   const form = useForm<CreateCollection>({
     resolver: zodResolver(collectionSchema.omit({ id: true })),
-    defaultValues: {
-      // name: "name",
-      // topicId: undefined,
-      // description: "",
-      // customString1: undefined,
-      // customString2: undefined,
-      // customString3: undefined,
-      // customInteger1: undefined,
-      // customInteger2: undefined,
-      // customInteger3: undefined,
-      // customText1: undefined,
-      // customText2: undefined,
-      // customText3: undefined,
-      // customDate1: undefined,
-      // customDate2: undefined,
-      // customDate3: undefined,
-    }
+    defaultValues: {}
   });
   const { toast } = useToast();
+  const { startUpload, permittedFileInfo } = useUploadThing(
+    "imageUploader",
+    {
+      onClientUploadComplete: () => {
+        toast({ description: "image uploaded successfully!" });
+      },
+      onUploadError: () => {
+        toast({ description: "error occurred while image uploading" });
+      },
+    },
+  );
   const createCollection = api.collection.create.useMutation({
     onSuccess(data) {
       const id = data[0]?.id;
@@ -126,22 +121,6 @@ const CreateCollection = () => {
     createCollection.mutate(values);
   };
 
-  const { startUpload, permittedFileInfo } = useUploadThing(
-    "imageUploader",
-    {
-      onClientUploadComplete: () => {
-
-        toast({ description: "image uploaded successfully!" });
-      },
-      onUploadError: () => {
-        toast({ description: "error occurred while image uploading" });
-      },
-      onUploadBegin: () => {
-        // alert("upload has begun");
-      },
-    },
-  );
-
 
   const [customForms, setCustomForms] = useState(defaultCustomFields);
   const [currField, setCurrField] = useState<keyof CustomFieldsType | ''>('');
@@ -162,7 +141,6 @@ const CreateCollection = () => {
       return ({ ...state, [field]: false });
     });
     form.setValue(`${field}State`, false);
-    // form.resetField(`${field}Name`, { defaultValue: '' });
   };
   return (
     <MinScreen>
