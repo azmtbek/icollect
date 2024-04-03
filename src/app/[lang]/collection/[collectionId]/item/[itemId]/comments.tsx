@@ -7,7 +7,9 @@ import { z } from 'zod';
 import { api } from '@/trpc/react';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { useEffect, useRef, useState } from 'react';
 
+const REFRESH_TIME_MS = 5000;  // milliseconds
 
 const commentSchema = z.object({
   text: z.string()
@@ -21,7 +23,7 @@ export const Comments = (
   { userId, itemId, commentsCount, itemRefetch }:
     { userId: string, itemId: string, commentsCount: number; itemRefetch: () => Promise<unknown>; }
 ) => {
-  const { data: comments, refetch: commentsRefatch } = api.comment.getAllByItemId.useQuery({ itemId });
+  const { data: comments, refetch: commentsRefatch, isError } = api.comment.getAllByItemId.useQuery({ itemId });
 
   const commentForm = useForm<CommentType>({
     resolver: zodResolver(commentSchema),
@@ -50,9 +52,48 @@ export const Comments = (
       createdById: userId,
     });
     toast({
-      description: "testing " + JSON.stringify(values.text)
+      description: "Comment added: " + JSON.stringify(values.text)
     });
   };
+
+  const timerIdRef = useRef<ReturnType<typeof setInterval> | undefined>();
+  const [isPollingEnabled, setIsPollingEnabled] = useState(true);
+
+  // short polling, very simple interactivity 
+  useEffect(() => {
+    const pollingCallback = async () => {
+      await commentsRefatch();
+      if (isError) {
+        setIsPollingEnabled(false);
+        console.log('Polling failed. Stopped polling.');
+      }
+    };
+
+    const startPolling = async () => {
+      timerIdRef.current = setInterval(
+        () => {
+          pollingCallback().catch(e => console.log(e));
+        }, REFRESH_TIME_MS);
+    };
+
+    const stopPolling = () => {
+      clearInterval(timerIdRef.current);
+    };
+
+    if (isPollingEnabled) {
+      startPolling().catch(e => console.log(e));
+    } else {
+      stopPolling();
+    }
+
+    return () => {
+      stopPolling();
+    };
+  }, [isError, commentsRefatch, isPollingEnabled]);
+
+
+
+
   return <>
     <div className='w-2/3 py-2'>{commentsCount} comments</div>
     <Form {...commentForm}>
