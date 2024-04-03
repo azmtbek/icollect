@@ -1,8 +1,7 @@
 'use client';
 import { useLocale } from '@/components/provider/locale-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Locale } from '@/i18n-config';
-import { cn } from '@/lib/utils';
+import { type Locale } from '@/i18n-config';
 import { api } from '@/trpc/react';
 import { useParams, useRouter } from 'next/navigation';
 import { useMemo } from 'react';

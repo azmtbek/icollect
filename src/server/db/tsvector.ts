@@ -1,4 +1,4 @@
-import { SQL, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { customType } from "drizzle-orm/pg-core";
 
 export const tsvector = customType<{
@@ -6,7 +6,7 @@ export const tsvector = customType<{
   config: { sources: string[]; };
 
 }>({
-  dataType(config) {
+  dataType(_config) {
 
     // Config change is done manually in sql server, drizzle orm hasn't a problem wrapping datatype return in
     // "" (double quotes).

@@ -1,18 +1,25 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import React, { useState } from 'react';
+import React from 'react';
 import SearchInput from './search-input';
 import { Boxes, Menu, Shield, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useLocale } from '@/components/provider/locale-provider';
 import { useParams } from 'next/navigation';
-import { Locale } from '@/i18n-config';
+import { type Locale } from '@/i18n-config';
 import { cn } from '@/lib/utils';
-import { MediaEnum, useMedia } from '@/components/provider/media-provider';
+import { type MediaEnum, useMedia } from '@/components/provider/media-provider';
 import { Separator } from '@/components/ui/separator';
 
 type Props = {
-  currUser: any;
+  currUser: {
+    id: string;
+    name: string | null;
+    image: string | null;
+    email: string;
+    status: string;
+    isAdmin: boolean;
+  } | undefined;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
 };

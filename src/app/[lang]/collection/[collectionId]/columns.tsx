@@ -125,7 +125,7 @@ export const useColumns = () => {
       },
     ];
     return columns;
-  }, [collection, collectionId, locale, lang]);
+  }, [collection, collectionId, locale, lang, isLoadingData, currentUser]);
 
   return columns;
 };

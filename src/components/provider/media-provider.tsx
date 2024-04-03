@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, createContext, useContext, useState } from 'react';
+import { type Dispatch, type SetStateAction, createContext, useContext, useState } from 'react';
 
 export type MediaEnum = 'desktop' | 'mobile';
 

@@ -8,7 +8,6 @@ import LocaleSwitcher from './locale-switcher';
 import { type Locale } from '@/i18n-config';
 import { getDictionary } from '@/get-dictionary';
 import SearchInput from './search-input';
-import { Menu } from 'lucide-react';
 import HeaderMobile from './header-mobile';
 
 type Props = { lang: Locale; };
