@@ -23,12 +23,19 @@ const LatestItems = ({ className }: { className?: string; }) => {
         <CardTitle>{localeTitles.latestItems}</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className='w-full grid grid-cols-3 cursor-pointer hover:bg-secondary border-t rounded-none py-4 bg-muted'>
+          <span className='text-center'>{localeTitles.item}</span>
+          <span className='text-center'>{localeTitles.collection}</span>
+          <span className='text-center'>{localeTitles.author}</span>
+        </div>
         {items?.map(item => {
           return <div key={item.id} className='w-full'>
             <Link href={`/${lang}/collection/${item.collectionId}/item/${item.id}`}>
               <Button variant={'ghost'}
-                className='size-full flex justify-start cursor-pointer hover:bg-secondary border-t rounded-none py-4'>
-                {item.name}
+                className='size-full grid grid-cols-3 cursor-pointer hover:bg-secondary border-t rounded-none py-4'>
+                <span> {item.itemName}</span>
+                <span>{item.collectionName}</span>
+                <span>{item.authorName}</span>
               </Button>
             </Link>
           </div>;

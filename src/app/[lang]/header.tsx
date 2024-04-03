@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { api } from '@/trpc/server';
 import LocaleSwitcher from './locale-switcher';
 import { type Locale } from '@/i18n-config';
-import { getDictionary } from '@/get-dictionary';
+import { type ServerDictionary, getDictionary } from '@/get-dictionary';
 import SearchInput from './search-input';
 import HeaderMobile from './header-mobile';
 
@@ -66,15 +66,15 @@ export const Header = async ({ lang }: Props) => {
         <div className='flex gap-4 items-center'>
           {currUser && <Button variant={'secondary'} className='rounded-full'>{currUser.name}</Button>}
           {currUser ?
-            <SignOut /> :
-            <SignIn />}
+            <SignOut dictionary={dictionary.signing} /> :
+            <SignIn dictionary={dictionary.signing} />}
         </div>
       </div>
     </header >
   );
 };
 
-async function SignOut() {
+async function SignOut({ dictionary }: { dictionary: ServerDictionary["signing"]; }) {
   const signout = async () => {
     'use server';
     await signOut();
@@ -84,13 +84,13 @@ async function SignOut() {
       action={signout}
     >
       <Button type="submit" variant="outline">
-        Sign out
+        {dictionary.signout}
       </Button>
     </form>
   );
 }
 
-async function SignIn() {
+async function SignIn({ dictionary }: { dictionary: ServerDictionary["signing"]; }) {
   const signin = async () => {
     'use server';
     await signIn();
@@ -100,7 +100,7 @@ async function SignIn() {
       action={signin}
     >
       <Button type="submit" variant="outline">
-        Sign In
+        {dictionary.signin}
       </Button>
     </form>
   );

@@ -4,7 +4,15 @@
     "admin": "Admin",
     "biggestCollections": "Eng Katta Kolleksialar",
     "latestItems": "So'ngi Elementlar",
-    "tagsCloud": "Taglar Buluti"
+    "tagsCloud": "Taglar Buluti",
+    "collection": "Kolleksia",
+    "item": "Element",
+    "author": "Muallif",
+    "search": "Qidirish"
+  },
+  "signing": {
+    "signin": "Kirish",
+    "signout": "Kiqish"
   },
   "theme": {
     "light": "yorug'",

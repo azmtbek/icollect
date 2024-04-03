@@ -4,7 +4,15 @@
     "admin": "Admin",
     "biggestCollections": "Biggest Collections",
     "latestItems": "Latest Items",
-    "tagsCloud": "Tags Cloud"
+    "tagsCloud": "Tags Cloud",
+    "collection": "Collection",
+    "item": "Item",
+    "author": "Author",
+    "search": "Search"
+  },
+  "signing": {
+    "signin": "Sign In",
+    "signout": "Sign Out"
   },
   "theme": {
     "light": "light",

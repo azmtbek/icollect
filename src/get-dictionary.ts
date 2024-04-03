@@ -15,3 +15,5 @@ export const getDictionary = async (locale: Locale) =>
   dictionaries[locale]?.() ?? dictionaries.en;
 
 export type Dictionoary = typeof getDictionary;
+
+export type ServerDictionary = Awaited<ReturnType<Dictionoary>>;
