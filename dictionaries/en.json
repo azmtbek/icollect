@@ -53,6 +53,14 @@
       "create": "Create",
       "creating": "Creating...",
       "newTagsPlaceholder": "Create a new tag."
+    },
+    "like": {
+      "like": "like",
+      "likes": "likes"
+    },
+    "comment": {
+      "comment": "comment",
+      "comments": "comments"
     }
   }
 }

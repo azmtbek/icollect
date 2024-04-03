@@ -8,6 +8,7 @@ import { api } from '@/trpc/react';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { useEffect, useRef, useState } from 'react';
+import { useLocale } from '@/components/provider/locale-provider';
 
 const REFRESH_TIME_MS = 5000;  // milliseconds
 
@@ -24,7 +25,7 @@ export const Comments = (
     { userId: string, itemId: string, commentsCount: number; itemRefetch: () => Promise<unknown>; }
 ) => {
   const { data: comments, refetch: commentsRefatch, isError } = api.comment.getAllByItemId.useQuery({ itemId });
-
+  const locale = useLocale(state => state.item.comment);
   const commentForm = useForm<CommentType>({
     resolver: zodResolver(commentSchema),
     defaultValues: {
@@ -91,11 +92,8 @@ export const Comments = (
     };
   }, [isError, commentsRefatch, isPollingEnabled]);
 
-
-
-
   return <>
-    <div className='w-2/3 py-2'>{commentsCount} comments</div>
+    <div className='w-2/3 py-2'>{commentsCount} {commentsCount == 1 ? locale.comment : locale.comments}</div>
     <Form {...commentForm}>
       <form onSubmit={commentForm.handleSubmit(onCreateComment)} className="w-2/3 space-y-6 py-2">
         <FormField

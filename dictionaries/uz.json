@@ -53,6 +53,14 @@
       "create": "Create",
       "creating": "Creating...",
       "newTagsPlaceholder": "Yangi tag yaratish uchun 'Enter' ni bosing."
+    },
+    "like": {
+      "like": "layk",
+      "likes": "layklar"
+    },
+    "comment": {
+      "comment": "izoh",
+      "comments": "izohlar"
     }
   }
 }

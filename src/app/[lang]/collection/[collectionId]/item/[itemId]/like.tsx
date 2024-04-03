@@ -1,4 +1,5 @@
 'use client';
+import { useLocale } from '@/components/provider/locale-provider';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
@@ -12,6 +13,7 @@ export const Like = ({
 }
 ) => {
   const { data: liked, refetch } = api.like.get.useQuery({ itemId: +itemId });
+  const locale = useLocale(state => state.item.like);
   const toggleLike = api.like.toggle.useMutation({
     async onSuccess() {
       await refetch();
@@ -33,7 +35,7 @@ export const Like = ({
     await refetch();
   };
   return <div className='flex items-center justify-end'>
-    {likesCount} {likesCount === 1 ? 'like' : 'likes'}
+    {likesCount} {likesCount === 1 ? locale.like : locale.likes}
     <Button onClick={onLiked} variant={'ghost'}>
       {liked ? <Heart className='fill-destructive stroke-destructive' /> : <Heart />}
     </Button>
