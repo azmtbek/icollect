@@ -15,11 +15,9 @@ const Page = async ({
   const currUser = await api.user.getCurrent.query();
   if (!currUser) redirect(`/${params.lang}/login`);
 
-  return <>
-    <MinScreen>
-      <Collections />
-    </MinScreen>
-  </>;
+  return <MinScreen>
+    <Collections />
+  </MinScreen>;
 };
 
 export default Page;

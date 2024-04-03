@@ -74,6 +74,9 @@ const config = {
       },
       minHeight: {
         'scrn': "calc(100vh - 4rem)",
+      },
+      maxHeight: {
+        'scrn': "calc(100vh - 4rem)",
       }
     },
   },

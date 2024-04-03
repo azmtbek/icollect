@@ -12,8 +12,8 @@ const Search = () => {
   const { lang } = useParams<{ lang: Locale; }>();
   const searchP = useSearchParams();
   const search = searchP?.get('q') ?? '';
-  const tagId = searchP?.get('tag') ?? '';
-  const { data: results } = api.tag.getItemsByTagId.useQuery({ tagId });
+  const tagName = searchP?.get('tag') ?? '';
+  const { data: results } = api.tag.getItemsByTagId.useQuery({ tagName });
   const { data: resultsFTS } = api.search.getResultsFTS.useQuery({ search });
 
   return (

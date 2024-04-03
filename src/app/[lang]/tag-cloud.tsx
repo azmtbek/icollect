@@ -16,7 +16,7 @@ const options: ColorOptions = {
 
 declare module "react-tagcloud" {
   interface Tag {
-    id: number;
+    name: string;
   }
 }
 
@@ -43,7 +43,7 @@ const CustomTagsCloud = ({ className }: { className?: string; }) => {
 
   const localeTitles = useLocale((state) => state.titles);
   const onClickTag = (tag: Tag) => {
-    router.push(`/${lang}/search?tag=${tag.id}`);
+    router.push(`/${lang}/search?tag=${tag.name}`);
   };
 
   return <Card className={className}>

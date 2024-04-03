@@ -109,6 +109,10 @@ export const useColumns = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem>Edit</DropdownMenuItem>
+                  {user.isAdmin ?
+                    <DropdownMenuItem>Remove from Admin</DropdownMenuItem> :
+                    <DropdownMenuItem>Add to Admin</DropdownMenuItem>
+                  }
                   <DropdownMenuItem className="bg-destructive">Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

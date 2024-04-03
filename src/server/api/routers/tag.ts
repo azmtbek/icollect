@@ -16,7 +16,7 @@ export const tagRouter = createTRPCRouter({
     }),
   getItemsByTagId: publicProcedure
     .input(z.object({
-      tagId: z.string()
+      tagName: z.string()
     }))
     .query(({ ctx, input }) => {
       return ctx.db.select({
@@ -42,7 +42,7 @@ export const tagRouter = createTRPCRouter({
         .from(itemTags)
         .leftJoin(tags, eq(itemTags.tagId, tags.id))
         .leftJoin(items, eq(itemTags.itemId, items.id))
-        .where(eq(tags.id, +input.tagId));
+        .where(eq(tags.name, input.tagName));
     }),
   getAllItemTags: publicProcedure
     .query(({ ctx }) => {

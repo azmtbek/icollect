@@ -27,8 +27,12 @@ import { collectionToItem } from "@/lib/collection-item-mapper";
 
 export const useColumns = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
-  const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
+  const { data: collection, isLoading: isLoadingCollection } = api.collection.getById.useQuery({ id: +collectionId });
   const locale = useLocale(state => state.collection.view);
+  const { data: currentUser, isLoading: isLoadingUser } = api.user.getCurrent.useQuery();
+  const isLoadingData = useMemo(() => {
+    return isLoadingCollection || isLoadingUser;
+  }, [isLoadingCollection, isLoadingUser]);
 
   const columns = useMemo(() => {
     const columns: ColumnDef<Item>[] = [
@@ -102,15 +106,17 @@ export const useColumns = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>
-                    <Link href={`/${lang}/collection/${collectionId}/item/${item.id}/edit`}
-                      className="w-full h-full">
-                      Edit
-                    </Link>
+                  {isLoadingData || (collection?.createdById === currentUser || currentUser?.isAdmin) && (<>
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>
+                      <Link href={`/${lang}/collection/${collectionId}/item/${item.id}/edit`}
+                        className="w-full h-full">
+                        Edit
+                      </Link>
 
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="bg-destructive">Delete</DropdownMenuItem>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="bg-destructive">Delete</DropdownMenuItem>
+                  </>)}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

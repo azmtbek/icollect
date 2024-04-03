@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { type Locale, i18n } from "@/i18n-config";
 import { LocaleProvider } from "@/components/provider/locale-provider";
 import { getDictionary } from "@/get-dictionary";
+import { MediaProvider } from "@/components/provider/media-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -42,13 +43,15 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <LocaleProvider dictionary={dictionary}>
-            <TRPCReactProvider>
-              <Header lang={params.lang} />
-              {children}
-              <Toaster />
-            </TRPCReactProvider>
-          </LocaleProvider>
+          <MediaProvider>
+            <LocaleProvider dictionary={dictionary}>
+              <TRPCReactProvider>
+                <Header lang={params.lang} />
+                {children}
+                <Toaster />
+              </TRPCReactProvider>
+            </LocaleProvider>
+          </MediaProvider>
         </ThemeProvider>
       </body>
     </html >

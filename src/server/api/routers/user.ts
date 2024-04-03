@@ -28,6 +28,40 @@ export const userRouter = createTRPCRouter({
         .where(eq(users.id, input.userId));
       return user;
     }),
+  addUserToAdmin: adminProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db
+        .update(users)
+        .set({ isAdmin: true })
+        .where(eq(users.id, input.userId));
+      return user;
+    }),
+  addManyUsersToAdmin: adminProcedure
+    .input(z.object({ userIds: z.string().array() }))
+    .mutation(async ({ ctx, input }) => {
+      const updateCase = updateMany(input.userIds, users.id, sql`'true'::boolean`);
+      await ctx.db.update(users)
+        .set({ isAdmin: updateCase })
+        .where(inArray(users.id, input.userIds));
+    }),
+  removeUserFromAdmin: adminProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db
+        .update(users)
+        .set({ isAdmin: false })
+        .where(eq(users.id, input.userId));
+      return user;
+    }),
+  removeManyUsersFromAdmin: adminProcedure
+    .input(z.object({ userIds: z.string().array() }))
+    .mutation(async ({ ctx, input }) => {
+      const updateCase = updateMany(input.userIds, users.id, sql`'false'::boolean`);
+      await ctx.db.update(users)
+        .set({ isAdmin: updateCase })
+        .where(inArray(users.id, input.userIds));
+    }),
   blockManyUsers: adminProcedure
     .input(z.object({ userIds: z.string().array() }))
     .mutation(async ({ ctx, input }) => {
@@ -62,7 +96,6 @@ export const userRouter = createTRPCRouter({
         .where(eq(users.id, input.userId));
       return user;
     }),
-
   deleteManyUsers: adminProcedure
     .input(z.object({ userIds: z.string().array() }))
     .mutation(async ({ ctx, input }) => {

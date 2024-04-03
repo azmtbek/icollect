@@ -14,10 +14,13 @@ import Image from 'next/image';
 const Collection = () => {
   const { collectionId, lang } = useParams<{ collectionId: string; lang: Locale; }>();
   const locale = useLocale((state) => state.collection.view);
-  const { data: collection } = api.collection.getById.useQuery({ id: +collectionId });
+  const { data: collection, isLoading: isLoadingCollection } = api.collection.getById.useQuery({ id: +collectionId });
   const { data: items } = api.item.getCollectionItems.useQuery({ collectionId: +collectionId });
-  const { data: currentUser } = api.user.getCurrent.useQuery();
+  const { data: currentUser, isLoading: isLoadingUser } = api.user.getCurrent.useQuery();
   // const { data: tags } = api.tag.getItemTagNames.useQuery({ itemId: items?.[0]?.id });
+  const isLoadingData = useMemo(() => {
+    return isLoadingCollection || isLoadingUser;
+  }, [isLoadingCollection, isLoadingUser]);
   const filteredItems = useMemo(() => {
     console.log(items);
     return items ?? [];
@@ -27,7 +30,7 @@ const Collection = () => {
     <MinScreen>
       <div className='flex items-center justify-between w-full'>
         <div className='text-2xl'>{locale.title} : {collection?.name}</div>
-        {(collection?.createdById == currentUser || currentUser?.isAdmin) &&
+        {isLoadingData || (collection?.createdById === currentUser || currentUser?.isAdmin) &&
           <Link href={`/${lang}/collection/${collectionId}/item/create`}><Button>{locale.addItem}</Button></Link>
         }
       </div>

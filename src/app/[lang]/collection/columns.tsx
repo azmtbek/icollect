@@ -120,14 +120,12 @@ export const useColumns = ({ refetch }: {
                     </Link>
                   </DropdownMenuItem>
                   <Dialog>
-
                     <DialogTrigger asChild className=" cursor-pointer">
                       <DropdownMenuItem className="bg-destructive" onSelect={(e) => e.preventDefault()}>
                         <span>
                           Delete
                         </span>
                       </DropdownMenuItem>
-
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>

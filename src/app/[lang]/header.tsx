@@ -8,6 +8,8 @@ import LocaleSwitcher from './locale-switcher';
 import { type Locale } from '@/i18n-config';
 import { getDictionary } from '@/get-dictionary';
 import SearchInput from './search-input';
+import { Menu } from 'lucide-react';
+import HeaderMobile from './header-mobile';
 
 type Props = { lang: Locale; };
 
@@ -15,9 +17,33 @@ export const Header = async ({ lang }: Props) => {
 
   const dictionary = await getDictionary(lang);
   const currUser = await api.user.getCurrent.query();
+
+  const signout = async () => {
+    'use server';
+    await signOut();
+  };
+
+  const signin = async () => {
+    'use server';
+    await signIn();
+  };
+
   return (
     <header className='sticky h-16 pt-3 w-full border-b-2'>
-      <div className='flex justify-between items-center container'>
+      {/* ui for mobile */}
+      <div className='flex justify-between items-center container md:hidden z-20'>
+        <div className='flex gap-2 items-center'>
+          <Link href={`/${lang}`}
+            className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>
+            iCollect
+          </Link>
+          <ThemeButton />
+          <LocaleSwitcher />
+        </div>
+        <HeaderMobile signIn={signin} signOut={signout} currUser={currUser} />
+      </div>
+      {/* ui for desktop */}
+      <div className='hidden md:flex justify-between items-center container '>
         <div className='flex gap-2 items-center'>
           <Link href={`/${lang}`}
             className='flex gap-2 items-center py-1 px-4 border rounded-lg bg-lime-700 text-white text-xl font-mono'>

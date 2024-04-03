@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/custom/data-table-pagination";
 import { DataTableViewOptions } from "@/components/custom/data-table-column-toggle";
-import { Trash2 } from "lucide-react";
+import { ShieldCheck, ShieldOff, Trash2 } from "lucide-react";
 import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/trpc/react";
@@ -86,6 +86,16 @@ export function DataTable<TData extends { id: string; }, TValue>({
       await refetch();
     }
   });
+  const addUsersToAdmin = api.user.addManyUsersToAdmin.useMutation({
+    async onSuccess() {
+      await refetch();
+    }
+  });
+  const removeUsersFromAdmin = api.user.removeManyUsersFromAdmin.useMutation({
+    async onSuccess() {
+      await refetch();
+    }
+  });
   const someSelected = table.getIsSomePageRowsSelected();
   const allSelected = table.getIsAllPageRowsSelected();
   const isNotSelected = React.useMemo(() =>
@@ -94,7 +104,7 @@ export function DataTable<TData extends { id: string; }, TValue>({
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="flex items-center py-4 gap-4 ">
+      <div className="flex items-center py-4 gap-4 flex-wrap ">
         <Input
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -126,6 +136,28 @@ export function DataTable<TData extends { id: string; }, TValue>({
           variant={'outline'}>
           <LockOpen1Icon />
           Unblock
+        </Button>
+        <Button
+          onClick={() => {
+            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            if (selectedUserIds.length > 0)
+              addUsersToAdmin.mutate({ userIds: selectedUserIds });
+          }}
+          disabled={isNotSelected}
+          variant={'outline'}>
+          <ShieldCheck />
+          Add to Admin
+        </Button>
+        <Button
+          onClick={() => {
+            const selectedUserIds = table.getFilteredSelectedRowModel().rows.map(r => r.original.id);
+            if (selectedUserIds.length > 0)
+              removeUsersFromAdmin.mutate({ userIds: selectedUserIds });
+          }}
+          disabled={isNotSelected}
+          variant={'secondary'}>
+          <ShieldOff />
+          Remove from Admin
         </Button>
         <Button
           onClick={() => {

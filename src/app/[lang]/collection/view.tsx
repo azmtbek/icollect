@@ -43,9 +43,7 @@ const Collections = () => {
             }
           </div>
         </div>
-
       </div>
-
       <DataTable data={filteredCollections} columns={columns} />
     </>
   );

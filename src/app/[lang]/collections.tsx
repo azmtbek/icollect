@@ -18,7 +18,7 @@ const Collections = ({ className }: { className: string; }) => {
       <CardTitle>{localeTitles.biggestCollections}</CardTitle>
     </CardHeader>
     <CardContent>
-      <div className="grid grid-cols-3">
+      <div className="flex flex-wrap">
         {isLoading
           ? <div>Loading ...</div> :
           collections?.map((col) => <div key={col.id} >
