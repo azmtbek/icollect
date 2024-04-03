@@ -6,7 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { collections, itemTags, items, tags, users } from "@/server/db/schema";
-import { eq, inArray, desc } from "drizzle-orm";
+import { eq, inArray, desc, and, sql } from "drizzle-orm";
 import { createItemSchema, itemSchema } from "@/lib/types/item";
 import { increment, updateMany } from "@/server/db";
 
@@ -16,19 +16,28 @@ export const itemRouter = createTRPCRouter({
       return ctx.db.query.items.findMany();
     }),
   getLatest: publicProcedure
-    .query(({ ctx }) => {
-      return ctx.db.select({
+    .query(async ({ ctx }) => {
+      const sq = ctx.db.$with('sq').as(
+        ctx.db.select({
+          collectionId: collections.id,
+          collectionName: collections.name,
+          author: sql<string>`${users.name}`.as("author") || 'anonymous',
+          isDeleted: users.isDeleted || collections.isDeleted
+        })
+          .from(collections)
+          .leftJoin(users, eq(collections.createdById, users.id))
+      );
+      return ctx.db.with(sq).select({
         id: items.id,
-        collectionId: items.collectionId,
+        collectionId: sq.collectionId,
         itemName: items.name,
-        collectionName: collections.name,
-        authorName: users.name,
+        collectionName: sq.collectionName,
+        authorName: sq.author,
       }).from(items)
-        .leftJoin(collections, eq(items.collectionId, collections.id))
-        .leftJoin(users, eq(collections.createdById, users.id))
+        .leftJoin(sq, eq(items.collectionId, sq.collectionId))
+        .where(and(eq(sq.isDeleted, false), eq(items.isDeleted, false)))
         .orderBy(desc(items.createdAt))
         .limit(10);
-      // return ctx.db.query.items.findMany({ orderBy: desc(items.createdAt), limit: 10 });
     }),
   getCollectionItems: publicProcedure
     .input(z.object({ collectionId: z.number() }))

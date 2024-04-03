@@ -18,19 +18,24 @@ const Collection = () => {
   const { data: items } = api.item.getCollectionItems.useQuery({ collectionId: +collectionId });
   const { data: currentUser, isLoading: isLoadingUser } = api.user.getCurrent.useQuery();
   // const { data: tags } = api.tag.getItemTagNames.useQuery({ itemId: items?.[0]?.id });
-  const isLoadingData = useMemo(() => {
-    return isLoadingCollection || isLoadingUser;
-  }, [isLoadingCollection, isLoadingUser]);
+
   const filteredItems = useMemo(() => {
     console.log(items);
     return items ?? [];
   }, [items]);
+  const canAddItem = useMemo(() => {
+    if (isLoadingCollection || isLoadingUser) return false;
+    if (currentUser?.isAdmin) return true;
+    if (collection?.createdById === currentUser?.id) return true;
+    return false;
+  }, [isLoadingCollection, isLoadingUser, currentUser, collection]);
+
   const columns = useColumns();
   return (
     <MinScreen>
       <div className='flex items-center justify-between w-full'>
         <div className='text-2xl'>{locale.title} : {collection?.name}</div>
-        {isLoadingData || (collection?.createdById === currentUser || currentUser?.isAdmin) &&
+        {canAddItem &&
           <Link href={`/${lang}/collection/${collectionId}/item/create`}><Button>{locale.addItem}</Button></Link>
         }
       </div>
